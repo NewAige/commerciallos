@@ -19,7 +19,7 @@
 | 18 | Where we are | Systems | COCC, LaserPro, Identifi, Abrigo, GlobalWave |
 | 24 | What we know | What we think | Where we stand and how sure we are |
 | 30 | What we know | What we need to learn | Open questions and owners |
-| 38 | Decide | Scope (D01) | LOS only, LOS + small business, or all three |
+| 38 | Decide | Scope (D01) | LOS only, or LOS + small business (Numerated today) |
 | 48 | Decide | GlobalWave (D03) | Is staying a real option? |
 | 54 | Plan | Roadmap | Phases, gates, target go-live Aug 2028 |
 | 62 | Plan | How we choose | Draft criteria and weights |
