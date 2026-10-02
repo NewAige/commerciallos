@@ -42,7 +42,7 @@
     },
     {
       "id": "profile",
-      "section": "Where we are",
+      "section": "What we know",
       "minutes": 6,
       "kicker": "Our bank",
       "title": "A $3B bank planning for $5B, with a complex top end",
@@ -59,7 +59,7 @@
     },
     {
       "id": "systems",
-      "section": "Where we are",
+      "section": "What we know",
       "minutes": 6,
       "kicker": "Systems the LOS must work with",
       "title": "The new LOS sits in the middle of four systems we keep",
@@ -75,21 +75,21 @@
     },
     {
       "id": "think",
-      "section": "What we know",
+      "section": "What we think",
       "minutes": 6,
       "kicker": "What we think",
       "title": "Where we stand, and how sure we are",
       "blocks": [
-        { "type": "lead", "text": "Bank facts are confirmed. Most of what we think about vendors, cost and regulation is still a lead, not a fact. It gets confirmed through demos, reference calls, real pricing and our own experts." },
+        { "type": "lead", "text": "The only things we know for sure are about our own bank: our systems and our organization. Everything about vendors and cost is still a lead, not a fact. We have no real prices yet. Leads get confirmed through demos, reference calls, RFP pricing and our own experts." },
         { "type": "thinking" }
       ],
-      "notes": "We started from a draft assessment from September (prepared with an AI tool, Gemini) that compared Abrigo, GlobalWave and nCino. It raised the right topics: integration, admin burden, adoption and cost. But it picked a vendor before we had requirements, demos or references, so we are not walking through it line by line. Instead we turned it into what we think and how sure we are. A first check against public sources was done on October 2. Two things are settled: Section 1071 does not apply to the bank, and no product called 'Abrigo APX' turned up.",
+      "notes": "We started from a draft assessment from September (prepared with an AI tool, Gemini) that compared Abrigo, GlobalWave and nCino. It raised the right topics: integration, admin burden, adoption and cost. But it picked a vendor before we had requirements, demos or references, so we are not walking through it line by line. Instead we turned it into what we think and how sure we are. A first check against public sources was done on October 2. Nothing about cost is known: every price we have is a placeholder until vendors quote in the RFP. One thing about us was settled: Section 1071 does not apply to the bank. No product called 'Abrigo APX' turned up.",
       "discuss": [],
       "capture": ""
     },
     {
       "id": "learn",
-      "section": "What we know",
+      "section": "What we think",
       "minutes": 8,
       "kicker": "What we need to learn",
       "title": "Questions we have to answer before we choose",
