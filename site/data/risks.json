@@ -69,7 +69,7 @@
       "status": "open",
       "detail": "Pipeline, covenants, tickler items and historical credit files must move or be archived.",
       "mitigation": "Decide what converts versus archives in Phase 1. Run at least two mock conversions.",
-      "owner": "Loan operations"
+      "owner": "Data team"
     },
     {
       "id": "R08",

@@ -13,11 +13,11 @@
       "outcome": "", "decidedBy": "", "decidedOn": ""
     },
     {
-      "id": "D02", "title": "Who sponsors and who leads?", "needed": "2026-10-07", "status": "open",
+      "id": "D02", "title": "Who sponsors and who leads?", "needed": "2026-10-07", "status": "proposed",
       "question": "Name the executive sponsor, the project lead, and how much of the project lead's time is committed.",
       "options": [],
       "recommendation": "Executive sponsor from lending leadership; a project lead with at least 50% of their time on this through contract signature, rising during implementation.",
-      "outcome": "", "decidedBy": "", "decidedOn": ""
+      "outcome": "Proposed: T. Chaves as executive sponsor and C. Alves as project lead. The project lead's time commitment is still to be agreed at kickoff.", "decidedBy": "", "decidedOn": ""
     },
     {
       "id": "D03", "title": "Is renewing or renegotiating with GlobalWave a real option?", "needed": "2026-10-07", "status": "open",

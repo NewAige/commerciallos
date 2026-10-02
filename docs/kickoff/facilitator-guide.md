@@ -29,7 +29,7 @@
 
 ## Who should attend
 
-Head of Commercial Lending, a lending executive who could sponsor, credit administration, loan operations / doc prep, IT, the part-time loan systems administrator, compliance, vendor management, and finance. One or two RMs are a plus.
+Head of Commercial Lending, a lending executive who could sponsor, credit administration, loan operations / doc prep, IT, the part-time loan systems administrator, the data team, risk management, vendor management, and finance. One or two RMs are a plus.
 
 ## Before the meeting
 

@@ -96,7 +96,7 @@
       "blocks": [
         { "type": "findings", "ids": ["C08", "C03", "C05", "C04", "C10", "C16", "C15"] }
       ],
-      "notes": "Walk through each card briefly. The point is not that the document is bad; it is that our decision has to rest on demos, references and real pricing. The most important correction: 'Abrigo APX' does not appear to be a real product name. The 1071 rule changed in May 2026, and the bank may now fall below the threshold. The nCino timeline in the document looks overstated based on nCino's own filings.",
+      "notes": "Walk through each card briefly. The point is not that the document is bad; it is that our decision has to rest on demos, references and real pricing. The most important correction: 'Abrigo APX' does not appear to be a real product name. The 1071 rule changed in May 2026, and the bank has confirmed it does not apply to us, so we can drop it from requirements. The nCino timeline in the document looks overstated based on nCino's own filings.",
       "discuss": [
         "Is there anything in the assessment we have already relied on?",
         "Who should own checking the remaining claims?"

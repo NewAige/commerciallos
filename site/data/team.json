@@ -1,14 +1,15 @@
 {
   "note": "Roles to fill at kickoff. Replace 'TBD' with names. Time is the expected share of the person's week during Phases 0-3.",
   "roles": [
-    { "role": "Executive sponsor", "name": "TBD", "time": "2-4 hrs/month", "responsibility": "Owns the outcome and budget. Breaks ties. Reports to the board." },
-    { "role": "Project lead", "name": "TBD", "time": "50%+", "responsibility": "Runs the plan, the meetings and this workspace. Escalates risks." },
-    { "role": "Commercial lending lead", "name": "Head of Commercial Lending", "time": "10-15%", "responsibility": "Represents RMs and PMs. Owns requirements for origination and pipeline." },
-    { "role": "Credit administration", "name": "TBD", "time": "15-20%", "responsibility": "Underwriting, approvals, risk rating, covenants and ticklers." },
-    { "role": "Loan operations and doc prep", "name": "TBD", "time": "15-20%", "responsibility": "LaserPro, closing, boarding to COCC, data conversion." },
+    { "role": "Executive sponsor", "name": "T. Chaves", "time": "2-4 hrs/month", "responsibility": "Owns the outcome and budget. Breaks ties. Reports to the board." },
+    { "role": "Project lead", "name": "C. Alves", "time": "50%+", "responsibility": "Runs the plan, the meetings and this workspace. Escalates risks." },
+    { "role": "Commercial lending lead", "name": "H. Ali", "time": "10-15%", "responsibility": "Represents RMs and PMs. Owns requirements for origination and pipeline." },
+    { "role": "Credit administration", "name": "L. Sternfelt", "time": "15-20%", "responsibility": "Underwriting, approvals, risk rating, covenants and ticklers." },
+    { "role": "Loan operations and doc prep", "name": "TBD", "time": "15-20%", "responsibility": "LaserPro, closing, boarding to COCC." },
+    { "role": "Data team", "name": "TBD", "time": "TBD", "responsibility": "Data inventory, GlobalWave conversion and archive, data quality, and reporting." },
     { "role": "IT and integration", "name": "TBD", "time": "15-25%", "responsibility": "COCC, Identifi, LaserPro and Abrigo integrations; security review." },
     { "role": "Loan systems administrator", "name": "TBD (current part-time admin)", "time": "25%+, more during build", "responsibility": "Future owner of configuration. Must be in every design session." },
-    { "role": "Compliance and BSA", "name": "TBD", "time": "5-10%", "responsibility": "Section 1071, fair lending, CDD and beneficial ownership, record retention." },
+    { "role": "Risk management", "name": "TBD", "time": "5-10%", "responsibility": "General risk review: fair lending, CDD and beneficial ownership, record retention." },
     { "role": "Vendor management (TPRM)", "name": "TBD", "time": "5-10%", "responsibility": "Due diligence, contract review, GlobalWave exit terms." },
     { "role": "Finance", "name": "TBD", "time": "5%", "responsibility": "Budget, TCO model, business case." },
     { "role": "RM and PM user panel", "name": "3-5 volunteers", "time": "2-4 hrs/month", "responsibility": "Pain-point survey, demo scoring, UAT, super-users." }
