@@ -1,0 +1,32 @@
+{
+  "note": "Staff questionnaire for the new commercial LOS. Each role gets its own survey: the questions whose 'roles' list includes that role, in section order. Question IDs (Q##) are stable and never reused; they are the key used to match answers that come back from Microsoft Forms.",
+  "status": "draft",
+  "owner": "C. Alves",
+  "scales": {
+    "agree5": { "min": 1, "max": 5, "labels": ["Strongly disagree", "Disagree", "Neutral", "Agree", "Strongly agree"] },
+    "sat5": { "min": 1, "max": 5, "labels": ["Very dissatisfied", "Dissatisfied", "Neutral", "Satisfied", "Very satisfied"] },
+    "importance5": { "min": 1, "max": 5, "labels": ["Not important", "Slightly important", "Moderately important", "Very important", "Critical"] },
+    "zero10": { "min": 0, "max": 10, "labels": ["0 = Not at all likely", "10 = Extremely likely"] }
+  },
+  "groups": [
+    { "id": "credit", "label": "Credit" },
+    { "id": "origination", "label": "Origination" },
+    { "id": "operations", "label": "Operations" }
+  ],
+  "roles": [
+    { "id": "credit-analyst", "group": "credit", "label": "Credit Analysts" },
+    { "id": "credit-review", "group": "credit", "label": "Credit Review" },
+    { "id": "credit-mgmt", "group": "credit", "label": "Credit Management" },
+    { "id": "lending-officer", "group": "origination", "label": "Lending Officers" },
+    { "id": "portfolio-mgr", "group": "origination", "label": "Portfolio Managers" },
+    { "id": "lending-mgmt", "group": "origination", "label": "Lending Management" },
+    { "id": "cla", "group": "operations", "label": "Commercial Lending Assistants" },
+    { "id": "cla-mgmt", "group": "operations", "label": "Commercial Lending Assistant Management" }
+  ],
+  "sections": [
+    { "id": "about", "title": "About you" }
+  ],
+  "questions": [
+    { "id": "Q01", "section": "about", "type": "single", "text": "How long have you worked in commercial lending at the bank?", "options": ["Less than 1 year", "1-3 years", "4-10 years", "More than 10 years"], "required": true, "roles": ["credit-analyst", "credit-review", "credit-mgmt", "lending-officer", "portfolio-mgr", "lending-mgmt", "cla", "cla-mgmt"] }
+  ]
+}
