@@ -1,7 +1,7 @@
 {
   "title": "Commercial LOS Replacement: Planning Kickoff",
   "date": "2026-10-07",
-  "lengthMinutes": 90,
+  "lengthMinutes": 60,
   "goals": [
     "Everyone understands the deadline and what it means working backward.",
     "We agree on what we know, what we only think we know, and how we will check.",
@@ -12,7 +12,7 @@
     {
       "id": "welcome",
       "section": "Open",
-      "minutes": 5,
+      "minutes": 3,
       "kicker": "Planning kickoff · October 7, 2026",
       "title": "Replacing our commercial loan origination system",
       "blocks": [
@@ -26,7 +26,7 @@
     {
       "id": "clock",
       "section": "Why now",
-      "minutes": 7,
+      "minutes": 5,
       "kicker": "The deadline",
       "title": "We have about 29 months. Most of it is already spoken for.",
       "blocks": [
@@ -43,7 +43,7 @@
     {
       "id": "profile",
       "section": "What we know",
-      "minutes": 6,
+      "minutes": 4,
       "kicker": "Our bank",
       "title": "A $3B bank planning for $5B, with a complex top end",
       "blocks": [
@@ -60,7 +60,7 @@
     {
       "id": "systems",
       "section": "What we know",
-      "minutes": 6,
+      "minutes": 4,
       "kicker": "Systems the LOS must work with",
       "title": "The new LOS sits in the middle of four systems we keep",
       "blocks": [
@@ -76,7 +76,7 @@
     {
       "id": "think",
       "section": "What we think",
-      "minutes": 6,
+      "minutes": 4,
       "kicker": "What we think",
       "title": "Where we stand, and how sure we are",
       "blocks": [
@@ -90,7 +90,7 @@
     {
       "id": "learn",
       "section": "What we think",
-      "minutes": 8,
+      "minutes": 5,
       "kicker": "What we need to learn",
       "title": "Questions we have to answer before we choose",
       "blocks": [
@@ -106,7 +106,7 @@
     {
       "id": "scope",
       "section": "Decide",
-      "minutes": 10,
+      "minutes": 8,
       "kicker": "Decision 1 of 3",
       "title": "What is in scope?",
       "blocks": [
@@ -123,7 +123,7 @@
     {
       "id": "paths",
       "section": "Decide",
-      "minutes": 6,
+      "minutes": 5,
       "kicker": "Decision 2 of 3",
       "title": "Is staying with GlobalWave on the table?",
       "blocks": [
@@ -140,7 +140,7 @@
     {
       "id": "roadmap",
       "section": "Plan",
-      "minutes": 8,
+      "minutes": 5,
       "kicker": "Proposed roadmap",
       "title": "Seven phases, three gates, one hard date",
       "blocks": [
@@ -157,23 +157,23 @@
     {
       "id": "howdecide",
       "section": "Plan",
-      "minutes": 5,
+      "minutes": 3,
       "kicker": "How we will choose",
       "title": "Agree on what matters before we see any demos",
       "blocks": [
         { "type": "criteria" }
       ],
-      "notes": "These weights are a starting suggestion. We will finalize them by the end of March 2027, before any vendor demo, so a polished demo does not reset our priorities. Integrations and admin burden are weighted heavily because of the part-time admin model. The RM and PM panel scores usability directly.",
+      "notes": "These weights are a starting suggestion. We will finalize them by the end of March 2027, before any vendor demo, so a polished demo does not reset our priorities. Integrations and admin burden are weighted heavily because of the part-time admin model. The CLO and PM panel scores usability directly.",
       "discuss": [
         "What is missing from this list?",
-        "Who should sit on the RM and PM user panel?"
+        "Who should sit on the CLO and PM user panel?"
       ],
       "capture": "Criteria changes and panel volunteers"
     },
     {
       "id": "team",
       "section": "Decide",
-      "minutes": 8,
+      "minutes": 6,
       "kicker": "Decision 3 of 3",
       "title": "Who owns this?",
       "blocks": [
@@ -190,7 +190,7 @@
     {
       "id": "risks",
       "section": "Plan",
-      "minutes": 5,
+      "minutes": 3,
       "kicker": "What could go wrong",
       "title": "Top risks we will manage from day one",
       "blocks": [
@@ -206,7 +206,7 @@
     {
       "id": "next",
       "section": "Close",
-      "minutes": 10,
+      "minutes": 5,
       "kicker": "Next 30 days",
       "title": "What happens after today",
       "blocks": [

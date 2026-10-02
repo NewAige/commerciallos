@@ -53,12 +53,12 @@
     },
     {
       "id": "R06",
-      "title": "Low RM and PM adoption",
+      "title": "Low CLO and PM adoption",
       "likelihood": "medium",
       "impact": "medium",
       "status": "open",
       "detail": "Relationship managers may work around a system that slows them down.",
-      "mitigation": "Include RMs in demos and UAT. Name super-users. Track usage after go-live.",
+      "mitigation": "Include CLOs in demos and UAT. Name super-users. Track usage after go-live.",
       "owner": "Head of Commercial Lending"
     },
     {

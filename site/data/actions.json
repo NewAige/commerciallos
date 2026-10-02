@@ -24,7 +24,7 @@
     },
     {
       "id": "A04",
-      "title": "Send a pain-point survey to RMs, PMs, credit analysts and loan ops",
+      "title": "Send a pain-point survey to CLOs, PMs, credit analysts and loan ops",
       "owner": "Commercial lending lead",
       "due": "2026-11-13",
       "status": "open"
@@ -59,14 +59,14 @@
     },
     {
       "id": "A09",
-      "title": "Count 2026 small business originations covered by the revised Section 1071 rule (1,000 threshold)",
+      "title": "Confirm whether Section 1071 small business data collection applies to the bank",
       "owner": "Risk management",
       "due": "2026-12-11",
       "status": "done"
     },
     {
       "id": "A10",
-      "title": "Confirm LaserPro ownership and roadmap after Finastra's 2026 divestiture",
+      "title": "Confirm our LaserPro version vs. the latest release and recommend whether a doc prep upgrade or switch belongs in this project's scope",
       "owner": "Loan operations",
       "due": "2026-11-30",
       "status": "open"

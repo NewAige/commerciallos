@@ -3,7 +3,7 @@
   "roles": [
     { "role": "Executive sponsor", "name": "T. Chaves", "time": "2-4 hrs/month", "responsibility": "Owns the outcome and budget. Breaks ties. Reports to the board." },
     { "role": "Project lead", "name": "C. Alves", "time": "50%+", "responsibility": "Runs the plan, the meetings and this workspace. Escalates risks." },
-    { "role": "Commercial lending lead", "name": "H. Ali", "time": "10-15%", "responsibility": "Represents RMs and PMs. Owns requirements for origination and pipeline." },
+    { "role": "Commercial lending lead", "name": "H. Ali", "time": "10-15%", "responsibility": "Represents CLOs and PMs. Owns requirements for origination and pipeline." },
     { "role": "Credit administration", "name": "L. Sternfelt", "time": "15-20%", "responsibility": "Underwriting, approvals, risk rating, covenants and ticklers." },
     { "role": "Loan operations and doc prep", "name": "TBD", "time": "15-20%", "responsibility": "LaserPro, closing, boarding to COCC." },
     { "role": "Data team", "name": "TBD", "time": "TBD", "responsibility": "Data inventory, GlobalWave conversion and archive, data quality, and reporting." },
@@ -12,7 +12,7 @@
     { "role": "Risk management", "name": "TBD", "time": "5-10%", "responsibility": "General risk review: fair lending, CDD and beneficial ownership, record retention." },
     { "role": "Vendor management (TPRM)", "name": "TBD", "time": "5-10%", "responsibility": "Due diligence, contract review, GlobalWave exit terms." },
     { "role": "Finance", "name": "TBD", "time": "5%", "responsibility": "Budget, TCO model, business case." },
-    { "role": "RM and PM user panel", "name": "3-5 volunteers", "time": "2-4 hrs/month", "responsibility": "Pain-point survey, demo scoring, UAT, super-users." }
+    { "role": "CLO and PM user panel", "name": "3-5 volunteers", "time": "2-4 hrs/month", "responsibility": "Pain-point survey, demo scoring, UAT, super-users." }
   ],
   "cadence": [
     { "meeting": "Core team working session", "frequency": "Weekly, 60 min" },

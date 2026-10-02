@@ -1,4 +1,4 @@
-/* Layout: fixed left rail (project nav + countdown) beside a single content column; kickoff view swaps the column for a slide stage with a presenter panel. */
+/* Layout: fixed left rail (project nav + countdown) beside a single content column; kickoff view swaps the column for a slide stage. */
 :root {
   --bg: #eef2f1;
   --surface: #ffffff;
@@ -255,9 +255,7 @@ th { font-family: var(--f-mono); font-size: 0.7rem; letter-spacing: 0.06em; text
 .weight .w { font-family: var(--f-mono); text-align: right; }
 
 /* ---------- Kickoff ---------- */
-.kick { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 20px; align-items: start; max-width: 1400px; }
-.kick.notes-off { grid-template-columns: minmax(0, 1fr); }
-.kick.notes-off .presenter { display: none; }
+.kick { display: grid; grid-template-columns: minmax(0, 1fr); gap: 20px; align-items: start; max-width: 1400px; }
 .kick-bar { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: space-between; }
 .kick-bar .group { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
 .progress { grid-column: 1 / -1; display: flex; gap: 3px; }
@@ -333,16 +331,11 @@ body.audience .slide h1 { font-size: clamp(1.8rem, 3.4vw, 3.3rem); }
 .slide .pill { background: rgba(255,255,255,0.06); }
 .slide .cf-confirmed { color: #6fd39b; } .slide .cf-likely { color: #f0b860; } .slide .cf-unsure, .slide .st-open { color: #9db9e6; }
 
-.s-options { display: grid; gap: 10px; }
+.s-options { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
 .s-option {
-  text-align: left; cursor: pointer; display: grid; grid-template-columns: 22px 1fr; gap: 12px; align-items: start;
   border: 1px solid var(--stage-line); background: rgba(8, 18, 22, 0.62); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); color: var(--stage-ink); border-radius: 10px; padding: 12px 14px; transition: border-color .2s, background .2s;
   font-size: clamp(0.92rem, 1.15vw, 1.05rem);
 }
-.s-option:hover { border-color: var(--stage-accent); }
-.s-option .radio { width: 18px; height: 18px; margin-top: 3px; border: 2px solid var(--stage-muted); border-radius: 50%; }
-.s-option[aria-pressed="true"] { border-color: var(--stage-accent); background: rgba(92, 194, 189, 0.1); }
-.s-option[aria-pressed="true"] .radio { border-color: var(--stage-accent); background: radial-gradient(circle, var(--stage-accent) 45%, transparent 50%); }
 .s-rec { border-left: 3px solid var(--stage-brass); padding: 4px 0 4px 14px; font-size: 0.92rem; max-width: 72ch; }
 .s-rec b { color: var(--stage-brass); font-family: var(--f-mono); font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; font-weight: 500; display: block; }
 
@@ -353,33 +346,16 @@ body.audience .slide h1 { font-size: clamp(1.8rem, 3.4vw, 3.3rem); }
 .s-table { width: 100%; font-size: 0.88rem; }
 .s-table th { color: var(--stage-muted); border-color: var(--stage-line); }
 .s-table td { border-color: var(--stage-line); }
-.s-table input {
-  width: 100%; min-width: 140px; background: transparent; border: 0; border-bottom: 1px dashed var(--stage-line);
-  color: var(--stage-ink); padding: 2px 0;
-}
-.s-table input:focus { outline: none; border-bottom: 1px solid var(--stage-accent); }
-.s-table input::placeholder { color: var(--stage-muted); opacity: 0.8; }
 
 .s-weights .weight .bar { background: var(--stage-line); }
 .s-weights .weight .bar span { background: var(--stage-accent); }
 .s-weights .weight .w { color: var(--stage-brass); }
 .s-weights .wd { font-size: 0.8rem; color: var(--stage-muted); grid-column: 1 / -1; }
 
-.presenter { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 16px); display: grid; gap: 14px; }
-.presenter .panel { gap: 10px; }
-.presenter textarea {
-  width: 100%; min-height: 110px; resize: vertical; border: 1px solid var(--line); border-radius: var(--r);
-  background: var(--surface-2); padding: 10px; font-size: 0.9rem; line-height: 1.45;
-}
-.notes-text { font-size: 0.9rem; }
-.prompts { margin: 0; padding-left: 18px; display: grid; gap: 6px; font-size: 0.9rem; }
-.timer { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
-.timer .t { font-family: var(--f-mono); font-size: 1.4rem; font-weight: 600; }
-.timer .t.late { color: var(--bad); }
 .toast { font-size: 0.82rem; color: var(--ok); min-height: 1.2em; }
 
 /* Audience (full-screen) mode */
-body.audience .rail, body.audience .topbar, body.audience .kick-bar, body.audience .progress, body.audience .progress-labels, body.audience .presenter { display: none !important; }
+body.audience .rail, body.audience .topbar, body.audience .kick-bar, body.audience .progress, body.audience .progress-labels { display: none !important; }
 body.audience .shell { grid-template-columns: minmax(0, 1fr); }
 body.audience .main { padding: 0; }
 body.audience .kick { grid-template-columns: minmax(0, 1fr); max-width: none; gap: 0; }
@@ -391,10 +367,6 @@ body.audience .exit-audience {
   background: rgba(255,255,255,0.08); color: var(--stage-muted); border: 1px solid var(--stage-line); border-radius: var(--r); padding: 6px 12px; cursor: pointer; font-size: 0.8rem;
 }
 
-@media (max-width: 1100px) {
-  .kick { grid-template-columns: minmax(0, 1fr); }
-  .presenter { position: static; }
-}
 /* ---------- Meetings ---------- */
 .meet { gap: 6px !important; }
 .meet h3 a { color: var(--ink); text-decoration: none; }
@@ -486,7 +458,7 @@ body.audience .exit-audience {
 }
 .slide .table-wrap { background: rgba(8, 18, 22, 0.6); border: 1px solid var(--stage-line); border-radius: 10px; padding: 4px 16px; backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
 .slide .gantt-wrap, .slide .sys-wrap { background: rgba(8, 18, 22, 0.5); border: 1px solid var(--stage-line); border-radius: 12px; padding: 14px; backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); }
-.s-card:hover, .s-option:hover { border-color: rgba(92, 194, 189, 0.6); }
+.s-card:hover { border-color: rgba(92, 194, 189, 0.6); }
 
 /* split headline words */
 .w { display: inline-block; overflow: hidden; vertical-align: top; padding-bottom: 0.12em; margin-bottom: -0.12em; }
@@ -576,8 +548,6 @@ body.audience .exit-audience {
   @keyframes march { to { stroke-dashoffset: -12; } }
   .sys .node.core rect { animation: corepulse 2.6s ease-in-out infinite; }
   @keyframes corepulse { 0%, 100% { filter: drop-shadow(0 0 0 rgba(92, 194, 189, 0)); } 50% { filter: drop-shadow(0 0 16px rgba(92, 194, 189, 0.6)); } }
-  .s-option[aria-pressed="true"] .radio { animation: pick 0.5s cubic-bezier(.34, 1.56, .64, 1); }
-  @keyframes pick { from { transform: scale(0.3); } to { transform: scale(1); } }
   .main { animation: none; }
 }
 
