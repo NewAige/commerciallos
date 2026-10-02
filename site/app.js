@@ -21,7 +21,10 @@
   const fmtMonth = (iso) => { const d = new Date(parse(iso)); return `${MONTHS[d.getUTCMonth()]} ${d.getUTCFullYear()}`; };
   const money = (n) => n >= 1e6 ? `$${(n / 1e6).toFixed(n % 1e6 ? 1 : 0)}M` : `$${Math.round(n / 1e3)}K`;
   const keyDate = (id) => D.project.keyDates.find((k) => k.id === id).date;
-  const statusLabel = (s) => (D.claims.statuses[s] ? { confirmed: "Confirmed", unverified: "Unverified", partly: "Partly true", issue: "Problem found", false: "Not supported" }[s] : s);
+  const CONF = ["confirmed", "likely", "unsure"];
+  const confLabel = (s) => ({ confirmed: "Confirmed", likely: "Likely", unsure: "Unsure" }[s] || s);
+  // plain-text sources (a person, a file in the repo) are shown as text; only web addresses become links
+  const sourceList = (x) => x.sources ? `<div class="sources">${x.sources.map((u) => /^https?:/.test(u) ? `<a href="${esc(u)}" target="_blank" rel="noopener">${esc(u.replace(/^https?:\/\/(www\.)?/, "").slice(0, 60))}</a>` : `<span>${esc(u)}</span>`).join("")}${x.checked ? `<span class="muted mono">checked ${esc(x.checked)}</span>` : ""}</div>` : "";
   // number that motion.js counts up from zero; the final value is in the markup so it reads correctly at rest
   const cnt = (v, o = {}) => { const dec = o.dec || 0; const txt = (o.pre || "") + Number(v).toLocaleString("en-US", { minimumFractionDigits: dec, maximumFractionDigits: dec }) + (o.suf || ""); return `<span data-count="${v}" data-dec="${dec}" data-pre="${esc(o.pre || "")}" data-suf="${esc(o.suf || "")}">${esc(txt)}</span>`; };
   const pill = (cls, text) => `<span class="pill ${esc(cls)}">${esc(text)}</span>`;
@@ -47,21 +50,23 @@
     { id: "overview", label: "Overview" },
     { id: "kickoff", label: "Kickoff walkthrough" },
     { id: "plan", label: "Roadmap" },
-    { id: "evidence", label: "Evidence register" },
+    { id: "think", label: "What we think" },
+    { id: "learn", label: "What we need to learn" },
     { id: "options", label: "Options" },
     { id: "decisions", label: "Decisions" },
     { id: "risks", label: "Risks" },
     { id: "team", label: "Team and actions" },
   ];
   function route() {
-    const h = (location.hash || "#overview").slice(1);
+    let h = (location.hash || "#overview").slice(1);
+    if (h === "evidence") h = "think"; // old links
     const m = h.match(/^kickoff-(\d+)$/);
     if (m) return { view: "kickoff", slide: Math.max(0, parseInt(m[1], 10) - 1) };
     return { view: VIEWS.some((v) => v.id === h) ? h : "overview", slide: 0 };
   }
   function counts() {
     return {
-      evidence: D.claims.claims.filter((c) => c.status !== "confirmed").length,
+      learn: D.claims.claims.filter((c) => c.learn).length,
       decisions: D.decisions.decisions.filter((d) => d.status !== "decided").length,
       risks: D.risks.risks.filter((r) => r.status === "open").length,
       team: D.actions.actions.filter((a) => a.status !== "done").length,
@@ -154,15 +159,14 @@
     return `<div class="gantt-wrap">${s}</svg></div>`;
   }
 
-  function claimCounts() {
-    const order = ["issue", "false", "partly", "unverified", "confirmed"];
+  function confCounts() {
     const all = D.claims.claims;
-    return order.map((s) => ({ s, n: all.filter((c) => c.status === s).length })).filter((x) => x.n);
+    return CONF.map((s) => ({ s, n: all.filter((c) => c.confidence === s).length })).filter((x) => x.n);
   }
-  function statusBar() {
-    const cc = claimCounts(); const total = D.claims.claims.length;
-    return `<div class="statusbar" role="img" aria-label="Claim statuses">${cc.map((x) => `<span class="bg-${x.s}" style="width:${(x.n / total) * 100}%"></span>`).join("")}</div>
-      <div class="legend">${cc.map((x) => `<span class="key"><span class="sw bg-${x.s}"></span>${esc(statusLabel(x.s))} <span class="mono">${x.n}</span></span>`).join("")}</div>`;
+  function confBar() {
+    const cc = confCounts(); const total = D.claims.claims.length;
+    return `<div class="statusbar" role="img" aria-label="How sure we are">${cc.map((x) => `<span class="bg-cf-${x.s}" style="width:${(x.n / total) * 100}%"></span>`).join("")}</div>
+      <div class="legend">${cc.map((x) => `<span class="key"><span class="sw bg-cf-${x.s}"></span>${esc(confLabel(x.s))} <span class="mono">${x.n}</span></span>`).join("")}</div>`;
   }
 
   /* ---------- Overview ---------- */
@@ -187,10 +191,10 @@
           <div class="hero-copy">
             <span class="hero-kicker">${kd > 0 ? `Kickoff in ${kd} day${kd === 1 ? "" : "s"} · ${fmtDate(kick)}` : kd === 0 ? "Kickoff is today" : `Kicked off ${fmtDate(kick)}`}</span>
             <h1 class="hero-title">Replace the commercial LOS before GlobalWave ends</h1>
-            <p class="hero-sub">The plan, the evidence behind it, and every decision the team makes along the way. Bank figures are confirmed; vendor and regulatory claims stay in the evidence register until someone verifies them.</p>
+            <p class="hero-sub">The plan, what we think so far, what we still need to learn, and every decision the team makes along the way.</p>
             <div class="hero-actions">
               <a class="btn glow" href="#kickoff-1">Start the kickoff walkthrough <span aria-hidden="true">→</span></a>
-              <a class="btn ghost" href="#evidence">Review the evidence</a>
+              <a class="btn ghost" href="#learn">What we need to learn</a>
             </div>
           </div>
           <div class="hero-count">
@@ -221,9 +225,11 @@
           <div class="list">${openDecisions.slice(0, 5).map((d) => `<div class="row"><div class="row-head"><span><span class="mono muted">${d.id}</span> ${esc(d.title)}</span>${pill("st-" + d.status, d.status)}</div><div class="meta"><span>Needed by <span class="mono">${fmtDate(d.needed)}</span></span></div></div>`).join("")}</div>
         </section>
         <section class="panel">
-          <div class="panel-head"><h2>Evidence check</h2><a href="#evidence" class="small">Open register</a></div>
-          <p class="small muted">${D.claims.claims.length} claims from the source assessment and our own assumptions, tracked to verification.</p>
-          ${statusBar()}
+          <div class="panel-head"><h2>What we think</h2><a href="#think" class="small">Full list</a></div>
+          <p class="small muted">${D.claims.claims.length} things that shape the choice of a new LOS, and how sure we are of each.</p>
+          ${confBar()}
+          <div class="list">${D.claims.claims.filter((c) => c.learn && c.confidence === "unsure").map((c) => `<div class="row"><span>${esc(c.learn)}</span><div class="meta"><span>${esc(c.owner)}</span></div></div>`).join("")}</div>
+          <p class="small"><a href="#learn">All ${D.claims.claims.filter((c) => c.learn).length} open questions</a>, each with an owner.</p>
         </section>
         <section class="panel">
           <div class="panel-head"><h2>Next actions</h2><a href="#team" class="small">All actions</a></div>
@@ -259,25 +265,38 @@
     </div>`;
   }
 
-  /* ---------- Evidence ---------- */
-  let evFilter = "all";
-  function viewEvidence() {
+  /* ---------- What we think ---------- */
+  function viewThink() {
     const c = D.claims;
-    const filters = ["all", "issue", "false", "partly", "unverified", "confirmed"];
-    const list = c.claims.filter((x) => evFilter === "all" || x.status === evFilter);
+    const group = (cf) => c.claims.filter((x) => x.confidence === cf);
     return `<div class="page">
-      <div class="page-head"><span class="eyebrow">Evidence register</span><h1>What we know, and how sure we are</h1>
-        <p>${esc(c.sourceNote)}</p><p class="small">${esc(c.checkNote || "")}</p></div>
-      <section class="panel">${statusBar()}
-        <div class="filters" role="group" aria-label="Filter by status">${filters.map((f) => `<button class="chip" type="button" data-f="${f}" aria-pressed="${evFilter === f}">${f === "all" ? "All" : esc(statusLabel(f))}</button>`).join("")}</div>
-      </section>
-      <section class="panel">${list.map((x) => `<article class="claim">
-          <div class="row-head"><span class="meta"><span class="mono">${x.id}</span><span>${esc(x.category)}</span><span>Source §${esc(x.section)}</span></span>${pill("st-" + x.status, statusLabel(x.status))}</div>
-          <q>${esc(x.claim)}</q>
-          <p class="small">${esc(x.finding)}</p>
-          <p class="verify muted"><b>How to verify:</b> ${esc(x.verifyBy)} <span class="mono">· ${esc(x.owner)}</span></p>
-          ${x.sources ? `<div class="sources">${x.sources.map((u) => `<a href="${esc(u)}" target="_blank" rel="noopener">${esc(u.replace(/^https?:\/\/(www\.)?/, "").slice(0, 60))}</a>`).join("")}${x.checked ? `<span class="muted mono">checked ${esc(x.checked)}</span>` : ""}</div>` : ""}
-        </article>`).join("") || `<p class="muted">No claims with this status.</p>`}</section>
+      <div class="page-head"><span class="eyebrow">What we think</span><h1>Where we stand, and how sure we are</h1><p>${esc(c.note)}</p></div>
+      <section class="panel">${confBar()}</section>
+      ${CONF.map((cf) => group(cf).length ? `<section class="panel">
+        <div><h2>${esc(confLabel(cf))}</h2><p class="small muted">${esc(c.confidence[cf])}</p></div>
+        <div>${group(cf).map((x) => `<article class="belief">
+          <div class="row-head"><span class="meta"><span class="mono">${x.id}</span><span>${esc(x.topic)}</span></span>${pill("cf-" + x.confidence, confLabel(x.confidence))}</div>
+          <p class="think">${esc(x.think)}</p>
+          ${x.learn ? `<p class="small muted"><b>Still to learn:</b> <a href="#learn">${esc(x.learn)}</a></p>` : ""}
+          ${sourceList(x)}
+        </article>`).join("")}</div>
+      </section>` : "").join("")}
+      <p class="small muted">${esc(c.provenance)}</p>
+    </div>`;
+  }
+
+  /* ---------- What we need to learn ---------- */
+  function viewLearn() {
+    const open = D.claims.claims.filter((x) => x.learn);
+    const topics = [...new Set(open.map((x) => x.topic))];
+    return `<div class="page">
+      <div class="page-head"><span class="eyebrow">What we need to learn</span><h1>${open.length} questions to answer before we choose</h1>
+        <p>Each question has an owner and a way to find out. When we have an answer, it moves into <a href="#think">What we think</a>.</p></div>
+      ${topics.map((t) => `<section class="panel"><h2>${esc(t)}</h2><div>${open.filter((x) => x.topic === t).map((x) => `<article class="belief">
+          <div class="row-head"><h3>${esc(x.learn)}</h3><span class="pill st-open">${esc(x.owner)}</span></div>
+          <p class="small"><b>How we'll find out:</b> ${esc(x.how)}</p>
+          <p class="small muted"><b>What we think now</b> ${pill("cf-" + x.confidence, confLabel(x.confidence))} ${esc(x.think)}</p>
+        </article>`).join("")}</div></section>`).join("")}
     </div>`;
   }
 
@@ -401,15 +420,16 @@
         ${edge(430, 98, 430, 168, "convert or archive", 440, 138, "old", "start")}
       </svg></div>`;
     },
-    claimSummary: () => {
-      const cc = claimCounts();
-      return `<div class="s-figs" style="--n:${cc.length}">${cc.map((x) => `<div class="s-fig"><span class="v">${cnt(x.n)}</span><span class="l">${pill("st-" + x.s, statusLabel(x.s))}</span></div>`).join("")}</div>
-        <p class="s-muted small">${esc(D.claims.checkNote || "")} Full detail in the <a href="#evidence">evidence register</a>.</p>`;
+    thinking: () => {
+      const cc = confCounts(); const open = D.claims.claims.filter((x) => x.learn).length;
+      return `<div class="s-figs" style="--n:${cc.length + 1}">${cc.map((x) => `<div class="s-fig"><span class="v">${cnt(x.n)}</span><span class="l">${pill("cf-" + x.s, confLabel(x.s))}</span></div>`).join("")}
+        <div class="s-fig"><span class="v accent">${cnt(open)}</span><span class="l">Open questions</span></div></div>
+        <p class="s-muted small">Full lists in <a href="#think">What we think</a> and <a href="#learn">What we need to learn</a>.</p>`;
     },
-    findings: (b) => `<div class="s-cards">${b.ids.map((id) => {
+    questions: (b) => `<div class="s-cards">${b.ids.map((id) => {
       const c = D.claims.claims.find((x) => x.id === id); if (!c) return "";
-      return `<div class="s-card"><div class="row-head"><span class="mono s-muted small">${c.id} · ${esc(c.category)}</span>${pill("st-" + c.status, statusLabel(c.status))}</div>
-        <div class="ct">${esc(shortClaim(c))}</div><div class="cb">${esc(firstSentences(c.finding, 2))}</div></div>`;
+      return `<div class="s-card"><div class="row-head"><span class="s-muted small">${esc(c.topic)} · ${esc(c.owner)}</span>${pill("cf-" + c.confidence, confLabel(c.confidence))}</div>
+        <div class="ct">${esc(c.learn)}</div><div class="cb">We think: ${esc(firstSentences(c.think, 1))}</div></div>`;
     }).join("")}</div>`,
     decision: (b) => {
       const d = D.decisions.decisions.find((x) => x.id === b.id);
@@ -431,7 +451,6 @@
         ${D.actions.actions.slice().sort((a, b) => a.due.localeCompare(b.due)).map((a) => `<tr><td>${esc(a.title)}</td><td class="s-muted">${esc(a.owner)}</td><td class="mono">${fmtDate(a.due)}</td></tr>`).join("")}
       </tbody></table></div>`,
   };
-  function shortClaim(c) { const s = c.claim.split(/(?<=\.)\s/)[0]; return s.length > 110 ? s.slice(0, 107) + "…" : s; }
   function firstSentences(t, n) { return t.split(/(?<=\.)\s+(?=[A-Z(])/).slice(0, n).join(" "); }
 
   /* ---------- Kickoff view ---------- */
@@ -571,20 +590,15 @@
   }, { passive: true });
   document.addEventListener("fullscreenchange", () => { if (!document.fullscreenElement) document.body.classList.remove("audience"); });
 
-  /* ---------- Evidence filter binding ---------- */
-  function bindEvidence() {
-    document.querySelectorAll(".chip[data-f]").forEach((b) => (b.onclick = () => { evFilter = b.dataset.f; render(); }));
-  }
-
   /* ---------- render ---------- */
   let lastView = null, lastSlide = -1;
   function render() {
     const r = route();
     renderShell();
     const main = document.getElementById("main");
-    const views = { overview: viewOverview, plan: viewPlan, evidence: viewEvidence, options: viewOptions, decisions: viewDecisions, risks: viewRisks, team: viewTeam };
+    const views = { overview: viewOverview, plan: viewPlan, think: viewThink, learn: viewLearn, options: viewOptions, decisions: viewDecisions, risks: viewRisks, team: viewTeam };
     if (r.view === "kickoff") { main.innerHTML = viewKickoff(r.slide); bindKickoff(Math.min(r.slide, D.kickoff.slides.length - 1)); }
-    else { main.innerHTML = views[r.view](); if (r.view === "evidence") bindEvidence(); document.body.classList.remove("audience"); }
+    else { main.innerHTML = views[r.view](); document.body.classList.remove("audience"); }
     if (lastView !== r.view) window.scrollTo(0, 0);
     const info = { view: r.view, slide: r.slide, viewChanged: lastView !== r.view, slideChanged: r.view === "kickoff" && r.slide !== lastSlide, dir: r.slide >= lastSlide ? 1 : -1 };
     lastView = r.view; lastSlide = r.view === "kickoff" ? r.slide : -1;

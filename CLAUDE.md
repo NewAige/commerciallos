@@ -4,7 +4,8 @@ This repo is the working record for a commercial loan origination system (LOS) r
 
 ## Rules for updating information
 
-- **Separate what is known from what is claimed.** Anything about vendors, pricing, product capabilities, or regulation goes in `site/data/claims.json` with a status until it is verified. Never move a claim to `confirmed` without a source (URL, vendor document, contract, or a named person at the bank) recorded in `sources` and a `checked` date.
+- **Separate what we know from what we think.** Anything about vendors, pricing, product capabilities, or regulation goes in `site/data/claims.json`. Each item states, in our own words, what we currently think (`think`), how sure we are (`confidence`), the open question if any (`learn`), how we'll answer it (`how`), and the `owner`. The site shows these as "What we think" and "What we need to learn". Never set `confidence` to `confirmed` without a source (URL, vendor document, contract, or a named person at the bank) recorded in `sources` and a `checked` date. When a question is answered, update `think`, set `learn` to `null`, and record the source.
+- Write items as the team's view, not as a critique of the source document. Keep the source's original wording in `origin` for traceability only.
 - **Bank facts** (assets, portfolio, systems, staffing) come from bank staff. Record who said it.
 - **Do not invent** vendor names, prices, timelines, contacts, or regulatory dates. If something is unknown, say so and add an action to find out.
 - **Decisions** are recorded in `decisions.json` only when a person or group made them: fill `outcome`, `decidedBy`, `decidedOn`, and set `status: "decided"`.
@@ -15,9 +16,9 @@ This repo is the working record for a commercial loan origination system (LOS) r
 
 - Dates are ISO `YYYY-MM-DD`.
 - IDs are stable and never reused: claims `C##`, decisions `D##`, risks `R##`, actions `A##`.
-- Claim status is one of: `confirmed`, `unverified`, `partly`, `issue`, `false`.
+- Claim confidence is one of: `confirmed`, `likely`, `unsure`.
 - Decision status: `open`, `proposed`, `decided`, `deferred`. Action status: `open`, `in-progress`, `done`. Risk likelihood and impact: `low`, `medium`, `high`.
-- Kickoff slide blocks reference other data by ID (`findings.ids`, `decision.id`); `scripts/validate.py` checks these.
+- Kickoff slide blocks reference other data by ID (`questions.ids`, `decision.id`); `scripts/validate.py` checks these.
 
 ## Before committing
 
@@ -29,7 +30,7 @@ node --check site/motion.js
 
 ## Processing meeting notes
 
-When notes from a meeting land in `docs/` (for example `docs/kickoff/2026-10-07-notes.md`), update the data files to match: decisions made, names assigned in `team.json`, new or changed actions and risks, and any claims someone verified. Summarize what changed in the commit message.
+When notes from a meeting land in `docs/` (for example `docs/kickoff/2026-10-07-notes.md`), update the data files to match: decisions made, names assigned in `team.json`, new or changed actions and risks, and any open questions someone answered. Summarize what changed in the commit message.
 
 ## Front end
 

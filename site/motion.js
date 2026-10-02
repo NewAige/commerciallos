@@ -232,11 +232,6 @@
     if (g) ganttFX(g, d);
     if (b.matches(".s-cards")) {
       stagger($$(".s-card", b), [{ transform: "perspective(900px) rotateX(-60deg) translateY(36px)", opacity: 0 }, { transform: "perspective(900px) rotateX(0) translateY(0)", opacity: 1 }], { delay: d, duration: 900 }, 95);
-      $$(".st-issue, .st-false", b).forEach((p, i) => play(p, [
-        { transform: "scale(2.8) rotate(-16deg)", opacity: 0 },
-        { transform: "scale(.9) rotate(0deg)", opacity: 1, offset: 0.7 },
-        { transform: "none", opacity: 1 },
-      ], { delay: d + 650 + i * 120, duration: 520, easing: "cubic-bezier(.2,.9,.3,1)" }));
     }
     if (b.matches(".s-options")) stagger($$(".s-option", b), [{ transform: "translateX(-24px)", opacity: 0 }, { transform: "none", opacity: 1 }], { delay: d, duration: 650 }, 110);
     if (b.matches(".weights")) {
@@ -288,7 +283,7 @@
     $$("[data-count]", el).forEach((c, i) => countUp(c, d + 150 + i * 80));
     $$(".gantt", el).forEach((g) => ganttFX(g, d + 150));
     $$(".statusbar span", el).forEach((s, i) => play(s, GROW_X, { delay: d + 250 + i * 90, duration: 700 }));
-    $$(".list > .row, .claim, tbody tr", el).slice(0, 14).forEach((r, i) => play(r, [{ opacity: 0, transform: "translateY(12px)" }, { opacity: 1, transform: "none" }], { delay: d + 200 + i * 55, duration: 550 }));
+    $$(".list > .row, .belief, tbody tr", el).slice(0, 14).forEach((r, i) => play(r, [{ opacity: 0, transform: "translateY(12px)" }, { opacity: 1, transform: "none" }], { delay: d + 200 + i * 55, duration: 550 }));
     $$(".weight", el).forEach((w, i) => play(w.querySelector(".bar span"), GROW_X, { delay: d + 200 + i * 80, duration: 900 }));
   }
 

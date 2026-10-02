@@ -33,12 +33,12 @@
     },
     {
       "id": "R04",
-      "title": "Decisions anchored on unverified AI analysis",
+      "title": "Decisions anchored on the unchecked draft assessment",
       "likelihood": "medium",
       "impact": "medium",
       "status": "open",
       "detail": "The source assessment recommends a vendor before requirements exist and contains calculation errors.",
-      "mitigation": "Use the evidence register. Set criteria and weights before demos.",
+      "mitigation": "Track every open question to an answer in What we need to learn. Set criteria and weights before demos.",
       "owner": "Evaluation team"
     },
     {
