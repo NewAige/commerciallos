@@ -285,6 +285,9 @@
     $$(".statusbar span", el).forEach((s, i) => play(s, GROW_X, { delay: d + 250 + i * 90, duration: 700 }));
     $$(".list > .row, .belief, tbody tr", el).slice(0, 14).forEach((r, i) => play(r, [{ opacity: 0, transform: "translateY(12px)" }, { opacity: 1, transform: "none" }], { delay: d + 200 + i * 55, duration: 550 }));
     $$(".weight", el).forEach((w, i) => play(w.querySelector(".bar span"), GROW_X, { delay: d + 200 + i * 80, duration: 900 }));
+    $$(".sv-bar .t span", el).slice(0, 40).forEach((b, i) => play(b, GROW_X, { delay: d + 200 + i * 45, duration: 800 }));
+    $$(".sv-col i", el).forEach((b, i) => play(b, [{ transform: "scaleY(0)" }, { transform: "scaleY(1)" }], { delay: d + 200 + i * 40, duration: 700 }));
+    $$(".sv-q, .sv-res", el).slice(0, 10).forEach((r, i) => play(r, [{ opacity: 0, transform: "translateY(12px)" }, { opacity: 1, transform: "none" }], { delay: d + 150 + i * 55, duration: 550 }));
   }
 
   function heroFX(hero, info) {
@@ -320,13 +323,18 @@
 
   /* ---------- nav indicator ---------- */
   let navTop = null;
-  function navIndicator() {
-    const ind = document.querySelector(".nav-ind");
-    const cur = document.querySelector(".nav a[aria-current]");
-    if (!ind || !cur) return;
+  // Slides the highlight to the current link. Links can sit inside collapsible groups; if the
+  // current link is hidden (its group is collapsed) the highlight is hidden too.
+  function navIndicator(animate) {
+    const nav = document.querySelector(".nav");
+    const ind = nav && nav.querySelector(".nav-ind");
+    if (!ind) return;
+    const cur = nav.querySelector("a[aria-current]");
+    if (!cur || !cur.offsetHeight) { nav.classList.remove("has-ind"); navTop = null; return; }
+    nav.classList.add("has-ind");
     const top = cur.offsetTop, h = cur.offsetHeight;
     ind.style.transform = `translateY(${top}px)`; ind.style.height = `${h}px`;
-    if (navTop != null && navTop !== top) play(ind, [{ transform: `translateY(${navTop}px) scaleX(.94)` }, { transform: `translateY(${top}px)` }], { duration: 520, easing: BACK, fill: "none" });
+    if (animate !== false && navTop != null && navTop !== top) play(ind, [{ transform: `translateY(${navTop}px) scaleX(.94)` }, { transform: `translateY(${top}px)` }], { duration: 520, easing: BACK, fill: "none" });
     navTop = top;
   }
 
@@ -356,5 +364,6 @@
       if (slide) enterSlide(slide, info); else enterPage(main, info);
     },
     refreshTheme() { FX.refresh(); },
+    nav(animate) { navIndicator(animate); },
   };
 })();
