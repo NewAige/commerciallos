@@ -2,7 +2,7 @@
   "note": "Where the project stands on each question that shapes the choice of a new LOS. Every item says what we currently think, how sure we are, and what we still need to find out.",
   "provenance": "Started from a draft vendor assessment prepared in September 2026 (docs/sources/). Bank figures in it come from the Head of Commercial Lending. Public sources were checked on 2026-10-02; several sites blocked direct access, so some findings rest on search summaries. Treat 'likely' vendor findings as leads to confirm with the vendor.",
   "confidence": {
-    "confirmed": "Confirmed by the bank or an authoritative source",
+    "confirmed": "Confirmed by bank staff or a recorded source. So far this covers only our own bank: our systems, organization and portfolio",
     "likely": "Public sources or our own analysis point this way, but no one at the bank or vendor has confirmed it",
     "unsure": "A working assumption we have not checked"
   },
@@ -36,9 +36,9 @@
     {
       "id": "C03",
       "topic": "Cost",
-      "think": "We don't have reliable cost figures for any vendor yet. The draft cost table is estimates, and its nCino total left out the $85,000/yr Salesforce license ($255,000 over 3 years); with it, nCino comes to $1,625,000, not $1,370,000.",
-      "confidence": "confirmed",
-      "learn": null,
+      "think": "We don't know what any option will cost. The draft cost table is estimates only, and its nCino total even left out the $85,000/yr Salesforce license ($255,000 over 3 years).",
+      "confidence": "unsure",
+      "learn": "What is a realistic three-year cost for each option?",
       "how": "Covered by C11: replace every estimate with RFP pricing.",
       "owner": "Finance",
       "sources": [
@@ -49,8 +49,8 @@
     {
       "id": "C04",
       "topic": "Cost",
-      "think": "Admin staffing should be costed with one loaded salary for every option. The draft used $50,000/yr for Abrigo and CreditTrack but $100,000/yr for nCino.",
-      "confidence": "confirmed",
+      "think": "We don't know what admin staffing will cost. Whatever the figure, it should be one loaded salary applied to every option; the draft used $50,000/yr for Abrigo and CreditTrack but $100,000/yr for nCino.",
+      "confidence": "unsure",
       "learn": "What is the loaded annual cost of a loan-systems administrator at the bank?",
       "how": "HR or Finance to supply one figure.",
       "owner": "Finance",
@@ -63,7 +63,7 @@
       "id": "C05",
       "topic": "Evaluation",
       "think": "The vendor scores we have so far (Abrigo 9.0, CreditTrack 7.3, nCino 6.7) are equal-weight opinions, not results of demos or reference calls. They should not steer the choice.",
-      "confidence": "confirmed",
+      "confidence": "likely",
       "learn": "Which criteria matter most to us, and how should they be weighted?",
       "how": "The team sets criteria and weights before demos, then scores from scripted demos and reference calls.",
       "owner": "Evaluation team",
@@ -134,8 +134,8 @@
     {
       "id": "C11",
       "topic": "Cost",
-      "think": "Every license and implementation price we have so far (for example Abrigo at $120K setup and $110K/yr) is a placeholder, not a quote.",
-      "confidence": "confirmed",
+      "think": "We have no real prices. Every license and implementation figure so far (for example Abrigo at $120K setup and $110K/yr) is a placeholder from the draft, not a quote.",
+      "confidence": "unsure",
       "learn": "What will each vendor actually charge over three years?",
       "how": "RFP pricing, including implementation partner fees, integrations and data conversion.",
       "owner": "Finance",
@@ -148,9 +148,9 @@
       "id": "C12",
       "topic": "Vendors",
       "think": "Numerated is owned by Moody's (acquired November 2024) and is being folded into Moody's Lending Suite.",
-      "confidence": "confirmed",
-      "learn": null,
-      "how": "Normal vendor due diligence.",
+      "confidence": "likely",
+      "learn": "What does the move into Moody's Lending Suite mean for the Numerated product we use and its support?",
+      "how": "Ask our Numerated account contact (with A12).",
       "owner": "Vendor management",
       "sources": [
         "https://ir.moodys.com/press-releases/news-details/2024/Moodys-Acquires-Numerated-Growth-Technologies-Expanding-Lending-Technology-Solutions/default.aspx"
@@ -217,12 +217,13 @@
     {
       "id": "C18",
       "topic": "Current system",
-      "think": "The current system is Credit Track from Global Wave Group, a web-based commercial LOS. We don't know the vendor's current size, ownership or roadmap.",
+      "think": "The current system is Credit Track from Global Wave Group, a web-based commercial LOS. Staff call it either Credit Track or GlobalWave. We don't know the vendor's current size, ownership or roadmap.",
       "confidence": "confirmed",
       "learn": "Which Credit Track version and modules do we license?",
       "how": "Check the bank's GlobalWave contract.",
       "owner": "Vendor management",
       "sources": [
+        "Bank project team, 2026-10-02: the bank uses Credit Track (also called GlobalWave)",
         "https://finastra.com/applications/globalwave-credit-track-integration"
       ],
       "checked": "2026-10-02",
