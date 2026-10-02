@@ -15,10 +15,14 @@ This repo is the working record for a commercial loan origination system (LOS) r
 ## Data conventions
 
 - Dates are ISO `YYYY-MM-DD`.
-- IDs are stable and never reused: claims `C##`, decisions `D##`, risks `R##`, actions `A##`.
+- IDs are stable and never reused: claims `C##`, decisions `D##`, risks `R##`, actions `A##`, survey questions `Q##`.
 - Claim confidence is one of: `confirmed`, `likely`, `unsure`.
 - Decision status: `open`, `proposed`, `decided`, `deferred`. Action status: `open`, `in-progress`, `done`. Risk likelihood and impact: `low`, `medium`, `high`.
 - Kickoff slide blocks reference other data by ID (`questions.ids`, `decision.id`); `scripts/validate.py` checks these.
+
+## Surveys
+
+The staff questionnaire lives in `site/data/surveys.json`: one question bank, each question tagged with the roles that get it. The site only displays the questions; Microsoft Forms collects the answers. After changing questions, run `python3 scripts/export_forms.py` to regenerate the build sheets in `docs/surveys/` (see its README). Never renumber or reuse a `Q##`: the `[Q##]` prefix in each Forms title is how answers are matched. Loading a Forms export with `scripts/import_responses.py` is optional.
 
 ## Before committing
 

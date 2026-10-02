@@ -70,6 +70,13 @@
       "owner": "Loan operations",
       "due": "2026-11-30",
       "status": "open"
+    },
+    {
+      "id": "A11",
+      "title": "Build the eight staff questionnaires in Microsoft Forms from docs/surveys and send them out (the survey in A04)",
+      "owner": "Project lead",
+      "due": "2026-11-13",
+      "status": "open"
     }
   ]
 }
