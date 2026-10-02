@@ -112,9 +112,10 @@
       "blocks": [
         { "type": "decision", "id": "D01" }
       ],
-      "notes": "The assessment covers three things: the commercial LOS, automated small business lending for $250K-$500K, and digital account opening. Only the LOS is tied to the March 2029 deadline. The recommendation is option B: evaluate small business lending in the same RFP because it shares borrowers, credit policy and probably the vendor, but run account opening as a separate deposit effort. Get a decision or a clear owner and date for one.",
+      "notes": "The question is whether small business lending ($250K-$500K) joins the commercial LOS project. The bank uses Numerated for it today, and whether Numerated stays is still open. Only the LOS is tied to the March 2029 deadline. The recommendation is option B: evaluate small business lending in the same RFP because it shares borrowers, credit policy and possibly the vendor, depending on Numerated's contract terms. Get a decision or a clear owner and date for one.",
       "discuss": [
-        "Who owns digital account opening today?",
+        "Is Numerated working well enough to keep?",
+        "Should we ask Abrigo for one platform covering both?",
         "Would small business automation change how we staff credit?"
       ],
       "capture": "Scope decision and reasoning"

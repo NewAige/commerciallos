@@ -56,7 +56,7 @@
       "name": "Moody's Lending Suite (CreditLens)",
       "source": "Web check",
       "status": "To research",
-      "notes": "Now includes Numerated, the small business platform named in the source."
+      "notes": "Now includes Numerated, which the bank uses today for small business lending."
     },
     {
       "name": "Baker Hill NextGen",
@@ -81,12 +81,12 @@
     {
       "name": "Abrigo small business lending",
       "status": "Long list (if in scope)",
-      "notes": "Shares a platform with the Abrigo LOS. Features unverified."
+      "notes": "Possible all-in-one option with the Abrigo LOS. Bank found Abrigo's lending platform (Sageworks) okay. Features unverified."
     },
     {
       "name": "Numerated",
-      "status": "Long list (if in scope)",
-      "notes": "Strong borrower experience per source. Ownership and integrations unverified."
+      "status": "Incumbent",
+      "notes": "In use today (now owned by Moody's). Staying or leaving is TBD; contract terms needed if leaving (A12)."
     }
   ],
   "criteria": [

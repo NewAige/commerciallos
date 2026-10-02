@@ -23,6 +23,7 @@
       { "role": "Content management (ECM)", "name": "Identifi", "touchesLOS": "Credit file documents, imaging, retention" },
       { "role": "Document preparation", "name": "Finastra LaserPro", "touchesLOS": "Loan documents generated from approved deal data" },
       { "role": "Risk rating and credit analysis", "name": "Abrigo (recently onboarded)", "touchesLOS": "Risk ratings, spreads, credit analysis" },
+      { "role": "Small business lending", "name": "Numerated (Moody's)", "touchesLOS": "Small business requests ($250K-$500K). Staying or leaving is TBD." },
       { "role": "Commercial LOS (incumbent)", "name": "GlobalWave", "touchesLOS": "Being replaced or renegotiated. Contract ends 2029-03-01." }
     ]
   },

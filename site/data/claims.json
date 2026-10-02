@@ -174,23 +174,9 @@
       "origin": "Draft assessment §3: Abrigo's small business product supports automated decisioning, Plaid cash-flow analysis and SBFE data."
     },
     {
-      "id": "C14",
-      "topic": "Vendors",
-      "think": "fiVISION is a real online account opening vendor. We found no public evidence that it integrates with COCC.",
-      "confidence": "unsure",
-      "learn": "If account opening is in scope, does fiVISION work with COCC, Identifi and Abrigo?",
-      "how": "Only needed if D01 puts account opening in scope. Ask fiVISION for live COCC clients.",
-      "owner": "Steering group",
-      "sources": [
-        "https://www.meridianlink.com/partner/fivision/"
-      ],
-      "checked": "2026-10-02",
-      "origin": "Draft assessment §4: fiVISION can serve as the digital account opening layer, integrated with COCC, Identifi and Abrigo."
-    },
-    {
       "id": "C15",
       "topic": "Regulation",
-      "think": "Banks can no longer rely on Corporate Transparency Act filings for US borrowers' beneficial ownership. The CDD rule still requires banks to collect it at account opening, but since February 2026 an existing certification can be reused with refresh triggers. The new system should support that.",
+      "think": "Banks can no longer rely on Corporate Transparency Act filings for US borrowers' beneficial ownership. The CDD rule still requires banks to collect it when a business borrower becomes a customer, but since February 2026 an existing certification can be reused with refresh triggers. The new system should support that.",
       "confidence": "likely",
       "learn": "What does our BSA program require for beneficial ownership today?",
       "how": "BSA Officer to confirm.",
@@ -200,7 +186,7 @@
         "https://www.dlapiper.com/en/insights/publications/2026/03/fincen-issues-exceptive-relief-from-cdd-rule-requirements"
       ],
       "checked": "2026-10-02",
-      "origin": "Draft assessment §4: fiVISION collects beneficial ownership information to satisfy \"BOI and FinCEN regulations\"."
+      "origin": "Draft assessment §4: Beneficial ownership information is collected to satisfy \"BOI and FinCEN regulations\"."
     },
     {
       "id": "C16",
@@ -216,17 +202,17 @@
         "Bank project team, 2026-10-02: Section 1071 does not apply to the bank"
       ],
       "checked": "2026-10-02",
-      "origin": "Draft assessment §4: CFPB Section 1071 data collection belongs in the deposit account opening portal."
+      "origin": "Draft assessment §4: CFPB Section 1071 data collection is a requirement."
     },
     {
       "id": "C17",
       "topic": "Scope",
-      "think": "Only the commercial LOS is tied to the March 2029 deadline. Adding small business lending and account opening would widen the project and its risk.",
+      "think": "Only the commercial LOS is tied to the March 2029 deadline. Adding small business lending would widen the project and its risk.",
       "confidence": "likely",
-      "learn": "Are small business lending and account opening in or out of scope?",
+      "learn": "Is small business lending in or out of scope, and does Numerated stay?",
       "how": "Steering group decides at kickoff (D01).",
       "owner": "Steering group",
-      "origin": "Draft assessment §3-4: Small business automation ($250K-$500K) and digital account opening are part of the same strategy."
+      "origin": "Draft assessment §3: Small business automation ($250K-$500K) is part of the same strategy."
     },
     {
       "id": "C18",
@@ -269,6 +255,34 @@
       ],
       "checked": "2026-10-02",
       "origin": "Draft assessment §4: Identifi integrates with COCC."
+    },
+    {
+      "id": "C21",
+      "topic": "Current system",
+      "think": "The bank uses Numerated (now part of Moody's) for small business lending today. Whether it stays or is replaced is not decided.",
+      "confidence": "confirmed",
+      "learn": "If Numerated is replaced, what does our contract say about end date, renewal, notice period, termination fees and data return?",
+      "how": "Pull the Numerated contract and summarize those terms (A12).",
+      "owner": "Vendor management",
+      "sources": [
+        "Bank project team, 2026-10-02: the bank uses Numerated for small business lending; staying or leaving is TBD"
+      ],
+      "checked": "2026-10-02",
+      "origin": "Draft assessment §3: Numerated is a candidate small business platform."
+    },
+    {
+      "id": "C22",
+      "topic": "Vendors",
+      "think": "Abrigo may offer one platform for both commercial origination and small business lending, which could replace GlobalWave and Numerated together. The bank's experience with Abrigo's lending platform (Sageworks) has been okay.",
+      "confidence": "unsure",
+      "learn": "Does Abrigo have an all-in-one solution covering commercial LOS and small business lending, and how well do the two parts work together?",
+      "how": "Ask Abrigo for a module map and a demo of both on one platform, plus reference banks that run both.",
+      "owner": "Evaluation team",
+      "sources": [
+        "Bank project team, 2026-10-02: Abrigo's lending platform (Sageworks) was okay"
+      ],
+      "checked": "2026-10-02",
+      "origin": "Draft assessment §3: Abrigo's small business product shares a platform with its commercial LOS."
     }
   ]
 }
