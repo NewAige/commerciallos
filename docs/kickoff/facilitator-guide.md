@@ -1,6 +1,6 @@
 # Kickoff facilitator guide: October 7, 2026
 
-**Length:** 90 minutes · **Format:** guided walkthrough in the project site (Kickoff walkthrough)
+**Length:** 60 minutes · **Format:** guided walkthrough in the project site (Kickoff walkthrough)
 
 ## Meeting outcomes
 
@@ -14,18 +14,18 @@
 | Min | Section | Slide | Goal |
 | --- | --- | --- | --- |
 | 0 | Open | Welcome | Purpose and outcomes |
-| 5 | Why now | The deadline | The 29-month clock and the buffer |
-| 12 | Where we are | Our bank | Confirm the profile; the complex 10% / 30% split |
-| 18 | Where we are | Systems | COCC, LaserPro, Identifi, Abrigo, GlobalWave |
-| 24 | What we know | What we think | Where we stand and how sure we are |
-| 30 | What we know | What we need to learn | Open questions and owners |
-| 38 | Decide | Scope (D01) | LOS only, or LOS + small business (Numerated today) |
-| 48 | Decide | GlobalWave (D03) | Is staying a real option? |
-| 54 | Plan | Roadmap | Phases, gates, target go-live Aug 2028 |
-| 62 | Plan | How we choose | Draft criteria and weights |
-| 67 | Decide | Team (D02) | Sponsor, project lead, time commitments |
-| 75 | Plan | Risks | Top risks |
-| 80 | Close | Next 30 days | Confirm owners and dates |
+| 3 | Why now | The deadline | The 29-month clock and the buffer |
+| 8 | Where we are | Our bank | Confirm the profile; the complex 10% / 30% split |
+| 12 | Where we are | Systems | COCC, LaserPro, Identifi, Abrigo, GlobalWave |
+| 16 | What we know | What we think | Where we stand and how sure we are |
+| 20 | What we know | What we need to learn | Open questions and owners |
+| 25 | Decide | Scope (D01) | LOS only, or LOS + small business (Numerated today) |
+| 33 | Decide | GlobalWave (D03) | Is staying a real option? |
+| 38 | Plan | Roadmap | Phases, gates, target go-live Aug 2028 |
+| 43 | Plan | How we choose | Draft criteria and weights |
+| 46 | Decide | Team (D02) | Sponsor, project lead, time commitments |
+| 52 | Plan | Risks | Top risks |
+| 55 | Close | Next 30 days | Confirm owners and dates |
 
 ## Who should attend
 

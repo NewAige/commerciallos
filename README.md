@@ -35,7 +35,7 @@ Opening `site/index.html` directly from disk will not work, because browsers blo
 
 ## The kickoff walkthrough
 
-Open **Kickoff walkthrough** in the site. It is a 13-slide, 90-minute guided session.
+Open **Kickoff walkthrough** in the site. It is a 13-slide, 60-minute guided session.
 
 - `→` / `←` or Space to move between slides (swipe on phones and tablets); `F` to present full screen; `N` to toggle presenter notes; `Esc` to leave full screen.
 - The presenter panel shows talking points, questions for the room, a meeting clock against the planned agenda, and a notes field for each topic.
