@@ -774,7 +774,7 @@
       </tbody></table></div>`,
     risks: (b) => `<div class="s-cards">${D.risks.risks.slice(0, b.limit || 6).map((r) => `<div class="s-card"><div class="row-head"><span class="ct">${esc(r.title)}</span>${pill("lv-" + r.impact, r.impact)}</div><div class="cb">${esc(r.mitigation)}</div></div>`).join("")}</div>`,
     actions: () => `<div class="table-wrap"><table class="s-table"><thead><tr><th>Action</th><th>Owner</th><th>Due</th></tr></thead><tbody>
-        ${D.actions.actions.slice().sort((a, b) => a.due.localeCompare(b.due)).map((a) => `<tr><td>${esc(a.title)}</td><td class="s-muted">${esc(a.owner)}</td><td class="mono">${fmtDate(a.due)}</td></tr>`).join("")}
+        ${D.actions.actions.filter((a) => a.status !== "done").sort((a, b) => a.due.localeCompare(b.due)).map((a) => `<tr><td>${esc(a.title)}</td><td class="s-muted">${esc(a.owner)}</td><td class="mono">${fmtDate(a.due)}</td></tr>`).join("")}
       </tbody></table></div>`,
   };
   function firstSentences(t, n) { return t.split(/(?<=\.)\s+(?=[A-Z(])/).slice(0, n).join(" "); }
