@@ -261,8 +261,8 @@
         <div class="hero-grid">
           <div class="hero-copy">
             <span class="hero-kicker">${kd > 0 ? `Kickoff in ${kd} day${kd === 1 ? "" : "s"} · ${fmtDate(kick)}` : kd === 0 ? "Kickoff is today" : `Kicked off ${fmtDate(kick)}`}</span>
-            <h1 class="hero-title">Replace the commercial LOS before GlobalWave ends</h1>
-            <p class="hero-sub">The plan, what we think so far, what we still need to learn, and every decision the team makes along the way.</p>
+            <h1 class="hero-title">Commercial LOS replacement</h1>
+            <p class="hero-sub">The plan, open questions and decisions, in one place.</p>
             <div class="hero-actions">
               <a class="btn glow" href="#kickoff-1">Start the kickoff walkthrough <span aria-hidden="true">→</span></a>
               <a class="btn ghost" href="#learn">What we need to learn</a>
