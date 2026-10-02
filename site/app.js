@@ -3,7 +3,9 @@
 (function () {
   "use strict";
 
-  const FILES = ["project", "timeline", "claims", "decisions", "risks", "team", "options", "actions", "kickoff"];
+  const FILES = ["project", "timeline", "claims", "decisions", "risks", "team", "options", "actions"]; // meeting decks are added from MEETINGS below
+  // loaded if present; the site still works without them
+  const OPTIONAL = ["surveys", "survey-responses"];
   const NOTES_KEY = "los-kickoff-notes-v1";
   const THEME_KEY = "los-theme";
   const D = {};
@@ -34,7 +36,7 @@
     get(key, fallback) { try { const v = localStorage.getItem(key); return v ? JSON.parse(v) : fallback; } catch (e) { return fallback; } },
     set(key, val) { try { localStorage.setItem(key, JSON.stringify(val)); } catch (e) { /* storage unavailable */ } },
   };
-  let notes = store.get(NOTES_KEY, { slides: {}, picks: {}, names: {} });
+  let notes = null; // notes for the meeting deck on screen; loaded by useMeeting()
 
   /* ---------- theme ---------- */
   function applyTheme(t) { if (t) document.documentElement.setAttribute("data-theme", t); else document.documentElement.removeAttribute("data-theme"); }
@@ -42,27 +44,32 @@
   function cycleTheme() {
     const cur = document.documentElement.getAttribute("data-theme");
     const next = cur === null ? "light" : cur === "light" ? "dark" : null;
-    applyTheme(next); store.set(THEME_KEY, next); renderShell(); if (window.LOSMotion) window.LOSMotion.refreshTheme();
+    applyTheme(next); store.set(THEME_KEY, next); renderShell(); if (window.LOSMotion) { window.LOSMotion.refreshTheme(); if (window.LOSMotion.nav) window.LOSMotion.nav(true); }
   }
 
-  /* ---------- routing ---------- */
-  const VIEWS = [
-    { id: "overview", label: "Overview" },
-    { id: "kickoff", label: "Kickoff walkthrough" },
-    { id: "plan", label: "Roadmap" },
-    { id: "think", label: "What we think" },
-    { id: "learn", label: "What we need to learn" },
-    { id: "options", label: "Options" },
-    { id: "decisions", label: "Decisions" },
-    { id: "risks", label: "Risks" },
-    { id: "team", label: "Team and actions" },
+  /* ---------- routing and navigation ---------- */
+  // Meeting slide decks. Each deck is its own data file with the same shape as kickoff.json
+  // (title, date, lengthMinutes, goals, slides). To add a meeting, add its file to site/data and a line here.
+  const MEETINGS = [
+    { id: "kickoff", file: "kickoff", label: "Kickoff walkthrough", notesKey: NOTES_KEY },
   ];
+  const meeting = (id) => MEETINGS.find((m) => m.id === id);
+  const deckData = (m) => D[m.file];
+  const PAGES = ["overview", "meetings", "plan", "think", "learn", "options", "decisions", "risks", "surveys", "team"];
   function route() {
-    let h = (location.hash || "#overview").slice(1);
+    let h = decodeURIComponent((location.hash || "#overview").slice(1));
     if (h === "evidence") h = "think"; // old links
-    const m = h.match(/^kickoff-(\d+)$/);
-    if (m) return { view: "kickoff", slide: Math.max(0, parseInt(m[1], 10) - 1) };
-    return { view: VIEWS.some((v) => v.id === h) ? h : "overview", slide: 0 };
+    const m = h.match(/^([a-z0-9-]+?)(?:-(\d+))?$/);
+    if (m && meeting(m[1]) && deckData(meeting(m[1]))) {
+      const n = deckData(meeting(m[1])).slides.length;
+      return { view: "deck", deck: m[1], key: m[1], page: m[1], slide: Math.min(n - 1, Math.max(0, parseInt(m[2] || "1", 10) - 1)) };
+    }
+    const sv = h.match(/^survey-(.+?)(\/results)?$/);
+    if (sv && D.surveys && D.surveys.roles.some((r) => r.id === sv[1])) {
+      return { view: "survey", role: sv[1], tab: sv[2] ? "results" : "questions", key: `survey-${sv[1]}`, page: h, slide: 0 };
+    }
+    const v = PAGES.includes(h) && (h !== "surveys" || D.surveys) ? h : "overview";
+    return { view: v, key: v, page: v, slide: 0 };
   }
   function counts() {
     return {
@@ -72,18 +79,59 @@
       team: D.actions.actions.filter((a) => a.status !== "done").length,
     };
   }
+  const shortDate = (iso) => { const d = new Date(parse(iso)); return `${MONTHS[d.getUTCMonth()]} ${d.getUTCDate()}`; };
+  // The nav tree: top-level links and groups of links. `key` matches route().key.
+  function navModel() {
+    const c = counts();
+    const link = (key, label, n, href) => ({ key, label, n, href: href || `#${key}` });
+    const tree = [
+      link("overview", "Overview"),
+      { group: "meetings", label: "Meetings", items: [link("meetings", "All meetings"), ...MEETINGS.filter((m) => deckData(m)).map((m) => link(m.id, `${m.label} (${shortDate(deckData(m).date)})`, null, `#${m.id}-1`))] },
+      { group: "plan", label: "Plan", items: [link("plan", "Roadmap"), link("options", "Options"), link("decisions", "Decisions", c.decisions), link("risks", "Risks", c.risks)] },
+      { group: "knowledge", label: "Knowledge", items: [link("think", "What we think"), link("learn", "What we need to learn", c.learn)] },
+    ];
+    if (D.surveys) {
+      const S = D.surveys, items = [link("surveys", "Survey plan")];
+      const roleLink = (r) => { const n = svResponses(r.id).length; return link(`survey-${r.id}`, r.label, n || null); };
+      (S.groups || []).forEach((g) => {
+        const rs = S.roles.filter((r) => r.group === g.id);
+        if (rs.length) items.push({ heading: g.label }, ...rs.map(roleLink));
+      });
+      const loose = S.roles.filter((r) => !(S.groups || []).some((g) => g.id === r.group));
+      if (loose.length) items.push({ heading: "Other" }, ...loose.map(roleLink));
+      tree.push({ group: "surveys", label: "Surveys", items });
+    }
+    tree.push(link("team", "Team and actions", c.team));
+    return tree;
+  }
+  const NAV_KEY = "los-nav-open-v1";
+  const NAV_DEFAULT = { meetings: true, plan: true, knowledge: true, surveys: false };
+  let navOpen = store.get(NAV_KEY, {});
+  let lastNavKey = null;
+  const isOpen = (g) => (navOpen[g] != null ? navOpen[g] : NAV_DEFAULT[g] !== false);
+  const curAttr = (r, key) => (r.key === key ? ' aria-current="page"' : "");
 
   /* ---------- shell ---------- */
   function renderShell() {
     const r = route();
-    const c = counts();
     const end = keyDate("globalwave-end");
     const theme = document.documentElement.getAttribute("data-theme") || "system";
-    const navLinks = VIEWS.map((v) => {
-      const n = c[v.id];
-      const href = v.id === "kickoff" ? "#kickoff-1" : `#${v.id}`;
-      return `<a href="${href}" ${r.view === v.id ? 'aria-current="page"' : ""}><span>${esc(v.label)}</span>${n != null ? `<span class="count">${n}</span>` : ""}</a>`;
+    const tree = navModel();
+    const curGroup = tree.find((t) => t.items && t.items.some((x) => x.key === r.key));
+    // open the group holding the current page whenever the page changes
+    if (curGroup && lastNavKey !== r.key && !isOpen(curGroup.group)) { navOpen[curGroup.group] = true; store.set(NAV_KEY, navOpen); }
+    lastNavKey = r.key;
+    const a = (x) => `<a href="${x.href}"${curAttr(r, x.key)}><span>${esc(x.label)}</span>${x.n != null ? `<span class="count">${x.n}</span>` : ""}</a>`;
+    const navLinks = tree.map((t) => {
+      if (!t.items) return a(t);
+      const open = isOpen(t.group);
+      const sum = t.items.reduce((s, x) => s + (x.n || 0), 0);
+      return `<div class="nav-group${t === curGroup ? " has-cur" : ""}">
+        <button type="button" class="nav-gh" data-group="${t.group}" aria-expanded="${open}" aria-controls="ng-${t.group}"><span class="chev" aria-hidden="true"></span><span class="gl">${esc(t.label)}</span>${sum ? `<span class="count">${sum}</span>` : ""}</button>
+        <div class="nav-sub" id="ng-${t.group}"${open ? "" : " hidden"}>${t.items.map((x) => (x.heading ? `<span class="nav-h">${esc(x.heading)}</span>` : a(x))).join("")}</div>
+      </div>`;
     }).join("");
+    const oldNav = document.querySelector(".rail .nav"), navScroll = oldNav ? oldNav.scrollTop : 0;
     document.getElementById("rail").innerHTML = `
       <div class="brand"><span class="eyebrow">Project workspace</span><span class="brand-name">${esc(D.project.name)}</span></div>
       <div class="clock"><span class="eyebrow"><span class="beacon" aria-hidden="true"></span>GlobalWave contract ends</span><span class="big">${daysUntil(end)} days</span><span class="small">${fmtDate(end)}</span></div>
@@ -92,11 +140,34 @@
         <span class="small muted">Data updated ${fmtDate(D.project.updated)}</span>
         <button class="theme-toggle" type="button" id="themeBtn">Theme: ${esc(theme)}</button>
       </div>`;
+    const nav = document.querySelector(".rail .nav"), navCur = nav && nav.querySelector('a[aria-current="page"]');
+    if (nav) {
+      nav.scrollTop = navScroll;
+      if (navCur && nav.clientHeight && (navCur.offsetTop < nav.scrollTop || navCur.offsetTop + navCur.offsetHeight > nav.scrollTop + nav.clientHeight)) nav.scrollTop = navCur.offsetTop - nav.clientHeight / 2;
+    }
+    // phone: one scrolling row of sections, and a second row with the pages in the current section
+    const top = tree.map((t) => {
+      if (!t.items) return `<a href="${t.href}"${curAttr(r, t.key)}>${esc(t.label)}</a>`;
+      return `<a href="${t.items[0].href}"${t === curGroup ? ' aria-current="true"' : ""}>${esc(t.label)}</a>`;
+    }).join("");
+    const sub = curGroup ? curGroup.items.filter((x) => !x.heading).map((x) => `<a href="${x.href}"${curAttr(r, x.key)}>${esc(x.label)}${x.n ? ` <span class="count">${x.n}</span>` : ""}</a>`).join("") : "";
     document.getElementById("topbar").innerHTML = `
       <span class="brand-name">${esc(D.project.name)}</span>
       <span class="eyebrow">${daysUntil(end)} days to contract end</span>
-      <nav aria-label="Sections">${VIEWS.map((v) => `<a href="${v.id === "kickoff" ? "#kickoff-1" : "#" + v.id}" ${r.view === v.id ? 'aria-current="page"' : ""}>${esc(v.label)}</a>`).join("")}</nav>`;
+      <nav aria-label="Sections" class="tb-nav">${top}</nav>
+      ${sub ? `<nav aria-label="${esc(curGroup.label)}" class="tb-sub">${sub}</nav>` : ""}`;
+    const tbSub = document.querySelector(".tb-sub"), tbCur = tbSub && tbSub.querySelector('[aria-current="page"]');
+    if (tbCur) tbSub.scrollLeft = tbCur.offsetLeft - (tbSub.clientWidth - tbCur.offsetWidth) / 2;
+    const tbNav = document.querySelector(".tb-nav"), tbTop = tbNav && tbNav.querySelector("[aria-current]");
+    if (tbTop) tbNav.scrollLeft = tbTop.offsetLeft - (tbNav.clientWidth - tbTop.offsetWidth) / 2;
     document.getElementById("themeBtn").onclick = cycleTheme;
+    document.querySelectorAll(".nav-gh").forEach((b) => (b.onclick = () => {
+      const g = b.dataset.group, open = b.getAttribute("aria-expanded") !== "true";
+      navOpen[g] = open; store.set(NAV_KEY, navOpen);
+      b.setAttribute("aria-expanded", String(open));
+      document.getElementById(`ng-${g}`).hidden = !open;
+      if (window.LOSMotion && window.LOSMotion.nav) window.LOSMotion.nav(true);
+    }));
   }
 
   /* ---------- shared visual pieces ---------- */
@@ -365,10 +436,265 @@
       </div></div>`;
   }
 
+  /* ---------- Meetings ---------- */
+  function viewMeetings() {
+    const ms = MEETINGS.filter((m) => deckData(m)).sort((a, b) => deckData(b).date.localeCompare(deckData(a).date));
+    return `<div class="page">
+      <div class="page-head"><span class="eyebrow">Meetings</span><h1>Meeting walkthroughs</h1>
+        <p>Slides and presenter notes for each project meeting. Notes typed during a meeting stay in your browser until you copy them into the repo.</p></div>
+      <section class="panel"><div class="list">${ms.map((m) => {
+        const k = deckData(m), dd = daysUntil(k.date);
+        const sections = [...new Set(k.slides.map((x) => x.section))];
+        const when = dd > 0 ? `In ${dd} day${dd === 1 ? "" : "s"}` : dd === 0 ? "Today" : "Held";
+        return `<div class="row meet">
+          <div class="row-head"><h3><a href="#${m.id}-1">${esc(m.label)}</a></h3>${pill(dd >= 0 ? "st-open" : "st-done", when)}</div>
+          <p class="small">${esc(k.title)}</p>
+          <div class="meta"><span class="mono">${fmtDate(k.date)}</span><span>${cnt(k.lengthMinutes)} min</span><span>${cnt(k.slides.length)} slides</span><span>${esc(sections.join(" · "))}</span></div>
+          <div><a class="btn small" href="#${m.id}-1">Open the slides <span aria-hidden="true">→</span></a></div>
+        </div>`;
+      }).join("")}</div></section>
+      <p class="small muted">Slides for later meetings will be listed here as they are prepared.</p>
+    </div>`;
+  }
+
+  /* ---------- Surveys ---------- */
+  // Questionnaires are written here, sent to staff through Microsoft Forms, and the exported answers
+  // are imported into data/survey-responses.json. Nothing is collected on this site.
+  const svResponses = (roleId) => (((D["survey-responses"] || {}).responses) || []).filter((r) => !roleId || r.role === roleId);
+  const svRole = (id) => D.surveys.roles.find((r) => r.id === id);
+  const svGroupLabel = (id) => ((D.surveys.groups || []).find((g) => g.id === id) || {}).label || "";
+  function svQuestions(roleId) {
+    const S = D.surveys, order = new Map(S.sections.map((x, i) => [x.id, i]));
+    const at = (q) => (order.has(q.section) ? order.get(q.section) : 999);
+    return S.questions.map((q, i) => ({ q, i })).filter((x) => !roleId || (x.q.roles || []).includes(roleId))
+      .sort((a, b) => at(a.q) - at(b.q) || a.i - b.i).map((x) => x.q);
+  }
+  function svScale(q) {
+    const sc = (D.surveys.scales || {})[q.scale || (q.type === "nps" ? "zero10" : "")];
+    return sc || (q.type === "nps" ? { min: 0, max: 10, labels: ["Not at all likely", "Extremely likely"] } : { min: 1, max: 5, labels: [] });
+  }
+  const pointLabels = (sc) => (sc.labels && sc.labels.length === sc.max - sc.min + 1 ? sc.labels : null);
+  const range = (a, b) => Array.from({ length: b - a + 1 }, (_, i) => a + i);
+  function svTypeLabel(q) {
+    const sc = svScale(q);
+    switch (q.type) {
+      case "rating": return `Rating ${sc.min}-${sc.max}`;
+      case "nps": return "Likelihood 0-10";
+      case "number": return q.unit ? `Number (${q.unit})` : "Number";
+      case "single": return "Pick one";
+      case "multi": return q.maxPick ? `Pick up to ${q.maxPick}` : "Pick any";
+      case "rank": return "Rank in order";
+      case "matrix": return `Rate each, ${sc.min}-${sc.max}`;
+      case "text": return q.long ? "Open answer (longer)" : "Open answer";
+      default: return q.type;
+    }
+  }
+  function svMinutes(role, qs) {
+    if (role && role.estimatedMinutes) return { m: role.estimatedMinutes, est: false };
+    const sec = qs.reduce((s, q) => s + ({ text: q.long ? 90 : 40, matrix: 10 + 8 * (q.rows || []).length, rank: 35, multi: 25 }[q.type] || 15), 0);
+    return { m: Math.max(1, Math.round(sec / 60)), est: true };
+  }
+  function scaleChips(sc) {
+    const pl = pointLabels(sc);
+    return `<div class="sv-chips">${range(sc.min, sc.max).map((p, i) => `<span class="sv-chip"><b>${p}</b>${pl ? `<span>${esc(pl[i])}</span>` : ""}</span>`).join("")}</div>
+      ${!pl && sc.labels && sc.labels.length ? `<p class="small muted">${sc.labels.map(esc).join(" · ")}</p>` : ""}`;
+  }
+  // a reference card for one question: what is asked and what kind of answer it takes (not a form)
+  function svCard(q) {
+    const sc = svScale(q);
+    let body = "";
+    if (q.type === "rating" || q.type === "nps") body = scaleChips(sc);
+    else if (q.type === "number") body = `<p class="small muted">Answer is a number${q.unit ? ` in ${esc(q.unit)}` : ""}${q.min != null && q.max != null ? `, from ${esc(q.min)} to ${esc(q.max)}` : q.min != null ? `, ${esc(q.min)} or more` : q.max != null ? `, up to ${esc(q.max)}` : ""}.</p>`;
+    else if (q.type === "single" || q.type === "multi") body = `<ul class="sv-opts${(q.options || []).length > 6 ? " cols" : ""}">${(q.options || []).map((o) => `<li>${esc(o)}</li>`).join("")}</ul>`;
+    else if (q.type === "rank") body = `<ol class="sv-opts sv-rank">${(q.options || []).map((o) => `<li>${esc(o)}</li>`).join("")}</ol><p class="small muted">Shown in no particular order; each person puts them in their own order.</p>`;
+    else if (q.type === "matrix") {
+      const pl = pointLabels(sc);
+      body = `<ul class="sv-opts">${(q.rows || []).map((o) => `<li>${esc(o)}</li>`).join("")}</ul>
+        <p class="small muted">Each rated ${sc.min}-${sc.max}${pl ? `: ${pl.map((l, i) => `${sc.min + i} ${esc(l)}`).join(", ")}` : ""}.</p>`;
+    } else if (q.type === "text") body = "";
+    return `<article class="sv-q">
+      <div class="sv-qhead"><span class="mono muted">${esc(q.id)}</span><span class="sv-type">${esc(svTypeLabel(q))}</span>${q.required ? `<span class="small muted">Required</span>` : `<span class="small muted">Optional</span>`}</div>
+      <h3>${esc(q.text)}</h3>
+      ${q.help ? `<p class="small muted">${esc(q.help)}</p>` : ""}
+      ${body}
+    </article>`;
+  }
+  // plain text for pasting into Microsoft Forms; keeps the Q numbers so answers can be matched on import
+  function svText(roleId) {
+    const S = D.surveys, role = svRole(roleId), qs = svQuestions(roleId);
+    const L = [`${role.label}: LOS staff survey`, ""];
+    const intro = role.intro || S.intro;
+    if (intro) L.push(intro, "");
+    L.push("Questions marked * are required.");
+    let sec = null;
+    qs.forEach((q) => {
+      if (q.section !== sec) { sec = q.section; const t = (S.sections.find((x) => x.id === sec) || {}).title || sec; L.push("", `== ${t} ==`, ""); }
+      const sc = svScale(q), pl = pointLabels(sc);
+      L.push(`${q.id}. ${q.text}${q.required ? " *" : ""}`);
+      if (q.help) L.push(`   (${q.help})`);
+      const form = { rating: "Rating", nps: "Net Promoter Score", number: "Text, number only", single: "Choice", multi: "Choice, multiple answers", rank: "Ranking", matrix: "Likert", text: q.long ? "Text, long answer" : "Text" }[q.type] || q.type;
+      L.push(`   [Forms type: ${form}${q.type === "multi" && q.maxPick ? `, up to ${q.maxPick}` : ""}${q.type === "number" && q.unit ? `, in ${q.unit}` : ""}${q.type === "number" && (q.min != null || q.max != null) ? `, ${q.min != null ? q.min : ""}-${q.max != null ? q.max : ""}` : ""}]`);
+      if (q.type === "rating" || q.type === "nps") L.push(`   Scale ${sc.min}-${sc.max}${pl ? ": " + pl.map((l, i) => `${sc.min + i} ${l}`).join(" / ") : sc.labels && sc.labels.length ? ": " + sc.labels.join(" / ") : ""}`);
+      if (q.options) q.options.forEach((o) => L.push(`   - ${o}`));
+      if (q.type === "matrix") { L.push(`   Options: ${pl ? pl.join(" / ") : range(sc.min, sc.max).join(" / ")}`); (q.rows || []).forEach((o) => L.push(`   * ${o}`)); }
+      L.push("");
+    });
+    if (S.closing) L.push("", S.closing);
+    return L.join("\n").replace(/\n{3,}/g, "\n\n").trim() + "\n";
+  }
+
+  /* survey summaries */
+  const avg = (a) => a.reduce((s, x) => s + x, 0) / a.length;
+  const median = (a) => { const s = [...a].sort((x, y) => x - y), m = s.length >> 1; return s.length % 2 ? s[m] : (s[m - 1] + s[m]) / 2; };
+  const pctOf = (n, d) => (d ? Math.round((n / d) * 100) : 0);
+  const num1 = (v) => (Math.round(v * 10) / 10).toLocaleString("en-US", { maximumFractionDigits: 1 });
+  const isAnswer = (v) => v != null && v !== "" && !(Array.isArray(v) && !v.length) && !(typeof v === "object" && !Array.isArray(v) && !Object.keys(v).length);
+  const svAnswers = (q, rs) => rs.map((r) => (r.answers || {})[q.id]).filter(isAnswer);
+  // horizontal bars with the value written next to each one
+  function svBars(rows, max) {
+    return `<div class="sv-bars">${rows.map((r) => `<div class="sv-bar${r.cls ? " " + r.cls : ""}"><span class="l">${esc(r.label)}</span><span class="v">${r.text}</span><div class="t" aria-hidden="true"><span style="width:${max ? Math.max(0, Math.min(1, r.v / max)) * 100 : 0}%"></span></div></div>`).join("")}</div>`;
+  }
+  const stat = (v, l) => `<div class="sv-stat"><span class="v">${v}</span><span class="l">${l}</span></div>`;
+  function npsSplit(nums) {
+    const p = nums.filter((v) => v >= 9).length, d = nums.filter((v) => v <= 6).length, n = nums.length;
+    return { p, d, pas: n - p - d, n, score: Math.round(((p - d) / n) * 100) };
+  }
+  function countOptions(q, vals) {
+    const c = new Map((q.options || []).map((o) => [o, 0]));
+    vals.forEach((v) => (Array.isArray(v) ? v : [v]).forEach((o) => c.set(o, (c.get(o) || 0) + 1)));
+    return [...c.entries()];
+  }
+  function svSummary(q, rs) {
+    const vals = svAnswers(q, rs), n = vals.length, sc = svScale(q);
+    if (!n) return `<p class="small muted">No answers to this question yet.</p>`;
+    const nums = vals.map(Number).filter(Number.isFinite);
+    switch (q.type) {
+      case "rating": {
+        const pl = pointLabels(sc);
+        return `<div class="sv-stats">${stat(cnt(avg(nums), { dec: 1 }), `average, out of ${sc.max}`)}</div>
+          ${svBars(range(sc.min, sc.max).reverse().map((p) => { const k = nums.filter((v) => v === p).length; return { label: `${p}${pl ? " · " + pl[p - sc.min] : ""}`, v: k, text: `${k} · ${pctOf(k, n)}%` }; }), n)}`;
+      }
+      case "nps": {
+        const s = npsSplit(nums), top = Math.max(1, ...range(0, 10).map((p) => nums.filter((v) => v === p).length));
+        return `<div class="sv-stats">${stat(cnt(s.score, { pre: s.score > 0 ? "+" : "" }), "score (share at 9-10 minus share at 0-6)")}${stat(cnt(avg(nums), { dec: 1 }), "average, out of 10")}</div>
+          <div class="sv-cols" role="img" aria-label="How many people chose each number from 0 to 10">${range(0, 10).map((p) => { const k = nums.filter((v) => v === p).length; return `<div class="sv-col ${p >= 9 ? "pro" : p >= 7 ? "pas" : "det"}"><span class="k">${k || ""}</span><span class="c"><i style="height:${(k / top) * 100}%"></i></span><span class="p">${p}</span></div>`; }).join("")}</div>
+          <div class="legend"><span class="key"><span class="sw sv-det"></span>0-6: ${s.d} (${pctOf(s.d, n)}%)</span><span class="key"><span class="sw sv-pas"></span>7-8: ${s.pas} (${pctOf(s.pas, n)}%)</span><span class="key"><span class="sw sv-pro"></span>9-10: ${s.p} (${pctOf(s.p, n)}%)</span></div>`;
+      }
+      case "number": {
+        const u = q.unit ? ` ${esc(q.unit)}` : "";
+        return `<div class="sv-stats">${stat(cnt(median(nums), { dec: median(nums) % 1 ? 1 : 0 }), `middle answer${u}`)}${stat(cnt(avg(nums), { dec: 1 }), `average${u}`)}${stat(`${num1(Math.min(...nums))}–${num1(Math.max(...nums))}`, `lowest to highest${u}`)}</div>`;
+      }
+      case "single": case "multi": {
+        const rows = countOptions(q, vals).sort((a, b) => b[1] - a[1]);
+        return `${svBars(rows.map(([o, k]) => ({ label: o, v: k, text: `${k} · ${pctOf(k, n)}%` })), n)}${q.type === "multi" ? `<p class="small muted">People could pick more than one, so the shares add up to more than 100%.</p>` : ""}`;
+      }
+      case "rank": {
+        const opts = q.options || [], k = opts.length;
+        const rows = opts.map((o) => { const pos = vals.map((v) => v.indexOf(o)).filter((i) => i >= 0).map((i) => i + 1); return { o, a: pos.length ? avg(pos) : null, first: pos.filter((x) => x === 1).length }; })
+          .filter((x) => x.a != null).sort((a, b) => a.a - b.a);
+        return `${svBars(rows.map((x, i) => ({ label: `${i + 1}. ${x.o}`, v: k + 1 - x.a, text: `avg place ${num1(x.a)}${x.first ? ` · first for ${x.first}` : ""}` })), k)}<p class="small muted">Ordered by average place (1 is most important). Longer bar = ranked higher.</p>`;
+      }
+      case "matrix": {
+        const pl = pointLabels(sc);
+        const rows = (q.rows || []).map((row) => { const v = vals.map((a) => Number(a[row])).filter(Number.isFinite); return { row, m: v.length ? avg(v) : null, k: v.length }; });
+        return `${svBars(rows.map((x) => ({ label: x.row, v: x.m == null ? 0 : x.m - sc.min, text: x.m == null ? "no answers" : `${num1(x.m)} avg · ${x.k}` })), sc.max - sc.min)}
+          <p class="small muted">Average on a ${sc.min}-${sc.max} scale${pl ? ` (${sc.min} ${esc(pl[0])}, ${sc.max} ${esc(pl[pl.length - 1])})` : ""}; the number after the dot is how many people rated it.</p>`;
+      }
+      case "text": {
+        const list = vals.map((v) => `<li>${esc(v)}</li>`);
+        return `<ul class="sv-texts">${list.slice(0, 8).join("")}</ul>${list.length > 8 ? `<details class="sv-more"><summary>Show all ${list.length} answers</summary><ul class="sv-texts">${list.slice(8).join("")}</ul></details>` : ""}`;
+      }
+      default: return `<p class="small muted">${n} answers.</p>`;
+    }
+  }
+
+  function viewSurveys() {
+    const S = D.surveys, all = svResponses(), qs = S.questions, roles = S.roles;
+    const byRole = new Map(roles.map((r) => [r.id, svQuestions(r.id)]));
+    const core = qs.filter((q) => roles.every((r) => (q.roles || []).includes(r.id))).length;
+    const single = qs.filter((q) => (q.roles || []).length === 1).length;
+    const groups = [...(S.groups || []), ...(roles.some((r) => !(S.groups || []).some((g) => g.id === r.group)) ? [{ id: null, label: "Other" }] : [])];
+    const rolesIn = (g) => roles.filter((r) => (g.id ? r.group === g.id : !(S.groups || []).some((x) => x.id === r.group)));
+    const maxCell = Math.max(1, ...S.sections.flatMap((sec) => roles.map((r) => byRole.get(r.id).filter((q) => q.section === sec.id).length)));
+    // shared rating and 0-10 questions, compared by role once answers are in
+    const withAnswers = roles.filter((r) => svResponses(r.id).length);
+    const shared = qs.filter((q) => (q.type === "rating" || q.type === "nps") && (q.roles || []).length > 1 && withAnswers.filter((r) => q.roles.includes(r.id)).length > 1);
+    return `<div class="page">
+      <div class="page-head"><span class="eyebrow">Surveys · Plan workstream</span><h1>Asking staff what they need from the new LOS</h1>
+        <p>A short questionnaire for each group of people who use the commercial LOS today, so the requirements and the vendor demos reflect how the work is really done. The surveys go out through Microsoft Forms; this page is the plan and the question list, not the survey itself.</p></div>
+      <div class="figures">
+        <div class="figure"><span class="eyebrow">Status</span><span class="val">${esc(S.status ? S.status[0].toUpperCase() + S.status.slice(1) : "Draft")}</span><span class="lbl">Owner: ${esc(S.owner || "to be named")}</span></div>
+        <div class="figure"><span class="eyebrow">Roles surveyed</span><span class="val">${cnt(roles.length)}</span><span class="lbl">in ${(S.groups || []).length} groups</span></div>
+        <div class="figure"><span class="eyebrow">Questions</span><span class="val">${cnt(qs.length)}</span><span class="lbl">${core} asked of everyone</span></div>
+        <div class="figure"><span class="eyebrow">Responses</span><span class="val">${cnt(all.length)}</span><span class="lbl">${all.length ? `from ${withAnswers.length} role${withAnswers.length === 1 ? "" : "s"}${D["survey-responses"].imported ? ` · imported ${fmtDate(D["survey-responses"].imported)}` : ""}` : "none yet"}</span></div>
+      </div>
+      <section class="panel">
+        <h2>How it works</h2>
+        <ol class="sv-steps small">
+          <li><b>Write the questions here.</b> Each role gets a shared core plus questions about its own work. Question numbers (Q01, Q02…) never change.</li>
+          <li><b>Build each survey in Microsoft Forms.</b> Open a role below and use <em>Copy as text</em> to paste its questions across.</li>
+          <li><b>Send and collect</b> through Forms. Answers are anonymous: only the role is recorded.</li>
+          <li><b>Bring the answers back.</b> The Forms export is imported into the project data, and the summaries appear on each role's Results tab and below.</li>
+        </ol>
+        <p class="small muted">Working files and instructions are in <span class="mono">docs/surveys</span> in the repo.</p>
+      </section>
+      <div class="grid-3">${groups.map((g) => `<section class="panel">
+        <div><span class="eyebrow">Group</span><h2>${esc(g.label)}</h2></div>
+        <div class="list">${rolesIn(g).map((r) => { const rq = byRole.get(r.id), mm = svMinutes(r, rq), k = svResponses(r.id).length; return `<div class="row">
+          <a href="#survey-${esc(r.id)}"><b>${esc(r.label)}</b></a>
+          <div class="meta"><span>${rq.length} questions</span><span>${mm.est ? "about " : ""}${mm.m} min</span><span>${k ? `${k} response${k === 1 ? "" : "s"}` : "no responses yet"}</span></div>
+        </div>`; }).join("")}</div>
+      </section>`).join("")}</div>
+      <section class="panel">
+        <div class="panel-head"><h2>Which questions each role gets</h2><span class="small muted">${core} shared by all · ${qs.length - core - single} by some · ${single} for one role only</span></div>
+        <div class="table-wrap"><table class="sv-grid"><thead><tr><th>Section</th>${roles.map((r) => `<th scope="col"><a href="#survey-${esc(r.id)}">${esc(r.label)}</a></th>`).join("")}<th scope="col">All roles</th></tr></thead><tbody>
+          ${S.sections.map((sec) => { const inSec = qs.filter((q) => q.section === sec.id); const all8 = inSec.filter((q) => roles.every((r) => (q.roles || []).includes(r.id))).length; return `<tr><th scope="row">${esc(sec.title)}</th>${roles.map((r) => { const k = byRole.get(r.id).filter((q) => q.section === sec.id).length; return `<td class="mono${k ? "" : " muted"}" style="--h:${(k / maxCell) * 100}%">${k || "–"}</td>`; }).join("")}<td class="mono">${all8 || "–"}</td></tr>`; }).join("")}
+          <tr class="sv-total"><th scope="row">Total</th>${roles.map((r) => `<td class="mono">${byRole.get(r.id).length}</td>`).join("")}<td class="mono">${core}</td></tr>
+        </tbody></table></div>
+        <p class="small muted">Each number is how many questions in that section the role is asked. Darker cells mean more questions.</p>
+      </section>
+      ${shared.length ? `<section class="panel"><div class="panel-head"><h2>Shared questions, compared by role</h2><span class="small muted">Average answer for each role</span></div>
+        <div class="grid-2">${shared.map((q) => { const sc = svScale(q); return `<div class="sv-cmp"><span class="mono muted small">${esc(q.id)} · ${esc(svTypeLabel(q))}</span><h3>${esc(q.text)}</h3>
+          ${svBars(withAnswers.filter((r) => q.roles.includes(r.id)).map((r) => { const v = svAnswers(q, svResponses(r.id)).map(Number).filter(Number.isFinite); return v.length ? { label: r.label, v: avg(v) - sc.min, text: `${num1(avg(v))} · ${v.length}` } : null; }).filter(Boolean), sc.max - sc.min)}</div>`; }).join("")}</div>
+        <p class="small muted">Averages on each question's own scale; the number after the dot is how many people answered.</p></section>` : ""}
+    </div>`;
+  }
+
+  function viewSurvey(roleId, tab) {
+    const S = D.surveys, role = svRole(roleId), qs = svQuestions(roleId), rs = svResponses(roleId), mm = svMinutes(role, qs);
+    const secs = S.sections.filter((sec) => qs.some((q) => q.section === sec.id));
+    const loose = qs.filter((q) => !S.sections.some((sec) => sec.id === q.section));
+    const tabs = `<div class="tabs" role="navigation" aria-label="Survey views">
+      <a href="#survey-${esc(roleId)}"${tab === "questions" ? ' aria-current="page"' : ""}>Questions <span class="count">${qs.length}</span></a>
+      <a href="#survey-${esc(roleId)}/results"${tab === "results" ? ' aria-current="page"' : ""}>Results <span class="count">${rs.length}</span></a></div>`;
+    const head = `<div class="page-head"><span class="eyebrow"><a href="#surveys">Surveys</a> · ${esc(svGroupLabel(role.group))}</span><h1>${esc(role.label)}</h1>
+      <p>${esc(role.intro || S.intro || "The questions this role will be asked in Microsoft Forms.")}</p>
+      <div class="meta"><span>${qs.length} questions</span><span>${mm.est ? "about " : ""}${mm.m} min to answer</span><span>${pill("st-open", S.status || "draft")}</span></div></div>`;
+    if (tab === "results") {
+      return `<div class="page">${head}${tabs}
+        ${rs.length ? `<div class="figures"><div class="figure"><span class="eyebrow">Responses</span><span class="val">${cnt(rs.length)}</span><span class="lbl">${D["survey-responses"].imported ? `imported ${fmtDate(D["survey-responses"].imported)}` : "imported from Microsoft Forms"}</span></div></div>
+        ${[...secs.map((sec) => ({ title: sec.title, qs: qs.filter((q) => q.section === sec.id) })), ...(loose.length ? [{ title: "Other", qs: loose }] : [])].map((g) => `<section class="panel"><h2>${esc(g.title)}</h2>
+          <div class="sv-results">${g.qs.map((q) => { const k = svAnswers(q, rs).length; return `<article class="sv-res"><div class="sv-qhead"><span class="mono muted">${esc(q.id)}</span><span class="sv-type">${esc(svTypeLabel(q))}</span><span class="small muted">${k} of ${rs.length} answered</span></div><h3>${esc(q.text)}</h3>${svSummary(q, rs)}</article>`; }).join("")}</div></section>`).join("")}`
+        : `<section class="panel sv-empty"><h2>No answers yet</h2><p class="small muted">Summaries show up here once the Microsoft Forms export for this role has been imported into the project data (<span class="mono">scripts/import_responses.py</span>).</p></section>`}
+      </div>`;
+    }
+    return `<div class="page">${head}${tabs}
+      <section class="panel sv-tools"><div class="row-head"><p class="small">To build this survey in Microsoft Forms, copy the questions as plain text and paste them across. Keep the Q numbers: they are how answers are matched when they come back.</p>
+        <button class="btn small" type="button" id="svCopy">Copy as text</button></div><span class="toast" id="toast"></span></section>
+      ${[...secs.map((sec) => ({ title: sec.title, qs: qs.filter((q) => q.section === sec.id) })), ...(loose.length ? [{ title: "Other", qs: loose }] : [])].map((g) => `<section class="panel"><div class="panel-head"><h2>${esc(g.title)}</h2><span class="small muted">${g.qs.length} question${g.qs.length === 1 ? "" : "s"}</span></div>
+        <div class="sv-qs">${g.qs.map(svCard).join("")}</div></section>`).join("")}
+      ${S.closing ? `<p class="small muted">${esc(S.closing)}</p>` : ""}
+    </div>`;
+  }
+  function bindSurvey(roleId) {
+    const b = document.getElementById("svCopy");
+    if (b) b.onclick = () => copyText(svText(roleId));
+  }
+
   /* ---------- Kickoff slide blocks ---------- */
   const BLOCKS = {
     lead: (b) => `<p class="lead">${esc(b.text)}</p>`,
-    goals: () => `<ul class="s-goals">${D.kickoff.goals.map((g) => `<li>${esc(g)}</li>`).join("")}</ul>`,
+    goals: () => `<ul class="s-goals">${deck().goals.map((g) => `<li>${esc(g)}</li>`).join("")}</ul>`,
     countdown: () => {
       const kick = keyDate("kickoff"), go = keyDate("go-live"), end = keyDate("globalwave-end"), sign = keyDate("contract-signed");
       const total = daysBetween(kick, end);
@@ -453,14 +779,24 @@
   };
   function firstSentences(t, n) { return t.split(/(?<=\.)\s+(?=[A-Z(])/).slice(0, n).join(" "); }
 
-  /* ---------- Kickoff view ---------- */
+  /* ---------- Meeting decks ---------- */
+  let curMeeting = MEETINGS[0];
+  const deck = () => deckData(curMeeting);
+  const emptyNotes = () => ({ slides: {}, picks: {}, names: {} });
+  function useMeeting(id) {
+    if (curMeeting.id === id && notes) return;
+    curMeeting = meeting(id);
+    notes = Object.assign(emptyNotes(), store.get(curMeeting.notesKey || `los-${curMeeting.id}-notes-v1`, emptyNotes()));
+  }
+  const saveNotes = () => store.set(curMeeting.notesKey || `los-${curMeeting.id}-notes-v1`, notes);
+  const slideHash = (j) => `${curMeeting.id}-${j + 1}`;
   let showNotes = window.matchMedia("(min-width: 700px)").matches;
   let timerStart = null, timerHandle = null;
 
-  function plannedAt(i) { return D.kickoff.slides.slice(0, i).reduce((s, x) => s + x.minutes, 0); }
+  function plannedAt(i) { return deck().slides.slice(0, i).reduce((s, x) => s + x.minutes, 0); }
 
-  function viewKickoff(idx) {
-    const k = D.kickoff;
+  function viewDeck(idx) {
+    const k = deck();
     const n = k.slides.length;
     const i = Math.min(idx, n - 1);
     const s = k.slides[i];
@@ -468,7 +804,7 @@
     k.slides.forEach((x, j) => { if (!sections.length || sections[sections.length - 1].name !== x.section) sections.push({ name: x.section, at: j }); });
     return `<div class="kick ${showNotes ? "" : "notes-off"}" id="kick">
       <div class="kick-bar">
-        <div class="group"><span class="eyebrow">Kickoff walkthrough · ${fmtDate(k.date)} · ${k.lengthMinutes} min</span></div>
+        <div class="group"><span class="eyebrow"><a href="#meetings">Meetings</a> · ${esc(curMeeting.label)} · ${fmtDate(k.date)} · ${k.lengthMinutes} min</span></div>
         <div class="group">
           <button class="btn small" type="button" id="prevBtn" ${i === 0 ? "disabled" : ""}>Previous</button>
           <span class="mono small">${i + 1} / ${n}</span>
@@ -498,7 +834,7 @@
           <span class="eyebrow">Meeting record</span>
           <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn small" type="button" id="copyBtn">Copy notes as Markdown</button>${inFrame ? "" : `<button class="btn small" type="button" id="dlBtn">Download notes</button>`}<button class="btn small" type="button" id="clearBtn">Clear notes</button></div>
           <span class="toast" id="toast"></span>
-          <span class="small muted">Paste the notes into <span class="mono">docs/kickoff/</span> in the repo so the team and agents can update the decision log.</span>
+          <span class="small muted">Paste the notes into <span class="mono">docs/${esc(curMeeting.id)}/</span> in the repo so the team and agents can update the decision log.</span>
         </section>
       </aside>
       <button class="exit-audience" type="button" id="exitBtn">Exit presentation (Esc)</button>
@@ -506,8 +842,8 @@
   }
 
   function notesMarkdown() {
-    const k = D.kickoff;
-    let md = `# Kickoff meeting notes, ${fmtDate(k.date)}\n\n_Exported ${new Date().toLocaleString()}_\n\n## Decisions\n\n`;
+    const k = deck();
+    let md = `# ${curMeeting.label} notes, ${fmtDate(k.date)}\n\n_Exported ${new Date().toLocaleString()}_\n\n## Decisions\n\n`;
     D.decisions.decisions.forEach((d) => {
       if (notes.picks[d.id] != null) md += `- **${d.id} ${d.title}**: ${d.options[notes.picks[d.id]]}\n`;
     });
@@ -519,6 +855,10 @@
     k.slides.forEach((s) => { if (s.capture && (notes.slides[s.id] || "").trim()) md += `### ${s.title}\n_${s.capture}_\n\n${notes.slides[s.id].trim()}\n\n`; });
     return md;
   }
+  function copyText(text) {
+    const fallback = () => { const ta = document.createElement("textarea"); ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0"; document.body.appendChild(ta); ta.select(); let ok = false; try { ok = document.execCommand("copy"); } catch (e) { /* ignore */ } ta.remove(); flash(ok ? "Copied." : "Copy failed. Select the text and copy by hand."); };
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(() => flash("Copied."), fallback); else fallback();
+  }
   function flash(msg) { const t = document.getElementById("toast"); if (t) { t.textContent = msg; setTimeout(() => { if (t) t.textContent = ""; }, 3500); } }
   let clearArmed = false;
 
@@ -527,12 +867,12 @@
     const sec = Math.floor((Date.now() - timerStart) / 1000);
     el.textContent = `${Math.floor(sec / 60)}:${String(sec % 60).padStart(2, "0")}`;
     const i = route().slide;
-    el.classList.toggle("late", sec / 60 > plannedAt(i) + D.kickoff.slides[Math.min(i, D.kickoff.slides.length - 1)].minutes);
+    el.classList.toggle("late", sec / 60 > plannedAt(i) + deck().slides[Math.min(i, deck().slides.length - 1)].minutes);
   }
 
-  function bindKickoff(i) {
-    const n = D.kickoff.slides.length;
-    const go = (j) => { if (j >= 0 && j < n) location.hash = `kickoff-${j + 1}`; };
+  function bindDeck(i) {
+    const n = deck().slides.length;
+    const go = (j) => { if (j >= 0 && j < n) location.hash = slideHash(j); };
     const q = (id) => document.getElementById(id);
     q("prevBtn").onclick = () => go(i - 1);
     q("nextBtn").onclick = () => go(i + 1);
@@ -543,70 +883,76 @@
     document.querySelectorAll("[data-decision]").forEach((b) => (b.onclick = () => {
       const id = b.dataset.decision, o = +b.dataset.opt;
       if (notes.picks[id] === o) delete notes.picks[id]; else notes.picks[id] = o;
-      store.set(NOTES_KEY, notes); render();
+      saveNotes(); render();
     }));
-    document.querySelectorAll("textarea[data-slide]").forEach((t) => (t.oninput = () => { notes.slides[t.dataset.slide] = t.value; store.set(NOTES_KEY, notes); }));
-    document.querySelectorAll("input[data-role]").forEach((t) => (t.oninput = () => { notes.names[t.dataset.role] = t.value; store.set(NOTES_KEY, notes); }));
+    document.querySelectorAll("textarea[data-slide]").forEach((t) => (t.oninput = () => { notes.slides[t.dataset.slide] = t.value; saveNotes(); }));
+    document.querySelectorAll("input[data-role]").forEach((t) => (t.oninput = () => { notes.names[t.dataset.role] = t.value; saveNotes(); }));
     q("timerBtn").onclick = () => {
       if (timerStart) { timerStart = null; clearInterval(timerHandle); } else { timerStart = Date.now(); timerHandle = setInterval(tickTimer, 1000); }
       render();
     };
     tickTimer();
-    q("copyBtn").onclick = () => {
-      const md = notesMarkdown();
-      const fallback = () => { const ta = document.createElement("textarea"); ta.value = md; ta.style.position = "fixed"; ta.style.opacity = "0"; document.body.appendChild(ta); ta.select(); let ok = false; try { ok = document.execCommand("copy"); } catch (e) { /* ignore */ } ta.remove(); flash(ok ? "Copied." : "Copy failed. Select the notes text and copy by hand."); };
-      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(md).then(() => flash("Copied."), fallback); else fallback();
-    };
+    q("copyBtn").onclick = () => copyText(notesMarkdown());
     if (q("dlBtn")) q("dlBtn").onclick = () => {
       const blob = new Blob([notesMarkdown()], { type: "text/markdown" });
-      const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = `kickoff-notes-${D.kickoff.date}.md`; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+      const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = `${curMeeting.id}-notes-${deck().date}.md`; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 1000);
     };
     q("clearBtn").onclick = () => {
       if (!clearArmed) { clearArmed = true; q("clearBtn").textContent = "Click again to clear all notes"; setTimeout(() => { clearArmed = false; const b = q("clearBtn"); if (b) b.textContent = "Clear notes"; }, 4000); return; }
-      clearArmed = false; notes = { slides: {}, picks: {}, names: {} }; store.set(NOTES_KEY, notes); render(); flash("Notes cleared.");
+      clearArmed = false; notes = emptyNotes(); saveNotes(); render(); flash("Notes cleared.");
     };
   }
   function exitAudience() { document.body.classList.remove("audience"); try { if (document.fullscreenElement) document.exitFullscreen(); } catch (e) { /* optional */ } }
 
   document.addEventListener("keydown", (e) => {
-    if (route().view !== "kickoff") return;
+    if (route().view !== "deck") return;
     const tag = (e.target && e.target.tagName) || "";
     if (tag === "TEXTAREA" || tag === "INPUT") return;
-    const i = route().slide, n = D.kickoff.slides.length;
-    if (["ArrowRight", "PageDown", " "].includes(e.key)) { e.preventDefault(); if (i < n - 1) location.hash = `kickoff-${i + 2}`; }
-    else if (["ArrowLeft", "PageUp"].includes(e.key)) { e.preventDefault(); if (i > 0) location.hash = `kickoff-${i}`; }
+    const i = route().slide, n = deck().slides.length;
+    if (["ArrowRight", "PageDown", " "].includes(e.key)) { e.preventDefault(); if (i < n - 1) location.hash = slideHash(i + 1); }
+    else if (["ArrowLeft", "PageUp"].includes(e.key)) { e.preventDefault(); if (i > 0) location.hash = slideHash(i - 1); }
     else if (e.key === "Escape") exitAudience();
     else if (e.key === "f" || e.key === "F") document.body.classList.contains("audience") ? exitAudience() : document.getElementById("presentBtn").click();
     else if (e.key === "n" || e.key === "N") { showNotes = !showNotes; render(); }
   });
   let touch = null;
-  document.addEventListener("touchstart", (e) => { if (route().view === "kickoff" && e.target.closest && e.target.closest(".slide")) touch = { x: e.touches[0].clientX, y: e.touches[0].clientY }; }, { passive: true });
+  document.addEventListener("touchstart", (e) => { if (route().view === "deck" && e.target.closest && e.target.closest(".slide")) touch = { x: e.touches[0].clientX, y: e.touches[0].clientY }; }, { passive: true });
   document.addEventListener("touchend", (e) => {
     if (!touch) return;
     const dx = e.changedTouches[0].clientX - touch.x, dy = e.changedTouches[0].clientY - touch.y; touch = null;
     if (Math.abs(dx) < 60 || Math.abs(dx) < Math.abs(dy) * 1.5) return;
-    const i = route().slide, n = D.kickoff.slides.length;
-    if (dx < 0 && i < n - 1) location.hash = `kickoff-${i + 2}`; else if (dx > 0 && i > 0) location.hash = `kickoff-${i}`;
+    const i = route().slide, n = deck().slides.length;
+    if (dx < 0 && i < n - 1) location.hash = slideHash(i + 1); else if (dx > 0 && i > 0) location.hash = slideHash(i - 1);
   }, { passive: true });
   document.addEventListener("fullscreenchange", () => { if (!document.fullscreenElement) document.body.classList.remove("audience"); });
 
   /* ---------- render ---------- */
-  let lastView = null, lastSlide = -1;
+  let lastPage = null, lastSlide = -1;
   function render() {
     const r = route();
+    if (r.view === "deck") useMeeting(r.deck);
     renderShell();
     const main = document.getElementById("main");
-    const views = { overview: viewOverview, plan: viewPlan, think: viewThink, learn: viewLearn, options: viewOptions, decisions: viewDecisions, risks: viewRisks, team: viewTeam };
-    if (r.view === "kickoff") { main.innerHTML = viewKickoff(r.slide); bindKickoff(Math.min(r.slide, D.kickoff.slides.length - 1)); }
-    else { main.innerHTML = views[r.view](); document.body.classList.remove("audience"); }
-    if (lastView !== r.view) window.scrollTo(0, 0);
-    const info = { view: r.view, slide: r.slide, viewChanged: lastView !== r.view, slideChanged: r.view === "kickoff" && r.slide !== lastSlide, dir: r.slide >= lastSlide ? 1 : -1 };
-    lastView = r.view; lastSlide = r.view === "kickoff" ? r.slide : -1;
+    const views = { overview: viewOverview, meetings: viewMeetings, plan: viewPlan, think: viewThink, learn: viewLearn, options: viewOptions, decisions: viewDecisions, risks: viewRisks, surveys: viewSurveys, team: viewTeam };
+    if (r.view === "deck") { main.innerHTML = viewDeck(r.slide); bindDeck(r.slide); }
+    else {
+      main.innerHTML = r.view === "survey" ? viewSurvey(r.role, r.tab) : views[r.view]();
+      if (r.view === "survey") bindSurvey(r.role);
+      document.body.classList.remove("audience");
+    }
+    const changed = lastPage !== r.page;
+    if (changed && !(r.view === "survey" && lastPage && lastPage.split("/")[0] === r.page.split("/")[0])) window.scrollTo(0, 0);
+    const info = { view: r.view, slide: r.slide, viewChanged: changed, slideChanged: r.view === "deck" && r.slide !== lastSlide, dir: r.slide >= lastSlide ? 1 : -1 };
+    lastPage = r.page; lastSlide = r.view === "deck" ? r.slide : -1;
     if (window.LOSMotion) { try { window.LOSMotion.afterRender(main, info); } catch (e) { console.warn("motion", e); } }
   }
 
   window.addEventListener("hashchange", render);
-  Promise.all(FILES.map((f) => fetch(`data/${f}.json`, { cache: "no-cache" }).then((res) => { if (!res.ok) throw new Error(`${f}.json: ${res.status}`); return res.json(); }).then((j) => (D[f] = j))))
+  const load = (f, optional) => fetch(`data/${f}.json`, { cache: "no-cache" })
+    .then((res) => { if (!res.ok) throw new Error(`${f}.json: ${res.status}`); return res.json(); })
+    .then((j) => (D[f] = j))
+    .catch((err) => { if (!optional) throw err; console.warn(`optional data file skipped: ${err.message}`); });
+  Promise.all([...FILES.map((f) => load(f)), ...MEETINGS.map((m) => load(m.file, m.id !== "kickoff")), ...OPTIONAL.map((f) => load(f, true))])
     .then(render)
     .catch((err) => {
       document.getElementById("main").innerHTML = `<div class="error-box"><h2>The project data didn't load</h2>
