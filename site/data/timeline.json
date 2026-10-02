@@ -1,0 +1,153 @@
+{
+  "note": "Proposed plan for discussion at kickoff. Dates are targets, not commitments, until the steering group approves them.",
+  "start": "2026-10-01",
+  "end": "2029-03-31",
+  "phases": [
+    {
+      "id": "p0",
+      "name": "Mobilize and charter",
+      "start": "2026-10-07",
+      "end": "2026-12-18",
+      "goal": "Agree scope, team, governance and budget envelope. Read the GlobalWave contract.",
+      "deliverables": [
+        "Project charter approved",
+        "Core team named with time commitments",
+        "GlobalWave contract terms summarized (notice, renewal, data return, exit fees)",
+        "Budget envelope for evaluation and implementation"
+      ]
+    },
+    {
+      "id": "p1",
+      "name": "Current state and requirements",
+      "start": "2026-11-02",
+      "end": "2027-03-31",
+      "goal": "Document how commercial loans flow today and what the new system must do.",
+      "deliverables": [
+        "Current-state process maps (RM, credit, loan ops, doc prep, boarding)",
+        "Pain-point survey of RMs, PMs, analysts and loan ops",
+        "Prioritized requirements (must / should / could)",
+        "Integration inventory: COCC, LaserPro, Identifi, Abrigo",
+        "Data inventory and conversion needs from GlobalWave"
+      ]
+    },
+    {
+      "id": "p2",
+      "name": "Market scan and RFP",
+      "start": "2027-02-01",
+      "end": "2027-06-30",
+      "goal": "Build a verified vendor field and run a fair, scripted evaluation.",
+      "deliverables": [
+        "Long list and RFI (including the incumbent)",
+        "Weighted scoring model agreed before demos",
+        "RFP issued to 3-5 vendors",
+        "Scripted demos using the bank's own sample deals",
+        "Reference calls with banks of similar size on COCC"
+      ]
+    },
+    {
+      "id": "p3",
+      "name": "Selection, due diligence and contract",
+      "start": "2027-06-01",
+      "end": "2027-08-31",
+      "goal": "Pick a vendor, complete third-party risk review, and sign.",
+      "deliverables": [
+        "Selection recommendation to steering group and board",
+        "Third-party risk management due diligence (SOC reports, financials, BCP)",
+        "Negotiated contract with implementation SOW and exit terms",
+        "Short-term GlobalWave extension option secured as insurance"
+      ]
+    },
+    {
+      "id": "p4",
+      "name": "Implementation and integration",
+      "start": "2027-09-01",
+      "end": "2028-04-30",
+      "goal": "Configure workflows, build integrations, and convert data.",
+      "deliverables": [
+        "Configured workflows, templates and approval authorities",
+        "Integrations to COCC, LaserPro, Identifi and Abrigo risk rating",
+        "Data conversion mock runs",
+        "Reports and covenant/tickler setup"
+      ]
+    },
+    {
+      "id": "p5",
+      "name": "Testing, training and cutover",
+      "start": "2028-03-01",
+      "end": "2028-07-31",
+      "goal": "Prove it works on real deals and get every user ready.",
+      "deliverables": [
+        "System and integration testing",
+        "User acceptance testing with RMs, credit and loan ops",
+        "Role-based training and super-users",
+        "Cutover plan and go/no-go"
+      ]
+    },
+    {
+      "id": "p6",
+      "name": "Stabilize and decommission GlobalWave",
+      "start": "2028-08-01",
+      "end": "2029-02-28",
+      "goal": "Support users after go-live and retire the old system cleanly.",
+      "deliverables": [
+        "Hypercare support (60-90 days)",
+        "Final data extract and archive from GlobalWave",
+        "Records-retention and exam-readiness check",
+        "GlobalWave access ended before 2029-03-01"
+      ]
+    }
+  ],
+  "milestones": [
+    {
+      "date": "2026-10-07",
+      "label": "Kickoff",
+      "kind": "meeting"
+    },
+    {
+      "date": "2026-12-18",
+      "label": "Charter approved",
+      "kind": "gate"
+    },
+    {
+      "date": "2027-03-31",
+      "label": "Requirements signed off",
+      "kind": "gate"
+    },
+    {
+      "date": "2027-06-30",
+      "label": "Finalist chosen",
+      "kind": "gate"
+    },
+    {
+      "date": "2027-08-31",
+      "label": "Contract signed",
+      "kind": "gate"
+    },
+    {
+      "date": "2028-07-15",
+      "label": "Go / no-go",
+      "kind": "gate"
+    },
+    {
+      "date": "2028-08-01",
+      "label": "Target go-live",
+      "kind": "golive"
+    },
+    {
+      "date": "2029-03-01",
+      "label": "GlobalWave contract ends",
+      "kind": "hard"
+    }
+  ],
+  "buffer": {
+    "start": "2028-08-01",
+    "end": "2029-03-01",
+    "label": "Buffer: about 7 months between target go-live and contract end"
+  },
+  "criticalPathNotes": [
+    "Contract signature by end of August 2027 leaves 8 months to implement and 4 months to test and train before an August 2028 go-live.",
+    "Implementation time varies widely. The source claimed 12-18 months for nCino; nCino's own filings cite under 6 months on average for community banks. Ask every vendor for actual timelines at banks our size with our integrations, and check with references. Anything over 11 months from an August 2027 signature eats into the buffer.",
+    "Avoid a go-live at quarter-end or year-end. An August 2028 target stays clear of both.",
+    "The GlobalWave contract may require notice of non-renewal months before it ends. That date could land in 2028 and must be found in the contract during Phase 0."
+  ]
+}

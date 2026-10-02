@@ -1,0 +1,135 @@
+{
+  "note": "Strategic paths and vendors under consideration. Nothing here is a recommendation until the evaluation is done.",
+  "paths": [
+    {
+      "id": "stay",
+      "name": "Renew or renegotiate GlobalWave",
+      "summary": "Keep the incumbent on new terms, possibly with upgrades.",
+      "for": [
+        "No conversion or retraining",
+        "Lowest delivery risk against the deadline",
+        "Gives a price baseline and leverage"
+      ],
+      "against": [
+        "Does not fix current pain points unless the product changes",
+        "No native link to the bank's new Abrigo risk rating (unverified)"
+      ],
+      "toLearn": "What users think of it today, its roadmap, and renewal pricing."
+    },
+    {
+      "id": "replace",
+      "name": "Replace with a new commercial LOS",
+      "summary": "Run a competitive selection and implement a new platform by August 2028.",
+      "for": [
+        "Chance to fix workflow and adoption issues",
+        "Possible consolidation with Abrigo",
+        "Room for automation as the bank grows to $5B"
+      ],
+      "against": [
+        "Implementation and conversion risk",
+        "Heavy staff time during 2027-2028",
+        "Needs integration work with COCC, LaserPro, Identifi"
+      ],
+      "toLearn": "Verified integration references, real pricing, and implementation timelines from peer banks."
+    }
+  ],
+  "vendors": [
+    {
+      "name": "Global Wave Group, Credit Track (incumbent)",
+      "source": "Current vendor",
+      "status": "Incumbent",
+      "notes": "Product confirmed as real. Include as a renewal baseline unless leadership rules it out (D03)."
+    },
+    {
+      "name": "Abrigo Lending & Credit Risk",
+      "source": "Source assessment (as \"Abrigo APX\")",
+      "status": "Long list",
+      "notes": "Bank already uses Abrigo for risk rating. The 'APX' name was not found; integrations to COCC and LaserPro need live references."
+    },
+    {
+      "name": "nCino Commercial Banking",
+      "source": "Source assessment",
+      "status": "Long list",
+      "notes": "Salesforce-based. Vendor reports community bank implementations under 6 months on average. Admin burden is the open question."
+    },
+    {
+      "name": "Moody's Lending Suite (CreditLens)",
+      "source": "Web check",
+      "status": "To research",
+      "notes": "Now includes Numerated, the small business platform named in the source."
+    },
+    {
+      "name": "Baker Hill NextGen",
+      "source": "Web check",
+      "status": "To research",
+      "notes": "Origination and portfolio risk platform with recent bank clients."
+    },
+    {
+      "name": "Teslar Software",
+      "source": "Web check",
+      "status": "To research",
+      "notes": "Lending workflow platform aimed at community banks."
+    },
+    {
+      "name": "Jack Henry Origination",
+      "source": "Web check",
+      "status": "To research",
+      "notes": "Mainly aimed at Jack Henry core clients. Check fit with COCC before investing time."
+    }
+  ],
+  "smallBusiness": [
+    {
+      "name": "Abrigo small business lending",
+      "status": "Long list (if in scope)",
+      "notes": "Shares a platform with the Abrigo LOS. Features unverified."
+    },
+    {
+      "name": "Numerated",
+      "status": "Long list (if in scope)",
+      "notes": "Strong borrower experience per source. Ownership and integrations unverified."
+    }
+  ],
+  "criteria": [
+    {
+      "name": "Fit for our deal mix",
+      "detail": "Standard CRE and C&I at volume, plus the complex 10% of loans that carry 30% of dollars.",
+      "suggestedWeight": 20
+    },
+    {
+      "name": "Integrations that work today",
+      "detail": "COCC boarding, LaserPro, Identifi, Abrigo risk rating. Live references required.",
+      "suggestedWeight": 20
+    },
+    {
+      "name": "Admin burden",
+      "detail": "Can a part-time administrator run it without a developer?",
+      "suggestedWeight": 15
+    },
+    {
+      "name": "RM and PM usability",
+      "detail": "Scored by the user panel during scripted demos.",
+      "suggestedWeight": 15
+    },
+    {
+      "name": "Implementation timeline and risk",
+      "detail": "Proven time to go-live at banks our size, and fit with the August 2028 target.",
+      "suggestedWeight": 10
+    },
+    {
+      "name": "Total cost over 5 years",
+      "detail": "Licensing, implementation, partner fees, internal staff, integrations.",
+      "suggestedWeight": 10
+    },
+    {
+      "name": "Vendor strength and roadmap",
+      "detail": "Financial health, ownership, customer base, product direction.",
+      "suggestedWeight": 5
+    },
+    {
+      "name": "Reporting, covenants and ticklers",
+      "detail": "Portfolio reporting, exception tracking, exam readiness.",
+      "suggestedWeight": 5
+    }
+  ],
+  "vendorNote": "Q2 PrecisionLender came up in research but is a loan pricing tool, not an origination system."
+}

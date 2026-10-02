@@ -1,0 +1,222 @@
+{
+  "title": "Commercial LOS Replacement: Planning Kickoff",
+  "date": "2026-10-07",
+  "lengthMinutes": 90,
+  "goals": [
+    "Everyone understands the deadline and what it means working backward.",
+    "We agree on what we know, what we only think we know, and how we will check.",
+    "We make the first scope decision and name the people who will own this.",
+    "We leave with owners and dates for the next 30 days."
+  ],
+  "slides": [
+    {
+      "id": "welcome",
+      "section": "Open",
+      "minutes": 5,
+      "kicker": "Planning kickoff · October 7, 2026",
+      "title": "Replacing our commercial loan origination system",
+      "blocks": [
+        { "type": "lead", "text": "Today starts the planning for a new commercial LOS. Our contract with GlobalWave ends on March 1, 2029, and the replacement must be running well before then." },
+        { "type": "goals" }
+      ],
+      "notes": "Welcome everyone. Explain that this meeting is a working session, not a vendor decision. We will walk through the deadline, what we know about the bank, what an AI-assisted assessment told us and where it falls short, then make a few early decisions. Everything we decide today gets recorded in this workspace.",
+      "discuss": [],
+      "capture": "Who is in the room?"
+    },
+    {
+      "id": "clock",
+      "section": "Why now",
+      "minutes": 7,
+      "kicker": "The deadline",
+      "title": "We have about 29 months. Most of it is already spoken for.",
+      "blocks": [
+        { "type": "countdown" },
+        { "type": "lead", "text": "Working backward from March 1, 2029: we need a signed contract by late summer 2027 to implement, test and train before a go-live in August 2028. That leaves about seven months of buffer for surprises." }
+      ],
+      "notes": "Make the point that 29 months sounds like a lot but selection alone typically takes 9-11 months, and implementation, testing and training another 11. The buffer is our insurance and we should protect it. Ask whether anyone knows of a non-renewal notice requirement in the GlobalWave contract; it may force a decision earlier than we expect.",
+      "discuss": [
+        "Does anyone know the notice terms in the GlobalWave contract?",
+        "Are there blackout periods (exams, year-end, conversions) we must avoid in 2027-2028?"
+      ],
+      "capture": "Known constraints on the calendar"
+    },
+    {
+      "id": "profile",
+      "section": "Where we are",
+      "minutes": 6,
+      "kicker": "Our bank",
+      "title": "A $3B bank planning for $5B, with a complex top end",
+      "blocks": [
+        { "type": "profile" },
+        { "type": "lead", "text": "Complex structures are under 10% of loans but 30% of committed dollars. The system has to make the standard deals fast without failing the complex ones." }
+      ],
+      "notes": "These figures come from the Head of Commercial Lending and are treated as accurate. Highlight the two facts that shape the decision most: the complex 10% / 30% split, and the part-time administrator model. Any system that needs a full-time Salesforce admin or developer is a staffing decision as much as a software decision.",
+      "discuss": [
+        "What does the complex 10% actually include? Participations, syndications, multi-tranche?",
+        "Is the part-time admin model staying, or could it change as we grow?"
+      ],
+      "capture": "Corrections or additions to the bank profile"
+    },
+    {
+      "id": "systems",
+      "section": "Where we are",
+      "minutes": 6,
+      "kicker": "Systems the LOS must work with",
+      "title": "The new LOS sits in the middle of four systems we keep",
+      "blocks": [
+        { "type": "systems" }
+      ],
+      "notes": "Every one of these integrations has to work on day one. The biggest open item is LaserPro: Finastra sold its US mid-market banking unit in June 2026 and may be sold entirely, so we need to confirm LaserPro's ownership and roadmap. Abrigo risk rating was recently onboarded, which is one reason Abrigo's own LOS is on the list.",
+      "discuss": [
+        "Which of these integrations causes the most pain today?",
+        "Who owns the relationship with each vendor?"
+      ],
+      "capture": "Integration pain points today"
+    },
+    {
+      "id": "assessment",
+      "section": "What we know",
+      "minutes": 6,
+      "kicker": "Starting material",
+      "title": "We have an AI-assisted assessment. It is a starting point, not evidence.",
+      "blocks": [
+        { "type": "lead", "text": "The Gemini assessment compared Abrigo, GlobalWave and nCino and recommended Abrigo. The bank facts in it are accurate. The vendor, pricing and regulatory content came from a language model and has to be verified." },
+        { "type": "claimSummary" }
+      ],
+      "notes": "Be fair to the document: it is a useful frame and it raised the right topics (integration, admin burden, adoption, cost). But it reached a vendor recommendation before we have requirements, demos or references. We built an evidence register that tracks each claim, its status and who will check it. A preliminary web check was done on October 2.",
+      "discuss": [],
+      "capture": ""
+    },
+    {
+      "id": "findings",
+      "section": "What we know",
+      "minutes": 8,
+      "kicker": "What the first check found",
+      "title": "Several claims don't hold up",
+      "blocks": [
+        { "type": "findings", "ids": ["C08", "C03", "C05", "C04", "C10", "C16", "C15"] }
+      ],
+      "notes": "Walk through each card briefly. The point is not that the document is bad; it is that our decision has to rest on demos, references and real pricing. The most important correction: 'Abrigo APX' does not appear to be a real product name. The 1071 rule changed in May 2026, and the bank may now fall below the threshold. The nCino timeline in the document looks overstated based on nCino's own filings.",
+      "discuss": [
+        "Is there anything in the assessment we have already relied on?",
+        "Who should own checking the remaining claims?"
+      ],
+      "capture": "Owners for open claims"
+    },
+    {
+      "id": "scope",
+      "section": "Decide",
+      "minutes": 10,
+      "kicker": "Decision 1 of 3",
+      "title": "What is in scope?",
+      "blocks": [
+        { "type": "decision", "id": "D01" }
+      ],
+      "notes": "The assessment covers three things: the commercial LOS, automated small business lending for $250K-$500K, and digital account opening. Only the LOS is tied to the March 2029 deadline. The recommendation is option B: evaluate small business lending in the same RFP because it shares borrowers, credit policy and probably the vendor, but run account opening as a separate deposit effort. Get a decision or a clear owner and date for one.",
+      "discuss": [
+        "Who owns digital account opening today?",
+        "Would small business automation change how we staff credit?"
+      ],
+      "capture": "Scope decision and reasoning"
+    },
+    {
+      "id": "paths",
+      "section": "Decide",
+      "minutes": 6,
+      "kicker": "Decision 2 of 3",
+      "title": "Is staying with GlobalWave on the table?",
+      "blocks": [
+        { "type": "paths" },
+        { "type": "decision", "id": "D03", "compact": true }
+      ],
+      "notes": "Even if we expect to leave, including the incumbent in the RFP gives us a cost baseline, negotiating leverage, and a fallback if a new implementation slips. It also means we should ask our own users what they think of Credit Track today rather than relying on the assessment's opinion.",
+      "discuss": [
+        "Has leadership already decided to leave GlobalWave?",
+        "What would GlobalWave need to change for us to stay?"
+      ],
+      "capture": "Decision on including GlobalWave"
+    },
+    {
+      "id": "roadmap",
+      "section": "Plan",
+      "minutes": 8,
+      "kicker": "Proposed roadmap",
+      "title": "Seven phases, three gates, one hard date",
+      "blocks": [
+        { "type": "timeline" },
+        { "type": "criticalPath" }
+      ],
+      "notes": "Walk left to right. Phases overlap on purpose. The gates that matter most: requirements signed off by March 31, 2027; contract signed by August 31, 2027; go/no-go in mid-July 2028. Ask the group to react to the target go-live of August 1, 2028 (Decision D04, to confirm by December).",
+      "discuss": [
+        "Is an August 2028 go-live realistic for lending and loan ops?",
+        "What would make us miss the August 2027 contract gate?"
+      ],
+      "capture": "Reactions to the timeline"
+    },
+    {
+      "id": "howdecide",
+      "section": "Plan",
+      "minutes": 5,
+      "kicker": "How we will choose",
+      "title": "Agree on what matters before we see any demos",
+      "blocks": [
+        { "type": "criteria" }
+      ],
+      "notes": "These weights are a starting suggestion. We will finalize them by the end of March 2027, before any vendor demo, so a polished demo does not reset our priorities. Integrations and admin burden are weighted heavily because of the part-time admin model. The RM and PM panel scores usability directly.",
+      "discuss": [
+        "What is missing from this list?",
+        "Who should sit on the RM and PM user panel?"
+      ],
+      "capture": "Criteria changes and panel volunteers"
+    },
+    {
+      "id": "team",
+      "section": "Decide",
+      "minutes": 8,
+      "kicker": "Decision 3 of 3",
+      "title": "Who owns this?",
+      "blocks": [
+        { "type": "team" }
+      ],
+      "notes": "This is the most important decision today. Projects like this fail most often from unnamed owners and borrowed time. Get an executive sponsor and a project lead named, and agree on time commitments. Fill in names live if you can; anything unfilled becomes an action item.",
+      "discuss": [
+        "Who is the executive sponsor?",
+        "Who is the project lead, and what comes off their plate?",
+        "Do we need temporary help for the part-time admin during implementation?"
+      ],
+      "capture": "Names and time commitments"
+    },
+    {
+      "id": "risks",
+      "section": "Plan",
+      "minutes": 5,
+      "kicker": "What could go wrong",
+      "title": "Top risks we will manage from day one",
+      "blocks": [
+        { "type": "risks", "limit": 6 }
+      ],
+      "notes": "Pick two or three to discuss. The GlobalWave notice terms and admin capacity are the ones most likely to surprise us.",
+      "discuss": [
+        "Which risk worries you most?",
+        "What risk is missing?"
+      ],
+      "capture": "New or changed risks"
+    },
+    {
+      "id": "next",
+      "section": "Close",
+      "minutes": 10,
+      "kicker": "Next 30 days",
+      "title": "What happens after today",
+      "blocks": [
+        { "type": "actions" }
+      ],
+      "notes": "Read through each action and confirm an owner and date. Agree on the next meeting. Remind everyone that this workspace is the single place for decisions, evidence, risks and the plan, and that it will be kept current.",
+      "discuss": [
+        "Are the owners and dates right?",
+        "When is the first core team meeting?"
+      ],
+      "capture": "Confirmed owners, dates and next meeting"
+    }
+  ]
+}

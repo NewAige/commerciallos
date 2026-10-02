@@ -1,0 +1,379 @@
+﻿Executive Evaluation & Strategic Technology Roadmap
+Strategic Architecture for Commercial Loan Origination, Small Business Automation, and Digital Account Opening
+
+
+________________
+
+
+1. Executive Summary & Bank Profile
+Strategic Context & Business Drivers
+The institution currently manages $3.0B in total assets with a targeted growth trajectory to reach $5.0B over the strategic planning horizon. The commercial loan portfolio stands at $1.7B, characterized by transaction sizes ranging from $250,000 to $40,000,000. Achieving the $5.0B asset milestone requires expanding credit capacity without proportionally increasing operational overhead or compromising credit risk discipline.+-----------------------------------------------------------------------+
+
+
+|                         CURRENT VS. TARGET PROFILE                    |
+
+
+|                                                                       |
+
+
+|  Current Assets: $3.0B                       Target Assets: $5.0B     |
+
+
+|  [===========================>                      ]                 |
+
+
+|                                                                       |
+
+
+|  Commercial Portfolio: $1.7B                  Loan Range: $250k - $40M|
+
+
++-----------------------------------------------------------------------+
+Operational Realities & Technical Ecosystem
+A detailed audit of current portfolio mechanics reveals key structural dynamics that dictate system selection:
+
+
+* Portfolio Complexity Distribution: While complex multi-tiered structures represent 30% of total portfolio dollar commitments, they comprise less than 10% of total unit count. The vast majority of volume consists of standardized commercial real estate and straightforward C&I facilities.
+* Administrative Staffing Constraints: Technology management operates under strict resource allocations. The bank maintains a part-time administrator model for loan technology and does not possess dedicated, full-time Salesforce developer or administrative bandwidth.
+* Core & Infrastructure Stack:
+   * Core Banking: COCC (Core)
+   * Enterprise Content Management (ECM): Identifi
+   * Document Preparation: Finastra LaserPro
+   * Risk Rating & Credit Analysis: Abrigo (recently onboarded for risk rating models)
+
+
+________________
+
+
+2. Comprehensive Commercial LOS Evaluation
+Evaluating loan origination platforms requires balancing architectural sophistication against total cost of ownership and ongoing maintenance requirements. The evaluation compares Abrigo APX, Global Wave CreditTrack, and nCino.+-----------------------------------------------------------------------+
+
+
+|                      LOS PLATFORM ARCHITECTURE                        |
+
+
+|                                                                       |
+
+
+|  [ Abrigo APX ]        [ Global Wave CreditTrack ]      [ nCino ]     |
+
+
+|  Native Risk Integration   Granular Structuring        Salesforce     |
+
+
+|  Low Overhead              High Configured Engine      Heavy Admin    |
+
+
++-----------------------------------------------------------------------+
+Detailed Platform Analysis
+Abrigo APX
+* Pros: Native data integration with the bank's recently deployed Abrigo Risk Rating engine; minimal administrative overhead; fast deployment timelines; intuitive user interface requiring limited Relationship Manager (RM) and Portfolio Manager (PM) training; optimized for community to mid-sized regional banks ($2B–$10B).
+* Cons: Less granular customizability in hyper-complex syndicated debt structuring compared to enterprise platforms; reporting modules rely on pre-built templates requiring structured exports for ad-hoc queries.
+Global Wave CreditTrack
+* Pros: Exceptionally strong credit structuring and spreading engines; fine-grained rule-based workflow engine built specifically for mid-market commercial lending; robust native risk rating tools.
+* Cons: Complex interface resulting in steeper learning curve for field RMs; higher implementation costs than Abrigo; integration connectors to COCC and LaserPro require customized API mapping.
+nCino
+* Pros: Market-leading enterprise workflow engine; deep integration ecosystem; highly scalable dynamic UI; powerful reporting and analytics built on the Salesforce platform.
+* Cons: Prohibitive administrative burden requiring dedicated Salesforce administrators; high total cost of ownership; prolonged implementation cycle (12–18 months); significant risk of low RM adoption due to interface density.
+Financial Analysis & Total Cost of Ownership (3-Year TCO)
+All values represent estimated market projections based on a $3B asset footprint and $1.7B commercial portfolio.
+
+
+Expense Category
+	Abrigo APX
+	Global Wave CreditTrack
+	nCino
+	Year 1 Implementation & Setup
+	$120,000
+	$185,000
+	$350,000
+	Annual Software Licensing (Avg/Yr)
+	$110,000
+	$145,000
+	$240,000
+	Salesforce Core License Overhead
+	$0
+	$0
+	$85,000 / yr
+	Required Administrative Support
+	0.25 FTE (Internal)
+	0.50 FTE (Internal)
+	1.00 Dedicated FTE
+	Estimated 3-Year Overhead Cost
+	$37,500
+	$75,000
+	$300,000
+	Total 3-Year Estimated TCO
+	$487,500
+	$695,000
+	$1,370,000
+	Operational Evaluation Across Key Criteria
++-----------------------------------------------------------------------+
+
+
+|                    CRITERIA-BASED FIT COMPARISON                      |
+
+
+|                                                                       |
+
+
+|  Abrigo APX    : [########################] Low Admin / High Fit      |
+
+
+|  CreditTrack   : [#################       ] Deep Tech / Med Admin     |
+
+
+|  nCino         : [###########             ] High Tech / Enterprise Admin|
+
+
++-----------------------------------------------------------------------+
+
+
+1. Abrigo Risk Rating Integration:
+   * Abrigo APX: Seamless, real-time native data flow. Eliminates double-entry of risk models.
+   * CreditTrack: Requires custom bi-directional API connection.
+   * nCino: Requires API integration or middleware mapping.
+2. Loan Structuring Flexibility:
+   * Abrigo APX: Out-of-the-box support for standard CRE, C&I, and multi-borrower/multi-collateral structures. Meets 90%+ of bank portfolio needs.
+   * CreditTrack: Superior flexibility for highly custom or syndicated deal structures.
+   * nCino: Highly flexible, but requires custom configuration for non-standard workflows.
+3. AI Capabilities:
+   * Abrigo APX: Applied AI for auto-spreading financial statements and document extraction.
+   * CreditTrack: Optical character recognition (OCR) and financial spreading assistance.
+   * nCino: Advanced analytics via Salesforce Einstein AI (requires additional licensing and data science tuning).
+4. User Friendliness & RM/PM Adoption:
+   * Abrigo APX: High adoption rate due to intuitive interface tailored to commercial banking workflows.
+   * CreditTrack: Moderate adoption; requires dedicated super-users within credit administration.
+   * nCino: Low-to-moderate adoption risk without substantial change management and simplified UI configurations.
+5. End-to-End Pipeline & LaserPro Integration:
+   * Abrigo APX: Built-in boardings and pre-built integration pipelines to Finastra LaserPro and COCC.
+   * CreditTrack: Supported via custom interface exports to LaserPro.
+   * nCino: Supported via nCino Automated Document Prep or custom LaserPro connector.
+6. Digital Credit File & Tickler Automation:
+   * Abrigo APX: Native document management and automated covenant tracking/tickler system.
+   * CreditTrack: Strong covenant tracking engine with automated exception management.
+   * nCino: Powerful tickler and document tracking, integrated with enterprise content structures.
+7. Scalability ($3B to $5B+ Assets):
+   * Abrigo APX: Fully capable of supporting operations up to $10B+ in assets without structural re-architecture.
+   * CreditTrack: Highly scalable for mid-market and large commercial credit teams.
+   * nCino: Industry standard for enterprise institutions ($10B+ to money center banks).
+Platform Rating Matrix
+Ratings evaluated on a 1–10 scale (10 = Best Fit / Superior Performance)
+
+
+Evaluation Criteria
+	Abrigo APX
+	Global Wave CreditTrack
+	nCino
+	Native Risk Rating Synergy
+	10
+	6
+	5
+	Loan Structuring & Flexibility
+	8
+	9
+	9
+	AI & Automation Features
+	8
+	7
+	9
+	RM/PM Usability & Adoption
+	9
+	6
+	5
+	LaserPro & Core Integration
+	9
+	7
+	7
+	Operational Administrative Fit
+	10
+	7
+	2
+	Scalability to $5B Asset Target
+	9
+	9
+	10
+	Weighted Operational Score
+	9.0
+	7.3
+	6.7
+	Strategic Recommendation & Risk Justification
+Primary Selection: Abrigo APX
+Abrigo APX is recommended as the primary Commercial LOS. It offers direct alignment with the bank's existing investment in the Abrigo Risk Rating engine, provides pre-built integration pathways to COCC and LaserPro, and features an intuitive user experience.
+Critical Risk Analysis on nCino
+While nCino remains a market leader in enterprise banking, selecting nCino introduces severe operational risk for this institution. The platform requires ongoing management by a dedicated, certified Salesforce Administrator. Operating nCino with a part-time administrator leads to unconfigured workflows, low RM adoption, delayed implementation, and excessive reliance on costly third-party consultants.
+
+
+________________
+
+
+3. Automated Small Business Lending Analysis ($250k–$500k)
+To maximize commercial efficiency, small business credit requests ($250k to $500k) must be routed through an automated decisioning path to preserve manual credit underwriting capacity for complex transactions.+-----------------------------------------------------------------------+
+
+
+|                       SMALL BUSINESS APPLICATION FLOW                 |
+
+
+|                                                                       |
+
+
+|  Applicant ----> [ Decision Engine ] ---> Auto-Approve (Low Risk)    |
+
+
+|                         |                                             |
+
+
+|                         +---------------> Manual Review (Exceptions)  |
+
+
++-----------------------------------------------------------------------+
+Strategic Comparison: Abrigo SBL vs. Numerated (Moody's)
+Real-Time Credit Decisioning & Scoring Models
+* Abrigo SBL: Uses standard scorecards combining SBFE (Small Business Financial Exchange), personal credit scores (FICO), and proprietary bank-defined risk matrices. Fully integrated into the broader Abrigo credit suite.
+* Numerated: Advanced data aggregation using pre-fill technology, real-time credit bureau pulls, and automated financial health scoring built on Moody's Analytics credit models.
+Plaid & Checking Account Cash Flow Analysis
+* Abrigo SBL: Direct integration with Plaid and bank statement parsing tools to analyze real-time cash flow, average daily balances, and overdraft frequencies.
+* Numerated: Industry-leading bank transaction analytics; rapidly parses primary transaction account history via Plaid or direct statement uploads to calculate debt service coverage ratios (DSCR) dynamically.
+Comparative Feature Matrix
+Feature / Capability
+	Abrigo SBL
+	Numerated (Moody's)
+	Decisioning Speed
+	Same-day / Automated instant decisioning
+	Real-time / Instant decisioning (< 5 mins)
+	Target Loan Range
+	$0 – $500,000
+	$0 – $500,000
+	Data Aggregation
+	Plaid, SBFE, Equifax/Experian
+	Plaid, Moody's, SBFE, Tax Return parsing
+	Commercial LOS Alignment
+	Native ecosystem integration with APX
+	Third-party API integration required
+	Administrative Overhead
+	Shared with main Abrigo platform
+	Standalone platform administration
+	Borrower Digital Experience
+	Clean, responsive digital portal
+	Market-leading consumer-grade portal
+	Strategic SBL Recommendation
+Selected Vendor: Abrigo SBL
+
+
+Justification: While Numerated offers an exceptional front-end digital experience, selecting Abrigo SBL yields operational efficiencies by leveraging the same administrative backbone as the core commercial LOS (Abrigo APX). This decision consolidates vendor management, eliminates duplicate data silos, streamlines credit policy administration, and avoids maintaining disparate API integrations to COCC.
+
+
+________________
+
+
+4. Digital Account Opening Strategy: fiVISION Integration Architecture
+To support core deposit acquisition alongside commercial asset expansion, the institution requires a streamlined, compliant digital account opening ecosystem.+-----------------------------------------------------------------------+
+
+
+|                  DIGITAL ACCOUNT OPENING ARCHITECTURE                 |
+
+
+|                                                                       |
+
+
+|  [ Customer Portal: fiVISION ]                                        |
+
+
+|         |                                                             |
+
+
+|         +---> Core Banking Pipeline  ----> [ COCC Core ]              |
+
+
+|         +---> Archival Sweep         ----> [ Identifi ECM ]           |
+
+
+|         +---> Business Credit Handoff---> [ Abrigo APX / SBL ]        |
+
+
++-----------------------------------------------------------------------+
+High-Level System Architecture
+The digital account opening framework positions fiVISION as the customer-facing intake layer, interacting directly with core storage, document repositories, and underwriting engines:
+
+
+* Inbound Application Layer: fiVISION captures consumer and business deposit applications, performing real-time identity verification (IDV), OFAC screening, and fraud checks.
+* Core Processing Engine: COCC acts as the system of record for account creation, customer profile generation, and ledger management via native RESTful APIs.
+* Document Management: Identifi automatically indexes, stores, and archives generated signature cards, disclosures, and verification records.
+* Credit Cross-Sell Engine: Abrigo APX / SBL receives qualified business applicants directly from fiVISION for streamlined credit underwriting.
+Operational Workflow & Cross-Sell Handoff
+Customer Application (fiVISION)
+
+
+  │
+
+
+  ├── IDV / OFAC / Fraud Check
+
+
+  │
+
+
+  ├── Account Provisioned (COCC API)
+
+
+  │
+
+
+  ├── Compliance Documents Swept (Identifi ECM)
+
+
+  │
+
+
+  └── [OPTIONAL] Business Credit Requested?
+
+
+        ├── YES ──> Automated Lead/App Handoff ──> Abrigo SBL / APX
+
+
+        └── NO  ──> Complete Onboarding
+
+
+1. Intake & Verification: Customer completes applicant workflow in fiVISION. Automated KYB/KYC checks execute instantly.
+2. Deposit Account Provisioning: Upon pass validation, fiVISION pushes customer data to COCC to establish the deposit account and core record.
+3. Document Archival: Completed signature cards, identification copies, and disclosures pass via automated batch/API sweeps into Identifi ECM, tagged with COCC account numbers.
+4. Cross-Sell Credit Handoff: If a business applicant opts to apply for a commercial line of credit or credit card during onboarding, fiVISION transfers the structured entity data, owner profiles, and verified documents directly to Abrigo SBL (or APX) without requiring manual data re-entry.
+Four-Phase Implementation Roadmap
++-----------------------------------------------------------------------+
+
+
+|                        IMPLEMENTATION TIMELINE                        |
+
+
+|                                                                       |
+
+
+|  Phase 1: Product Rules & Logic Engine   [ Q1 ]                       |
+
+
+|  Phase 2: COCC API Integration Mapping   [ Q2 ]                       |
+
+
+|  Phase 3: Identifi ECM Archival Sweep    [ Q3 ]                       |
+
+
+|  Phase 4: Abrigo Credit Handoff          [ Q4 ]                       |
+
+
++-----------------------------------------------------------------------+
+Phase 1: Product Configuration & Business Rules Setup
+* Define product catalogs for consumer and small business deposit accounts.
+* Establish automated decisioning logic for KYB/KYC, CIP, and funding limits within fiVISION.
+Phase 2: COCC Core API Integration
+* Map bi-directional data fields between fiVISION and COCC.
+* Execute end-to-end sandbox testing for real-time account creation, funding, and ledger posting.
+Phase 3: Identifi ECM Archival Automation
+* Configure automated indexing rules to push signed documents into Identifi.
+* Validate document retrievals and audit trails against compliance standards.
+Phase 4: Abrigo Credit Cross-Sell Handoff
+* Establish data-sharing protocols between fiVISION and Abrigo APX/SBL.
+* Enable one-click small business credit requests during the deposit opening process.
+Compliance & Administrative Considerations
+* Beneficial Ownership Information (BOI) & FinCEN Regulations: The fiVISION workflow automatically collects, verifies, and records beneficial ownership structures (25%+ ownership threshold and control person requirements) prior to account activation, creating an audited record for compliance officers.
+* CFPB Section 1071 Data Collection: The small business intake portal incorporates mandatory Section 1071 demographic data collection fields (minority-owned, women-owned, small business designations) using isolated compliance storage to maintain credit decisioning neutrality.
+* Low Administrative Overhead Model: By deploying pre-built integration interfaces between fiVISION, COCC, Identifi, and Abrigo, the bank avoids managing custom middleware. This architecture allows the part-time technology administrator to manage system parameters without requiring external development resources.

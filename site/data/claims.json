@@ -1,0 +1,258 @@
+{
+  "source": "docs/sources/2026-09_gemini-los-assessment_UNVERIFIED.txt",
+  "sourceNote": "LLM-generated assessment (Gemini) prepared with the Head of Commercial Lending. Bank facts are treated as accurate. Everything about vendors, pricing and regulation needs checking.",
+  "statuses": {
+    "confirmed": "Confirmed by the bank or an authoritative source",
+    "unverified": "Not yet checked",
+    "partly": "Partly true or needs nuance",
+    "issue": "Problem found in the source",
+    "false": "Not supported by evidence"
+  },
+  "claims": [
+    {
+      "id": "C01",
+      "category": "Bank profile",
+      "section": "1",
+      "claim": "Total assets $3.0B, target $5.0B; commercial portfolio $1.7B; loans range $250K-$40M.",
+      "status": "confirmed",
+      "finding": "Provided by the Head of Commercial Lending.",
+      "verifyBy": "None needed. Refresh figures each quarter.",
+      "owner": "Head of Commercial Lending"
+    },
+    {
+      "id": "C02",
+      "category": "Bank profile",
+      "section": "1",
+      "claim": "Complex structures are 30% of committed dollars but under 10% of loan count.",
+      "status": "confirmed",
+      "finding": "Provided by the bank. This is a key input: the new system must handle the complex 10% well, even though most volume is standard CRE and C&I.",
+      "verifyBy": "Pull a portfolio extract to confirm, and list the specific structures (participations, syndications, multi-tranche, guarantor webs).",
+      "owner": "Credit Administration"
+    },
+    {
+      "id": "C03",
+      "category": "Method",
+      "section": "2",
+      "claim": "nCino 3-year TCO is $1,370,000.",
+      "status": "issue",
+      "finding": "The table's own figures add up to $1,625,000. The $85,000/yr Salesforce license line ($255,000 over 3 years) was left out of the total. The Abrigo ($487,500) and CreditTrack ($695,000) totals do add up.",
+      "verifyBy": "Replace all estimates with vendor quotes from the RFP.",
+      "owner": "Finance"
+    },
+    {
+      "id": "C04",
+      "category": "Method",
+      "section": "2",
+      "claim": "Administrative overhead: 0.25 FTE = $37,500, 0.50 FTE = $75,000, 1.00 FTE = $300,000 over 3 years.",
+      "status": "issue",
+      "finding": "The implied cost per FTE differs by vendor: $50,000/yr for Abrigo and CreditTrack, $100,000/yr for nCino. One loaded salary should be used for all options.",
+      "verifyBy": "Have HR or Finance supply one loaded cost for a loan-systems administrator.",
+      "owner": "Finance"
+    },
+    {
+      "id": "C05",
+      "category": "Method",
+      "section": "2",
+      "claim": "Weighted operational scores: Abrigo 9.0, CreditTrack 7.3, nCino 6.7.",
+      "status": "issue",
+      "finding": "These are simple averages of the seven criteria with equal weights, not weighted scores. The scores themselves are LLM judgments, not results of demos or references.",
+      "verifyBy": "The team sets criteria and weights before demos, then scores from scripted demos and reference calls.",
+      "owner": "Evaluation team"
+    },
+    {
+      "id": "C06",
+      "category": "Method",
+      "section": "2",
+      "claim": "The incumbent (GlobalWave CreditTrack) has a complex interface and a steep learning curve for RMs.",
+      "status": "unverified",
+      "finding": "The bank has years of direct experience with the incumbent. That experience should replace an LLM opinion.",
+      "verifyBy": "Survey RMs, PMs, credit analysts and loan ops on what works and what doesn't today.",
+      "owner": "Project lead"
+    },
+    {
+      "id": "C07",
+      "category": "Method",
+      "section": "2",
+      "claim": "The evaluation compares three platforms: Abrigo, GlobalWave CreditTrack and nCino.",
+      "status": "issue",
+      "finding": "Three vendors is a narrow field, and the recommendation is set before any requirements exist. A market scan should include other commercial LOS vendors and renewal or renegotiation with the incumbent as a baseline.",
+      "verifyBy": "Build a long list in Phase 2 and send an RFI.",
+      "owner": "Evaluation team"
+    },
+    {
+      "id": "C08",
+      "category": "Vendor",
+      "section": "2",
+      "claim": "\"Abrigo APX\" is Abrigo's commercial LOS, with native, real-time integration to Abrigo risk rating.",
+      "status": "false",
+      "finding": "No product called \"Abrigo APX\" was found. Abrigo sells commercial origination within its Lending & Credit Risk suite (Sageworks Credit Risk), which it markets as one platform covering origination, spreading, risk rating and portfolio monitoring. The integration claim matches vendor marketing but needs a demo against the bank's own Abrigo setup.",
+      "verifyBy": "Ask Abrigo for product names, a module map, and a live demo of the risk-rating handoff using the bank's configuration.",
+      "owner": "Evaluation team",
+      "sources": [
+        "https://www.abrigo.com/software/lending/",
+        "https://www.abrigo.com/software/lending-and-credit-risk/sageworks-credit-risk-software/"
+      ],
+      "checked": "2026-10-02"
+    },
+    {
+      "id": "C09",
+      "category": "Vendor",
+      "section": "2",
+      "claim": "Abrigo has pre-built integrations to COCC and Finastra LaserPro.",
+      "status": "unverified",
+      "finding": "This is a deciding factor and must be proven, not assumed.",
+      "verifyBy": "Ask each vendor for COCC and LaserPro client references currently live in production.",
+      "owner": "IT / Integration"
+    },
+    {
+      "id": "C10",
+      "category": "Vendor",
+      "section": "2",
+      "claim": "nCino requires a dedicated Salesforce administrator and takes 12-18 months to implement.",
+      "status": "partly",
+      "finding": "nCino is built on Salesforce (confirmed). Its SEC filings say vendor-led implementations at regional and community banks average under six months, so 12-18 months looks overstated for a bank our size. Admin staffing needs is still unverified, and integrations and conversion add time beyond vendor estimates.",
+      "verifyBy": "Reference calls with $2-5B banks that use nCino; ask about admin staffing and actual implementation time.",
+      "owner": "Evaluation team",
+      "sources": [
+        "https://www.sec.gov/Archives/edgar/data/1902733/000190273325000026/ncno-20250131.htm"
+      ],
+      "checked": "2026-10-02"
+    },
+    {
+      "id": "C11",
+      "category": "Pricing",
+      "section": "2",
+      "claim": "Implementation and license costs for all three vendors (for example Abrigo $120K setup and $110K/yr).",
+      "status": "unverified",
+      "finding": "The source describes these as estimated market projections. They are placeholders only.",
+      "verifyBy": "Replace with RFP pricing, including implementation partner fees, integrations and data conversion.",
+      "owner": "Finance"
+    },
+    {
+      "id": "C12",
+      "category": "Vendor",
+      "section": "3",
+      "claim": "Numerated is a Moody's product.",
+      "status": "confirmed",
+      "finding": "Moody's announced its acquisition of Numerated on 2024-11-21. Numerated is being folded into Moody's Lending Suite.",
+      "verifyBy": "Vendor due diligence.",
+      "owner": "Vendor management",
+      "sources": [
+        "https://ir.moodys.com/press-releases/news-details/2024/Moodys-Acquires-Numerated-Growth-Technologies-Expanding-Lending-Technology-Solutions/default.aspx"
+      ],
+      "checked": "2026-10-02"
+    },
+    {
+      "id": "C13",
+      "category": "Vendor",
+      "section": "3",
+      "claim": "Abrigo's small business product supports automated decisioning, Plaid cash-flow analysis and SBFE data.",
+      "status": "partly",
+      "finding": "The product is Abrigo Small Business Lending (generally available September 2024). Automated decisioning is confirmed. Plaid is a listed Abrigo partner, but full cash-flow underwriting inside the product is not confirmed. No public mention of SBFE was found.",
+      "verifyBy": "Scripted demo of a $250K-$500K request.",
+      "owner": "Evaluation team",
+      "sources": [
+        "https://www.businesswire.com/news/home/20240930973435/en/",
+        "https://partners.abrigo.com/partners/plaid"
+      ],
+      "checked": "2026-10-02"
+    },
+    {
+      "id": "C14",
+      "category": "Vendor",
+      "section": "4",
+      "claim": "fiVISION can serve as the digital account opening layer, integrated with COCC, Identifi and Abrigo.",
+      "status": "partly",
+      "finding": "fiVISION is a real online account opening vendor (Indianapolis). No public evidence of a COCC integration was found. Account opening remains a scope question.",
+      "verifyBy": "Decide at kickoff whether account opening is in scope at all.",
+      "owner": "Steering group",
+      "sources": [
+        "https://www.meridianlink.com/partner/fivision/"
+      ],
+      "checked": "2026-10-02"
+    },
+    {
+      "id": "C15",
+      "category": "Regulatory",
+      "section": "4",
+      "claim": "fiVISION collects beneficial ownership information to satisfy \"BOI and FinCEN regulations\".",
+      "status": "partly",
+      "finding": "The source mixes up two rules. (1) Corporate Transparency Act BOI reporting: FinCEN removed domestic companies in March 2025 and made that permanent in a final rule in August 2026, so banks cannot rely on CTA filings for US borrowers. (2) The bank CDD rule still requires beneficial ownership at account opening, but FinCEN's February 2026 exceptive relief lets banks avoid re-collecting at every new account. Systems should support reusing an existing certification with refresh triggers.",
+      "verifyBy": "BSA Officer to confirm current requirements.",
+      "owner": "Compliance / BSA",
+      "sources": [
+        "https://www.mofo.com/resources/insights/260820-fincen-ends-beneficial-ownership-reporting",
+        "https://www.dlapiper.com/en/insights/publications/2026/03/fincen-issues-exceptive-relief-from-cdd-rule-requirements"
+      ],
+      "checked": "2026-10-02"
+    },
+    {
+      "id": "C16",
+      "category": "Regulatory",
+      "section": "4",
+      "claim": "CFPB Section 1071 data collection belongs in the deposit account opening portal.",
+      "status": "issue",
+      "finding": "Section 1071 applies to small business credit applications, not deposit accounts, so it belongs in LOS and small business intake. The CFPB issued a revised rule on 2026-05-01: a single compliance date of 2028-01-01 for lenders with at least 1,000 covered originations in each of 2026 and 2027, and \"small business\" now means $1M or less in revenue. The bank may fall below the threshold.",
+      "verifyBy": "Compliance to count 2026 covered originations and confirm whether the bank is covered. Treat 1071 support as a 'should have' requirement unless the count says otherwise.",
+      "owner": "Compliance",
+      "sources": [
+        "https://www.mayerbrown.com/en/insights/publications/2026/05/cfpb-issues-final-section-1071-rule-on-small-business-lending-data-collection",
+        "https://www.consumerfinance.gov/compliance/compliance-resources/small-business-lending-resources/small-business-lending-collection-and-reporting-requirements/"
+      ],
+      "checked": "2026-10-02"
+    },
+    {
+      "id": "C17",
+      "category": "Scope",
+      "section": "3-4",
+      "claim": "Small business automation ($250K-$500K) and digital account opening are part of the same strategy.",
+      "status": "unverified",
+      "finding": "Only the commercial LOS is driven by the 2029-03-01 deadline. Adding small business lending and account opening widens the project and its risk.",
+      "verifyBy": "Steering group decides scope at kickoff (Decision D01).",
+      "owner": "Steering group"
+    },
+    {
+      "id": "C18",
+      "category": "Vendor",
+      "section": "2",
+      "claim": "The incumbent is \"Global Wave CreditTrack\".",
+      "status": "confirmed",
+      "finding": "The vendor is Global Wave Group and the product is Credit Track, a web-based commercial loan origination platform. Finastra's marketplace lists a GlobalWave Credit Track integration. Current size, ownership and roadmap were not found.",
+      "verifyBy": "Confirm product, version and modules from the bank's contract.",
+      "owner": "Vendor management",
+      "sources": [
+        "https://finastra.com/applications/globalwave-credit-track-integration"
+      ],
+      "checked": "2026-10-02"
+    },
+    {
+      "id": "C19",
+      "category": "Vendor",
+      "section": "1",
+      "claim": "Finastra LaserPro is a stable part of the bank's stack.",
+      "status": "unverified",
+      "finding": "Not claimed directly in the source, but assumed. Finastra sold its US mid-market banking business to CORA Group in June 2026, and a September 2026 report says its owner is exploring a sale of all of Finastra. It is unclear where LaserPro now sits.",
+      "verifyBy": "Ask the bank's LaserPro account team for ownership and roadmap. Any new LOS must integrate with whatever doc prep the bank will use in 2028.",
+      "owner": "Loan operations",
+      "sources": [
+        "https://www.fintechfutures.com/m-a/finastra-divests-us-banking-unit-to-cora-group"
+      ],
+      "checked": "2026-10-02"
+    },
+    {
+      "id": "C20",
+      "category": "Vendor",
+      "section": "4",
+      "claim": "Identifi integrates with COCC.",
+      "status": "partly",
+      "finding": "Identifi is an independent ECM vendor. Its site says it is core-agnostic with pre-built connectors for COCC and other cores. Already in use at the bank, so the bank's IT team can confirm directly.",
+      "verifyBy": "IT to confirm the current Identifi-COCC integration and how a new LOS would file documents into Identifi.",
+      "owner": "IT / Integration",
+      "sources": [
+        "https://identifi.net/why-identifi/"
+      ],
+      "checked": "2026-10-02"
+    }
+  ],
+  "checkNote": "Preliminary web check on 2026-10-02 by an AI research agent. Several sites blocked direct access, so some findings rest on search summaries of the listed sources. Treat 'confirmed' vendor findings as leads to confirm with the vendor, not as final."
+}

@@ -1,0 +1,75 @@
+{
+  "note": "Next steps. Status: open, in-progress, done.",
+  "actions": [
+    {
+      "id": "A01",
+      "title": "Pull the GlobalWave contract and summarize notice, renewal, data return and exit terms",
+      "owner": "Vendor management",
+      "due": "2026-10-30",
+      "status": "open"
+    },
+    {
+      "id": "A02",
+      "title": "Name the executive sponsor, project lead and core team",
+      "owner": "Executive sponsor",
+      "due": "2026-10-16",
+      "status": "open"
+    },
+    {
+      "id": "A03",
+      "title": "Draft the project charter (scope, goals, governance, budget envelope)",
+      "owner": "Project lead",
+      "due": "2026-11-20",
+      "status": "open"
+    },
+    {
+      "id": "A04",
+      "title": "Send a pain-point survey to RMs, PMs, credit analysts and loan ops",
+      "owner": "Commercial lending lead",
+      "due": "2026-11-13",
+      "status": "open"
+    },
+    {
+      "id": "A05",
+      "title": "Work through the evidence register and assign owners for each unverified claim",
+      "owner": "Project lead",
+      "due": "2026-11-06",
+      "status": "open"
+    },
+    {
+      "id": "A06",
+      "title": "Ask peer banks (similar size, COCC core) what LOS they use and how implementation went",
+      "owner": "Head of Commercial Lending",
+      "due": "2026-12-11",
+      "status": "open"
+    },
+    {
+      "id": "A07",
+      "title": "Confirm current Section 1071 and beneficial ownership requirements",
+      "owner": "Compliance",
+      "due": "2026-11-30",
+      "status": "open"
+    },
+    {
+      "id": "A08",
+      "title": "Set up the recurring core team and steering group meetings",
+      "owner": "Project lead",
+      "due": "2026-10-16",
+      "status": "open"
+    },
+    {
+      "id": "A09",
+      "title": "Count 2026 small business originations covered by the revised Section 1071 rule (1,000 threshold)",
+      "owner": "Compliance",
+      "due": "2026-12-11",
+      "status": "open"
+    },
+    {
+      "id": "A10",
+      "title": "Confirm LaserPro ownership and roadmap after Finastra's 2026 divestiture",
+      "owner": "Loan operations",
+      "due": "2026-11-30",
+      "status": "open"
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "name": "Commercial LOS Replacement",
+  "codename": "Commercial LOS",
+  "updated": "2026-10-02",
+  "keyDates": [
+    { "id": "kickoff", "date": "2026-10-07", "label": "Planning kickoff meeting", "kind": "meeting", "confirmed": true },
+    { "id": "contract-signed", "date": "2027-08-31", "label": "Target: new vendor contract signed", "kind": "target", "confirmed": false },
+    { "id": "go-live", "date": "2028-08-01", "label": "Target: new LOS live for all commercial lending", "kind": "target", "confirmed": false },
+    { "id": "globalwave-end", "date": "2029-03-01", "label": "GlobalWave contract ends", "kind": "hard", "confirmed": true }
+  ],
+  "bank": {
+    "status": "Confirmed by Head of Commercial Lending",
+    "totalAssets": 3.0,
+    "targetAssets": 5.0,
+    "commercialPortfolio": 1.7,
+    "loanSizeMin": 250000,
+    "loanSizeMax": 40000000,
+    "complexShareOfDollars": 0.30,
+    "complexShareOfUnits": 0.10,
+    "adminModel": "Part-time administrator for loan technology. No dedicated Salesforce developer or admin.",
+    "systems": [
+      { "role": "Core banking", "name": "COCC", "touchesLOS": "Boarding of approved loans, customer and relationship data" },
+      { "role": "Content management (ECM)", "name": "Identifi", "touchesLOS": "Credit file documents, imaging, retention" },
+      { "role": "Document preparation", "name": "Finastra LaserPro", "touchesLOS": "Loan documents generated from approved deal data" },
+      { "role": "Risk rating and credit analysis", "name": "Abrigo (recently onboarded)", "touchesLOS": "Risk ratings, spreads, credit analysis" },
+      { "role": "Commercial LOS (incumbent)", "name": "GlobalWave", "touchesLOS": "Being replaced or renegotiated. Contract ends 2029-03-01." }
+    ]
+  },
+  "assumptions": [
+    "The GlobalWave contract ends on 2029-03-01 with no automatic renewal. The contract still needs to be checked for a non-renewal notice deadline, auto-renew terms, data-return and exit-assistance terms.",
+    "A replacement must be live, staff trained, and GlobalWave data archived or converted before 2029-03-01.",
+    "The working target is go-live by 2028-08-01, which leaves about 7 months of buffer.",
+    "Bank profile figures come from the Head of Commercial Lending and are treated as accurate. Vendor, pricing and regulatory claims in the source assessment are unverified."
+  ]
+}

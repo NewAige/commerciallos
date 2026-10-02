@@ -1,0 +1,58 @@
+{
+  "note": "Decisions the project needs. Status: open, proposed, decided, deferred. Record the outcome, date and who decided.",
+  "decisions": [
+    {
+      "id": "D01", "title": "What is in scope?", "needed": "2026-10-07", "status": "open",
+      "question": "Is this project the commercial LOS only, or does it also cover small business automated lending and digital account opening?",
+      "options": [
+        "A. Commercial LOS only. Small business lending and account opening are separate efforts.",
+        "B. Commercial LOS plus small business lending ($250K-$500K). Account opening is separate.",
+        "C. All three, as one program."
+      ],
+      "recommendation": "B. Small business lending shares borrowers, credit policy and possibly the vendor, so evaluate it in the same RFP. Account opening is a deposit project with different owners and no deadline tied to 2029-03-01.",
+      "outcome": "", "decidedBy": "", "decidedOn": ""
+    },
+    {
+      "id": "D02", "title": "Who sponsors and who leads?", "needed": "2026-10-07", "status": "open",
+      "question": "Name the executive sponsor, the project lead, and how much of the project lead's time is committed.",
+      "options": [],
+      "recommendation": "Executive sponsor from lending leadership; a project lead with at least 50% of their time on this through contract signature, rising during implementation.",
+      "outcome": "", "decidedBy": "", "decidedOn": ""
+    },
+    {
+      "id": "D03", "title": "Is renewing or renegotiating with GlobalWave a real option?", "needed": "2026-10-07", "status": "open",
+      "question": "Should the evaluation treat staying with GlobalWave (possibly on new terms) as a valid outcome?",
+      "options": ["Yes: include GlobalWave in the RFI and RFP as a baseline.", "No: the bank has already decided to leave."],
+      "recommendation": "Yes, unless leadership has already ruled it out. It gives a cost baseline, negotiating leverage, and a fallback.",
+      "outcome": "", "decidedBy": "", "decidedOn": ""
+    },
+    {
+      "id": "D04", "title": "Target go-live date", "needed": "2026-12-18", "status": "proposed",
+      "question": "Confirm the working target of 2028-08-01 for go-live.",
+      "options": [],
+      "recommendation": "Keep 2028-08-01. It leaves about 7 months of buffer and avoids quarter-end and year-end.",
+      "outcome": "", "decidedBy": "", "decidedOn": ""
+    },
+    {
+      "id": "D05", "title": "Evaluation criteria and weights", "needed": "2027-03-31", "status": "open",
+      "question": "Which criteria and weights will score vendors? Set them before any demo.",
+      "options": [],
+      "recommendation": "Start from the draft list on the Options page. Weight admin burden and integrations heavily given a part-time admin model.",
+      "outcome": "", "decidedBy": "", "decidedOn": ""
+    },
+    {
+      "id": "D06", "title": "Budget envelope", "needed": "2026-12-18", "status": "open",
+      "question": "What budget range is approved for evaluation, implementation and the first 3 years of licensing?",
+      "options": [],
+      "recommendation": "Set a range now, then refine with RFP pricing.",
+      "outcome": "", "decidedBy": "", "decidedOn": ""
+    },
+    {
+      "id": "D07", "title": "Outside help", "needed": "2026-12-18", "status": "open",
+      "question": "Will the bank use a consultant for the RFP or the implementation?",
+      "options": ["No outside help", "RFP and selection help only", "Selection plus implementation oversight"],
+      "recommendation": "Decide after the staffing discussion. With a part-time admin, implementation oversight is worth pricing.",
+      "outcome": "", "decidedBy": "", "decidedOn": ""
+    }
+  ]
+}
