@@ -179,7 +179,7 @@
       "status": "partly",
       "finding": "The source mixes up two rules. (1) Corporate Transparency Act BOI reporting: FinCEN removed domestic companies in March 2025 and made that permanent in a final rule in August 2026, so banks cannot rely on CTA filings for US borrowers. (2) The bank CDD rule still requires beneficial ownership at account opening, but FinCEN's February 2026 exceptive relief lets banks avoid re-collecting at every new account. Systems should support reusing an existing certification with refresh triggers.",
       "verifyBy": "BSA Officer to confirm current requirements.",
-      "owner": "Compliance / BSA",
+      "owner": "Risk management",
       "sources": [
         "https://www.mofo.com/resources/insights/260820-fincen-ends-beneficial-ownership-reporting",
         "https://www.dlapiper.com/en/insights/publications/2026/03/fincen-issues-exceptive-relief-from-cdd-rule-requirements"
@@ -192,12 +192,13 @@
       "section": "4",
       "claim": "CFPB Section 1071 data collection belongs in the deposit account opening portal.",
       "status": "issue",
-      "finding": "Section 1071 applies to small business credit applications, not deposit accounts, so it belongs in LOS and small business intake. The CFPB issued a revised rule on 2026-05-01: a single compliance date of 2028-01-01 for lenders with at least 1,000 covered originations in each of 2026 and 2027, and \"small business\" now means $1M or less in revenue. The bank may fall below the threshold.",
-      "verifyBy": "Compliance to count 2026 covered originations and confirm whether the bank is covered. Treat 1071 support as a 'should have' requirement unless the count says otherwise.",
-      "owner": "Compliance",
+      "finding": "Section 1071 applies to small business credit applications, not deposit accounts, so it belongs in LOS and small business intake. The CFPB issued a revised rule on 2026-05-01: a single compliance date of 2028-01-01 for lenders with at least 1,000 covered originations in each of 2026 and 2027, and \"small business\" now means $1M or less in revenue. The bank has confirmed that Section 1071 does not apply to it, so 1071 support is not a requirement for the new LOS.",
+      "verifyBy": "Done. Bank project team confirmed on 2026-10-02 that 1071 does not apply.",
+      "owner": "Risk management",
       "sources": [
         "https://www.mayerbrown.com/en/insights/publications/2026/05/cfpb-issues-final-section-1071-rule-on-small-business-lending-data-collection",
-        "https://www.consumerfinance.gov/compliance/compliance-resources/small-business-lending-resources/small-business-lending-collection-and-reporting-requirements/"
+        "https://www.consumerfinance.gov/compliance/compliance-resources/small-business-lending-resources/small-business-lending-collection-and-reporting-requirements/",
+        "Bank project team, 2026-10-02: Section 1071 does not apply to the bank"
       ],
       "checked": "2026-10-02"
     },
