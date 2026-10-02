@@ -217,12 +217,13 @@
     {
       "id": "C18",
       "topic": "Current system",
-      "think": "The current system is Credit Track from Global Wave Group, a web-based commercial LOS. We don't know the vendor's current size, ownership or roadmap.",
+      "think": "The current system is Credit Track from Global Wave Group, a web-based commercial LOS. Staff call it either Credit Track or GlobalWave. We don't know the vendor's current size, ownership or roadmap.",
       "confidence": "confirmed",
       "learn": "Which Credit Track version and modules do we license?",
       "how": "Check the bank's GlobalWave contract.",
       "owner": "Vendor management",
       "sources": [
+        "Bank project team, 2026-10-02: the bank uses Credit Track (also called GlobalWave)",
         "https://finastra.com/applications/globalwave-credit-track-integration"
       ],
       "checked": "2026-10-02",
