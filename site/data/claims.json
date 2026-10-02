@@ -234,8 +234,8 @@
       "topic": "Vendors",
       "think": "LaserPro's future is uncertain. Finastra sold its US mid-market banking business to CORA Group in June 2026, and a September 2026 report says its owner is exploring a sale of the rest of Finastra.",
       "confidence": "likely",
-      "learn": "Who owns LaserPro now, and what is its roadmap through 2028?",
-      "how": "Ask the bank's LaserPro account team. Any new LOS must work with whatever doc prep the bank uses in 2028.",
+      "learn": "Is LaserPro still the right document provider for us, and are we on its latest version? Should switching or upgrading doc prep be in scope for this project?",
+      "how": "Loan operations confirms which LaserPro version the bank runs and what the current release is, and lists what works and what doesn't today. Compare with other doc prep options the LOS finalists support. Bring a recommendation on scope (keep, upgrade, or switch) to the steering group.",
       "owner": "Loan operations",
       "sources": [
         "https://www.fintechfutures.com/m-a/finastra-divests-us-banking-unit-to-cora-group"
