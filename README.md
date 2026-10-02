@@ -30,13 +30,14 @@ Opening `site/index.html` directly from disk will not work, because browsers blo
 | `site/data/kickoff.json` | Kickoff walkthrough: slides, talking points, prompts, capture fields |
 | `docs/sources/` | Original source material, kept unchanged |
 | `docs/kickoff/` | Facilitator guide and, after the meeting, the meeting notes |
+| `site/motion.js` | Animation layer: flow-field background, slide transitions, count-ups, chart and diagram choreography. No external libraries; respects reduced-motion settings |
 | `scripts/validate.py` | Checks the data files are valid and cross-references resolve |
 
 ## The kickoff walkthrough
 
 Open **Kickoff walkthrough** in the site. It is a 13-slide, 90-minute guided session.
 
-- `→` / `←` or Space to move between slides; `F` to present full screen; `N` to toggle presenter notes; `Esc` to leave full screen.
+- `→` / `←` or Space to move between slides (swipe on phones and tablets); `F` to present full screen; `N` to toggle presenter notes; `Esc` to leave full screen.
 - The presenter panel shows talking points, questions for the room, a meeting clock against the planned agenda, and a notes field for each topic.
 - Decision options on the slides can be clicked to record the room's choice, and role names can be typed into the team slide.
 - Notes stay in the presenter's browser. Use **Copy notes as Markdown** at the end and save them to `docs/kickoff/2026-10-07-notes.md`, then update `decisions.json`, `team.json` and `actions.json`.

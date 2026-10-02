@@ -24,8 +24,13 @@ This repo is the working record for a commercial loan origination system (LOS) r
 ```sh
 python3 scripts/validate.py
 node --check site/app.js
+node --check site/motion.js
 ```
 
 ## Processing meeting notes
 
 When notes from a meeting land in `docs/` (for example `docs/kickoff/2026-10-07-notes.md`), update the data files to match: decisions made, names assigned in `team.json`, new or changed actions and risks, and any claims someone verified. Summarize what changed in the commit message.
+
+## Front end
+
+`site/app.js` renders views from the data; `site/motion.js` animates whatever `app.js` renders and must never be required for content to be readable. New number values in the UI can count up by wrapping them with the `cnt()` helper in `app.js`.

@@ -22,6 +22,8 @@
   const money = (n) => n >= 1e6 ? `$${(n / 1e6).toFixed(n % 1e6 ? 1 : 0)}M` : `$${Math.round(n / 1e3)}K`;
   const keyDate = (id) => D.project.keyDates.find((k) => k.id === id).date;
   const statusLabel = (s) => (D.claims.statuses[s] ? { confirmed: "Confirmed", unverified: "Unverified", partly: "Partly true", issue: "Problem found", false: "Not supported" }[s] : s);
+  // number that motion.js counts up from zero; the final value is in the markup so it reads correctly at rest
+  const cnt = (v, o = {}) => { const dec = o.dec || 0; const txt = (o.pre || "") + Number(v).toLocaleString("en-US", { minimumFractionDigits: dec, maximumFractionDigits: dec }) + (o.suf || ""); return `<span data-count="${v}" data-dec="${dec}" data-pre="${esc(o.pre || "")}" data-suf="${esc(o.suf || "")}">${esc(txt)}</span>`; };
   const pill = (cls, text) => `<span class="pill ${esc(cls)}">${esc(text)}</span>`;
   const inFrame = (() => { try { return window.self !== window.top; } catch (e) { return true; } })();
 
@@ -37,7 +39,7 @@
   function cycleTheme() {
     const cur = document.documentElement.getAttribute("data-theme");
     const next = cur === null ? "light" : cur === "light" ? "dark" : null;
-    applyTheme(next); store.set(THEME_KEY, next); renderShell();
+    applyTheme(next); store.set(THEME_KEY, next); renderShell(); if (window.LOSMotion) window.LOSMotion.refreshTheme();
   }
 
   /* ---------- routing ---------- */
@@ -79,8 +81,8 @@
     }).join("");
     document.getElementById("rail").innerHTML = `
       <div class="brand"><span class="eyebrow">Project workspace</span><span class="brand-name">${esc(D.project.name)}</span></div>
-      <div class="clock"><span class="eyebrow">GlobalWave contract ends</span><span class="big">${daysUntil(end)} days</span><span class="small">${fmtDate(end)}</span></div>
-      <nav class="nav" aria-label="Sections">${navLinks}</nav>
+      <div class="clock"><span class="eyebrow"><span class="beacon" aria-hidden="true"></span>GlobalWave contract ends</span><span class="big">${daysUntil(end)} days</span><span class="small">${fmtDate(end)}</span></div>
+      <nav class="nav" aria-label="Sections"><span class="nav-ind" aria-hidden="true"></span>${navLinks}</nav>
       <div class="rail-foot">
         <span class="small muted">Data updated ${fmtDate(D.project.updated)}</span>
         <button class="theme-toggle" type="button" id="themeBtn">Theme: ${esc(theme)}</button>
@@ -171,23 +173,43 @@
     const openDecisions = D.decisions.decisions.filter((d) => d.status !== "decided");
     const topRisks = D.risks.risks.filter((r) => r.impact === "high").slice(0, 4);
     const nextActions = D.actions.actions.filter((a) => a.status !== "done").sort((a, b) => a.due.localeCompare(b.due)).slice(0, 5);
+    const t0 = todayUTC(), tEnd = parse(end);
+    const pos = (iso) => Math.max(0, Math.min(100, ((parse(iso) - t0) / (tEnd - t0)) * 100));
+    const stops = [
+      { iso: kick, label: "Kickoff", cls: "" },
+      { iso: sign, label: "Contract signed", cls: "" },
+      { iso: go, label: "Go-live", cls: "go" },
+      { iso: end, label: "Contract ends", cls: "end" },
+    ];
     return `<div class="page">
-      <section class="hero">
-        <div class="page-head">
-          <span class="eyebrow">${kd > 0 ? `Kickoff in ${kd} day${kd === 1 ? "" : "s"} · ${fmtDate(kick)}` : kd === 0 ? "Kickoff is today" : `Kicked off ${fmtDate(kick)}`}</span>
-          <h1>Replace the commercial LOS before GlobalWave ends</h1>
-          <p>This workspace holds the plan, the evidence behind it, and the decisions the team makes along the way. Bank figures are confirmed by the Head of Commercial Lending. Vendor and regulatory claims are tracked in the evidence register until someone verifies them.</p>
+      <section class="hero-stage">
+        <div class="hero-grid">
+          <div class="hero-copy">
+            <span class="hero-kicker">${kd > 0 ? `Kickoff in ${kd} day${kd === 1 ? "" : "s"} · ${fmtDate(kick)}` : kd === 0 ? "Kickoff is today" : `Kicked off ${fmtDate(kick)}`}</span>
+            <h1 class="hero-title">Replace the commercial LOS before GlobalWave ends</h1>
+            <p class="hero-sub">The plan, the evidence behind it, and every decision the team makes along the way. Bank figures are confirmed; vendor and regulatory claims stay in the evidence register until someone verifies them.</p>
+            <div class="hero-actions">
+              <a class="btn glow" href="#kickoff-1">Start the kickoff walkthrough <span aria-hidden="true">→</span></a>
+              <a class="btn ghost" href="#evidence">Review the evidence</a>
+            </div>
+          </div>
+          <div class="hero-count">
+            <span class="hero-kicker">Days until the contract ends</span>
+            <div class="odo" data-odo="${daysUntil(end)}" aria-label="${daysUntil(end)} days">${daysUntil(end)}</div>
+            <span class="hero-date">${new Date(tEnd).toLocaleDateString("en-US", { weekday: "long", timeZone: "UTC" })}, ${fmtDate(end)}</span>
+          </div>
         </div>
-        <div class="hero-actions">
-          <a class="btn primary" href="#kickoff-1">Start the kickoff walkthrough</a>
-          <a class="btn" href="#evidence">Review the evidence</a>
+        <div class="journey" aria-label="Journey from today to contract end">
+          <div class="j-line"><span class="j-fill" style="width:${pos(go)}%"></span><span class="j-buf" style="left:${pos(go)}%;width:${100 - pos(go)}%"></span><span class="j-comet" style="--to:${pos(go)}%"></span></div>
+          <span class="j-stop j-today below" style="left:0"><i></i><b>Today</b></span>
+          ${stops.map((x, i) => `<span class="j-stop ${x.cls} ${i % 2 ? "below" : ""}" style="left:${pos(x.iso)}%"><i></i><b>${esc(x.label)}</b><em>${fmtMonth(x.iso)}</em></span>`).join("")}
         </div>
       </section>
       <div class="figures">
-        <div class="figure"><span class="eyebrow">Contract ends</span><span class="val hard">${daysUntil(end)}</span><span class="lbl">days · ${fmtDate(end)}</span></div>
-        <div class="figure"><span class="eyebrow">Target go-live</span><span class="val">${daysUntil(go)}</span><span class="lbl">days · ${fmtDate(go)}</span></div>
-        <div class="figure"><span class="eyebrow">Contract signed by</span><span class="val">${daysUntil(sign)}</span><span class="lbl">days · ${fmtDate(sign)}</span></div>
-        <div class="figure"><span class="eyebrow">Buffer</span><span class="val">${daysBetween(go, end)}</span><span class="lbl">days between go-live and contract end</span></div>
+        <div class="figure"><span class="eyebrow">Contract ends</span><span class="val hard">${cnt(daysUntil(end))}</span><span class="lbl">days · ${fmtDate(end)}</span></div>
+        <div class="figure"><span class="eyebrow">Target go-live</span><span class="val">${cnt(daysUntil(go))}</span><span class="lbl">days · ${fmtDate(go)}</span></div>
+        <div class="figure"><span class="eyebrow">Contract signed by</span><span class="val">${cnt(daysUntil(sign))}</span><span class="lbl">days · ${fmtDate(sign)}</span></div>
+        <div class="figure"><span class="eyebrow">Buffer</span><span class="val">${cnt(daysBetween(go, end))}</span><span class="lbl">days between go-live and contract end</span></div>
       </div>
       <section class="panel">
         <div class="panel-head"><h2>Proposed roadmap</h2><a href="#plan" class="small">Phase details</a></div>
@@ -281,7 +303,7 @@
   }
   function weightRows(criteria, detail) {
     const max = Math.max(...criteria.map((c) => c.suggestedWeight));
-    return criteria.map((c) => `<div class="weight"><span>${esc(c.name)}</span><span class="w">${c.suggestedWeight}%</span>
+    return criteria.map((c) => `<div class="weight"><span>${esc(c.name)}</span><span class="w">${cnt(c.suggestedWeight, { suf: "%" })}</span>
       <div class="bar"><span style="width:${(c.suggestedWeight / max) * 100}%"></span></div>${detail ? `<span class="small muted wd" style="grid-column:1/-1">${esc(c.detail)}</span>` : ""}</div>`).join("");
   }
 
@@ -334,10 +356,10 @@
       const pct = (iso) => (daysBetween(kick, iso) / total) * 100;
       const months = (a, b) => Math.round(daysBetween(a, b) / 30.44);
       return `<div class="s-figs" style="--n:4">
-          <div class="s-fig"><span class="v brass">${months(kick, end)} mo</span><span class="l">from kickoff to contract end (${total} days)</span></div>
-          <div class="s-fig"><span class="v">${months(kick, sign)} mo</span><span class="l">to choose and sign a vendor</span></div>
-          <div class="s-fig"><span class="v">${months(sign, go)} mo</span><span class="l">to implement, test and train</span></div>
-          <div class="s-fig"><span class="v accent">${months(go, end)} mo</span><span class="l">buffer after go-live</span></div>
+          <div class="s-fig"><span class="v brass">${cnt(months(kick, end), { suf: " mo" })}</span><span class="l">from kickoff to contract end (${total} days)</span></div>
+          <div class="s-fig"><span class="v">${cnt(months(kick, sign), { suf: " mo" })}</span><span class="l">to choose and sign a vendor</span></div>
+          <div class="s-fig"><span class="v">${cnt(months(sign, go), { suf: " mo" })}</span><span class="l">to implement, test and train</span></div>
+          <div class="s-fig"><span class="v accent">${cnt(months(go, end), { suf: " mo" })}</span><span class="l">buffer after go-live</span></div>
         </div>
         <div class="track" aria-hidden="true">
           <span class="tick first" style="left:0">Kickoff · ${fmtMonth(kick)}</span>
@@ -351,8 +373,8 @@
     profile: () => {
       const b = D.project.bank;
       return `<div class="s-figs" style="--n:4">
-          <div class="s-fig"><span class="v">$${b.totalAssets.toFixed(1)}B</span><span class="l">total assets, targeting <b>$${b.targetAssets.toFixed(1)}B</b></span></div>
-          <div class="s-fig"><span class="v">$${b.commercialPortfolio.toFixed(1)}B</span><span class="l">commercial loan portfolio</span></div>
+          <div class="s-fig"><span class="v">${cnt(b.totalAssets, { dec: 1, pre: "$", suf: "B" })}</span><span class="l">total assets, targeting <b>$${b.targetAssets.toFixed(1)}B</b></span></div>
+          <div class="s-fig"><span class="v">${cnt(b.commercialPortfolio, { dec: 1, pre: "$", suf: "B" })}</span><span class="l">commercial loan portfolio</span></div>
           <div class="s-fig"><span class="v">${money(b.loanSizeMin)}–${money(b.loanSizeMax)}</span><span class="l">typical commercial deal size</span></div>
           <div class="s-fig"><span class="v brass">Part-time</span><span class="l">loan technology admin; no Salesforce staff</span></div>
         </div>
@@ -362,8 +384,8 @@
         </div></div>`;
     },
     systems: () => {
-      const box = (x, y, w, h, t3, t1, t2, cls = "") => `<rect class="box ${cls}" x="${x}" y="${y}" width="${w}" height="${h}" rx="8"/><text class="t3" x="${x + 16}" y="${y + 24}">${esc(t3)}</text><text class="t1" x="${x + 16}" y="${y + 52}">${esc(t1)}</text><text class="t2" x="${x + 16}" y="${y + 76}">${esc(t2)}</text>`;
-      const edge = (x1, y1, x2, y2, label, lx, ly, cls = "", anchor = "middle") => `<path class="edge ${cls}" d="M${x1} ${y1} L${x2} ${y2}" marker-end="url(#ah)"/><text class="elabel" x="${lx}" y="${ly}" text-anchor="${anchor}">${esc(label)}</text>`;
+      const box = (x, y, w, h, t3, t1, t2, cls = "") => `<g class="node ${cls}"><rect class="box ${cls}" x="${x}" y="${y}" width="${w}" height="${h}" rx="8"/><text class="t3" x="${x + 16}" y="${y + 24}">${esc(t3)}</text><text class="t1" x="${x + 16}" y="${y + 52}">${esc(t1)}</text><text class="t2" x="${x + 16}" y="${y + 76}">${esc(t2)}</text></g>`;
+      const edge = (x1, y1, x2, y2, label, lx, ly, cls = "", anchor = "middle", flow = "out") => `<path class="edge ${cls}" data-flow="${flow}" d="M${x1} ${y1} L${x2} ${y2}" marker-end="url(#ah)"/><text class="elabel" x="${lx}" y="${ly}" text-anchor="${anchor}">${esc(label)}</text>`;
       return `<div class="sys-wrap"><svg class="sys" viewBox="0 0 860 440" role="img" aria-label="Systems that connect to the commercial LOS">
         <defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="arrow" d="M0 0 L10 5 L0 10 z"/></marker></defs>
         ${box(290, 172, 280, 96, "TO BE SELECTED", "Commercial LOS", "Origination · underwriting · approval", "core")}
@@ -372,7 +394,7 @@
         ${box(0, 330, 260, 96, "CORE BANKING", "COCC", "Boarding, customer records")}
         ${box(600, 330, 260, 96, "CONTENT MANAGEMENT", "Identifi", "Credit files, imaging")}
         ${box(305, 0, 250, 96, "INCUMBENT · ENDS 3/1/2029", "GlobalWave", "Credit Track", "old")}
-        ${edge(262, 120, 300, 170, "ratings", 276, 162, "", "end")}
+        ${edge(262, 120, 300, 170, "ratings", 276, 162, "", "end", "both")}
         ${edge(560, 170, 598, 120, "deal data", 584, 162, "", "start")}
         ${edge(300, 270, 262, 328, "boarding", 276, 290, "", "end")}
         ${edge(560, 270, 598, 328, "documents", 584, 290, "", "start")}
@@ -381,7 +403,7 @@
     },
     claimSummary: () => {
       const cc = claimCounts();
-      return `<div class="s-figs" style="--n:${cc.length}">${cc.map((x) => `<div class="s-fig"><span class="v">${x.n}</span><span class="l">${pill("st-" + x.s, statusLabel(x.s))}</span></div>`).join("")}</div>
+      return `<div class="s-figs" style="--n:${cc.length}">${cc.map((x) => `<div class="s-fig"><span class="v">${cnt(x.n)}</span><span class="l">${pill("st-" + x.s, statusLabel(x.s))}</span></div>`).join("")}</div>
         <p class="s-muted small">${esc(D.claims.checkNote || "")} Full detail in the <a href="#evidence">evidence register</a>.</p>`;
     },
     findings: (b) => `<div class="s-cards">${b.ids.map((id) => {
@@ -442,6 +464,7 @@
         <div class="kicker"><span>${esc(s.kicker)}</span><span>${esc(s.section)}</span></div>
         <h1>${esc(s.title)}</h1>
         <div class="blocks">${s.blocks.map((b) => (BLOCKS[b.type] ? BLOCKS[b.type](b) : "")).join("")}</div>
+        <span class="s-num" aria-hidden="true">${String(i + 1).padStart(2, "0")}</span>
         <div class="slide-foot"><span>${esc(D.project.name)}</span><span>${i + 1} / ${n} · ~${s.minutes} min</span></div>
       </article>
       <aside class="presenter" aria-label="Presenter notes">
@@ -537,6 +560,15 @@
     else if (e.key === "f" || e.key === "F") document.body.classList.contains("audience") ? exitAudience() : document.getElementById("presentBtn").click();
     else if (e.key === "n" || e.key === "N") { showNotes = !showNotes; render(); }
   });
+  let touch = null;
+  document.addEventListener("touchstart", (e) => { if (route().view === "kickoff" && e.target.closest && e.target.closest(".slide")) touch = { x: e.touches[0].clientX, y: e.touches[0].clientY }; }, { passive: true });
+  document.addEventListener("touchend", (e) => {
+    if (!touch) return;
+    const dx = e.changedTouches[0].clientX - touch.x, dy = e.changedTouches[0].clientY - touch.y; touch = null;
+    if (Math.abs(dx) < 60 || Math.abs(dx) < Math.abs(dy) * 1.5) return;
+    const i = route().slide, n = D.kickoff.slides.length;
+    if (dx < 0 && i < n - 1) location.hash = `kickoff-${i + 2}`; else if (dx > 0 && i > 0) location.hash = `kickoff-${i}`;
+  }, { passive: true });
   document.addEventListener("fullscreenchange", () => { if (!document.fullscreenElement) document.body.classList.remove("audience"); });
 
   /* ---------- Evidence filter binding ---------- */
@@ -545,7 +577,7 @@
   }
 
   /* ---------- render ---------- */
-  let lastView = null;
+  let lastView = null, lastSlide = -1;
   function render() {
     const r = route();
     renderShell();
@@ -554,7 +586,9 @@
     if (r.view === "kickoff") { main.innerHTML = viewKickoff(r.slide); bindKickoff(Math.min(r.slide, D.kickoff.slides.length - 1)); }
     else { main.innerHTML = views[r.view](); if (r.view === "evidence") bindEvidence(); document.body.classList.remove("audience"); }
     if (lastView !== r.view) window.scrollTo(0, 0);
-    lastView = r.view;
+    const info = { view: r.view, slide: r.slide, viewChanged: lastView !== r.view, slideChanged: r.view === "kickoff" && r.slide !== lastSlide, dir: r.slide >= lastSlide ? 1 : -1 };
+    lastView = r.view; lastSlide = r.view === "kickoff" ? r.slide : -1;
+    if (window.LOSMotion) { try { window.LOSMotion.afterRender(main, info); } catch (e) { console.warn("motion", e); } }
   }
 
   window.addEventListener("hashchange", render);
