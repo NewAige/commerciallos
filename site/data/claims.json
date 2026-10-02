@@ -75,10 +75,10 @@
     {
       "id": "C06",
       "topic": "Current system",
-      "think": "Credit Track may be hard for RMs to learn and use. The bank's own staff know this far better than any outside opinion.",
+      "think": "Credit Track may be hard for CLOs to learn and use. The bank's own staff know this far better than any outside opinion.",
       "confidence": "unsure",
       "learn": "What works and what doesn't in Credit Track today?",
-      "how": "Survey RMs, PMs, credit analysts and loan ops.",
+      "how": "Survey CLOs, PMs, credit analysts and loan ops.",
       "owner": "Project lead",
       "origin": "Draft assessment §2: The incumbent (GlobalWave CreditTrack) has a complex interface and a steep learning curve for RMs."
     },

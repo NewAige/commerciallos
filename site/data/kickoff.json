@@ -163,10 +163,10 @@
       "blocks": [
         { "type": "criteria" }
       ],
-      "notes": "These weights are a starting suggestion. We will finalize them by the end of March 2027, before any vendor demo, so a polished demo does not reset our priorities. Integrations and admin burden are weighted heavily because of the part-time admin model. The RM and PM panel scores usability directly.",
+      "notes": "These weights are a starting suggestion. We will finalize them by the end of March 2027, before any vendor demo, so a polished demo does not reset our priorities. Integrations and admin burden are weighted heavily because of the part-time admin model. The CLO and PM panel scores usability directly.",
       "discuss": [
         "What is missing from this list?",
-        "Who should sit on the RM and PM user panel?"
+        "Who should sit on the CLO and PM user panel?"
       ],
       "capture": "Criteria changes and panel volunteers"
     },

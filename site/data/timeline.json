@@ -23,8 +23,8 @@
       "end": "2027-03-31",
       "goal": "Document how commercial loans flow today and what the new system must do.",
       "deliverables": [
-        "Current-state process maps (RM, credit, loan ops, doc prep, boarding)",
-        "Pain-point survey of RMs, PMs, analysts and loan ops",
+        "Current-state process maps (CLO, credit, loan ops, doc prep, boarding)",
+        "Pain-point survey of CLOs, PMs, analysts and loan ops",
         "Prioritized requirements (must / should / could)",
         "Integration inventory: COCC, LaserPro, Identifi, Abrigo",
         "Data inventory and conversion needs from GlobalWave"
@@ -78,7 +78,7 @@
       "goal": "Prove it works on real deals and get every user ready.",
       "deliverables": [
         "System and integration testing",
-        "User acceptance testing with RMs, credit and loan ops",
+        "User acceptance testing with CLOs, credit and loan ops",
         "Role-based training and super-users",
         "Cutover plan and go/no-go"
       ]
