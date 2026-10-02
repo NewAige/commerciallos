@@ -6,7 +6,6 @@
   const FILES = ["project", "timeline", "claims", "decisions", "risks", "team", "options", "actions"]; // meeting decks are added from MEETINGS below
   // loaded if present; the site still works without them
   const OPTIONAL = ["surveys", "survey-responses"];
-  const NOTES_KEY = "los-kickoff-notes-v1";
   const THEME_KEY = "los-theme";
   const D = {};
   const app = document.getElementById("app");
@@ -30,13 +29,11 @@
   // number that motion.js counts up from zero; the final value is in the markup so it reads correctly at rest
   const cnt = (v, o = {}) => { const dec = o.dec || 0; const txt = (o.pre || "") + Number(v).toLocaleString("en-US", { minimumFractionDigits: dec, maximumFractionDigits: dec }) + (o.suf || ""); return `<span data-count="${v}" data-dec="${dec}" data-pre="${esc(o.pre || "")}" data-suf="${esc(o.suf || "")}">${esc(txt)}</span>`; };
   const pill = (cls, text) => `<span class="pill ${esc(cls)}">${esc(text)}</span>`;
-  const inFrame = (() => { try { return window.self !== window.top; } catch (e) { return true; } })();
 
   const store = {
     get(key, fallback) { try { const v = localStorage.getItem(key); return v ? JSON.parse(v) : fallback; } catch (e) { return fallback; } },
     set(key, val) { try { localStorage.setItem(key, JSON.stringify(val)); } catch (e) { /* storage unavailable */ } },
   };
-  let notes = null; // notes for the meeting deck on screen; loaded by useMeeting()
 
   /* ---------- theme ---------- */
   function applyTheme(t) { if (t) document.documentElement.setAttribute("data-theme", t); else document.documentElement.removeAttribute("data-theme"); }
@@ -51,7 +48,7 @@
   // Meeting slide decks. Each deck is its own data file with the same shape as kickoff.json
   // (title, date, lengthMinutes, goals, slides). To add a meeting, add its file to site/data and a line here.
   const MEETINGS = [
-    { id: "kickoff", file: "kickoff", label: "Kickoff walkthrough", notesKey: NOTES_KEY },
+    { id: "kickoff", file: "kickoff", label: "Kickoff walkthrough" },
   ];
   const meeting = (id) => MEETINGS.find((m) => m.id === id);
   const deckData = (m) => D[m.file];
@@ -441,7 +438,7 @@
     const ms = MEETINGS.filter((m) => deckData(m)).sort((a, b) => deckData(b).date.localeCompare(deckData(a).date));
     return `<div class="page">
       <div class="page-head"><span class="eyebrow">Meetings</span><h1>Meeting walkthroughs</h1>
-        <p>Slides and presenter notes for each project meeting. Notes typed during a meeting stay in your browser until you copy them into the repo.</p></div>
+        <p>Slides for each project meeting. Open them on the shared screen and use Present for full screen. Talking points are in each meeting\'s facilitator guide.</p></div>
       <section class="panel"><div class="list">${ms.map((m) => {
         const k = deckData(m), dd = daysUntil(k.date);
         const sections = [...new Set(k.slides.map((x) => x.section))];
@@ -759,9 +756,8 @@
     }).join("")}</div>`,
     decision: (b) => {
       const d = D.decisions.decisions.find((x) => x.id === b.id);
-      const pick = notes.picks[d.id];
-      return `${b.compact ? `<p class="lead">${esc(d.question)}</p>` : `<p class="lead">${esc(d.question)}</p>`}
-        ${d.options.length ? `<div class="s-options" role="group" aria-label="${esc(d.title)}">${d.options.map((o, i) => `<button type="button" class="s-option" data-decision="${d.id}" data-opt="${i}" aria-pressed="${pick === i}"><span class="radio"></span><span>${esc(o)}</span></button>`).join("")}</div>` : ""}
+      return `<p class="lead">${esc(d.question)}</p>
+        ${d.options.length ? `<ul class="s-options" aria-label="${esc(d.title)}">${d.options.map((o) => `<li class="s-option">${esc(o)}</li>`).join("")}</ul>` : ""}
         ${b.compact ? "" : `<div class="s-rec"><b>Recommendation</b>${esc(d.recommendation)}</div>`}`;
     },
     paths: () => `<div class="s-cards">${D.options.paths.map((p) => `<div class="s-card"><div class="ct">${esc(p.name)}</div><div class="cb">${esc(p.summary)}</div>
@@ -770,7 +766,7 @@
     criticalPath: () => `<ul class="s-list">${D.timeline.criticalPathNotes.slice(0, 3).map((n) => `<li>${esc(n)}</li>`).join("")}</ul>`,
     criteria: () => `<div class="weights s-weights">${weightRows(D.options.criteria, false)}</div>`,
     team: () => `<div class="table-wrap"><table class="s-table"><thead><tr><th>Role</th><th>Name</th><th>Time</th></tr></thead><tbody>
-        ${D.team.roles.map((r, i) => `<tr><td>${esc(r.role)}</td><td><input type="text" id="role-${i}" data-role="${esc(r.role)}" value="${esc(notes.names[r.role] || (/TBD|volunteers/.test(r.name) ? "" : r.name))}" placeholder="${esc(r.name)}" aria-label="Name for ${esc(r.role)}"></td><td class="mono s-muted">${esc(r.time)}</td></tr>`).join("")}
+        ${D.team.roles.map((r) => `<tr><td>${esc(r.role)}</td><td>${esc(r.name)}</td><td class="mono s-muted">${esc(r.time)}</td></tr>`).join("")}
       </tbody></table></div>`,
     risks: (b) => `<div class="s-cards">${D.risks.risks.slice(0, b.limit || 6).map((r) => `<div class="s-card"><div class="row-head"><span class="ct">${esc(r.title)}</span>${pill("lv-" + r.impact, r.impact)}</div><div class="cb">${esc(r.mitigation)}</div></div>`).join("")}</div>`,
     actions: () => `<div class="table-wrap"><table class="s-table"><thead><tr><th>Action</th><th>Owner</th><th>Due</th></tr></thead><tbody>
@@ -782,18 +778,8 @@
   /* ---------- Meeting decks ---------- */
   let curMeeting = MEETINGS[0];
   const deck = () => deckData(curMeeting);
-  const emptyNotes = () => ({ slides: {}, picks: {}, names: {} });
-  function useMeeting(id) {
-    if (curMeeting.id === id && notes) return;
-    curMeeting = meeting(id);
-    notes = Object.assign(emptyNotes(), store.get(curMeeting.notesKey || `los-${curMeeting.id}-notes-v1`, emptyNotes()));
-  }
-  const saveNotes = () => store.set(curMeeting.notesKey || `los-${curMeeting.id}-notes-v1`, notes);
+  function useMeeting(id) { if (curMeeting.id !== id) curMeeting = meeting(id); }
   const slideHash = (j) => `${curMeeting.id}-${j + 1}`;
-  let showNotes = window.matchMedia("(min-width: 700px)").matches;
-  let timerStart = null, timerHandle = null;
-
-  function plannedAt(i) { return deck().slides.slice(0, i).reduce((s, x) => s + x.minutes, 0); }
 
   function viewDeck(idx) {
     const k = deck();
@@ -802,14 +788,13 @@
     const s = k.slides[i];
     const sections = [];
     k.slides.forEach((x, j) => { if (!sections.length || sections[sections.length - 1].name !== x.section) sections.push({ name: x.section, at: j }); });
-    return `<div class="kick ${showNotes ? "" : "notes-off"}" id="kick">
+    return `<div class="kick" id="kick">
       <div class="kick-bar">
         <div class="group"><span class="eyebrow"><a href="#meetings">Meetings</a> · ${esc(curMeeting.label)} · ${fmtDate(k.date)} · ${k.lengthMinutes} min</span></div>
         <div class="group">
           <button class="btn small" type="button" id="prevBtn" ${i === 0 ? "disabled" : ""}>Previous</button>
           <span class="mono small">${i + 1} / ${n}</span>
           <button class="btn small primary" type="button" id="nextBtn" ${i === n - 1 ? "disabled" : ""}>Next</button>
-          <button class="btn small" type="button" id="notesBtn" aria-pressed="${showNotes}">${showNotes ? "Hide" : "Show"} presenter notes</button>
           <button class="btn small" type="button" id="presentBtn">Present</button>
         </div>
       </div>
@@ -822,53 +807,15 @@
         <span class="s-num" aria-hidden="true">${String(i + 1).padStart(2, "0")}</span>
         <div class="slide-foot"><span>${esc(D.project.name)}</span><span>${i + 1} / ${n} · ~${s.minutes} min</span></div>
       </article>
-      <aside class="presenter" aria-label="Presenter notes">
-        <section class="panel">
-          <div class="timer"><span class="eyebrow">Meeting clock</span><span class="t" id="timerT">${timerStart ? "" : "0:00"}</span><button class="btn small" type="button" id="timerBtn">${timerStart ? "Stop" : "Start"}</button></div>
-          <span class="small muted">Plan: this slide starts at minute ${plannedAt(i)} and runs ~${s.minutes} min.</span>
-        </section>
-        <section class="panel"><span class="eyebrow">Talking points</span><p class="notes-text">${esc(s.notes)}</p></section>
-        ${s.discuss.length ? `<section class="panel"><span class="eyebrow">Ask the room</span><ul class="prompts">${s.discuss.map((d) => `<li>${esc(d)}</li>`).join("")}</ul></section>` : ""}
-        ${s.capture ? `<section class="panel"><label class="eyebrow" for="cap-${s.id}">Capture: ${esc(s.capture)}</label><textarea id="cap-${s.id}" data-slide="${s.id}" placeholder="Type notes during the meeting. They stay in this browser until you copy them out.">${esc(notes.slides[s.id] || "")}</textarea></section>` : ""}
-        <section class="panel">
-          <span class="eyebrow">Meeting record</span>
-          <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn small" type="button" id="copyBtn">Copy notes as Markdown</button>${inFrame ? "" : `<button class="btn small" type="button" id="dlBtn">Download notes</button>`}<button class="btn small" type="button" id="clearBtn">Clear notes</button></div>
-          <span class="toast" id="toast"></span>
-          <span class="small muted">Paste the notes into <span class="mono">docs/${esc(curMeeting.id)}/</span> in the repo so the team and agents can update the decision log.</span>
-        </section>
-      </aside>
       <button class="exit-audience" type="button" id="exitBtn">Exit presentation (Esc)</button>
     </div>`;
   }
 
-  function notesMarkdown() {
-    const k = deck();
-    let md = `# ${curMeeting.label} notes, ${fmtDate(k.date)}\n\n_Exported ${new Date().toLocaleString()}_\n\n## Decisions\n\n`;
-    D.decisions.decisions.forEach((d) => {
-      if (notes.picks[d.id] != null) md += `- **${d.id} ${d.title}**: ${d.options[notes.picks[d.id]]}\n`;
-    });
-    if (!Object.keys(notes.picks).length) md += "- None recorded\n";
-    md += `\n## Team\n\n`;
-    D.team.roles.forEach((r) => { if (notes.names[r.role]) md += `- ${r.role}: ${notes.names[r.role]}\n`; });
-    if (!Object.values(notes.names).some(Boolean)) md += "- No names recorded\n";
-    md += `\n## Notes by topic\n\n`;
-    k.slides.forEach((s) => { if (s.capture && (notes.slides[s.id] || "").trim()) md += `### ${s.title}\n_${s.capture}_\n\n${notes.slides[s.id].trim()}\n\n`; });
-    return md;
-  }
   function copyText(text) {
     const fallback = () => { const ta = document.createElement("textarea"); ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0"; document.body.appendChild(ta); ta.select(); let ok = false; try { ok = document.execCommand("copy"); } catch (e) { /* ignore */ } ta.remove(); flash(ok ? "Copied." : "Copy failed. Select the text and copy by hand."); };
     if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(() => flash("Copied."), fallback); else fallback();
   }
   function flash(msg) { const t = document.getElementById("toast"); if (t) { t.textContent = msg; setTimeout(() => { if (t) t.textContent = ""; }, 3500); } }
-  let clearArmed = false;
-
-  function tickTimer() {
-    const el = document.getElementById("timerT"); if (!el || !timerStart) return;
-    const sec = Math.floor((Date.now() - timerStart) / 1000);
-    el.textContent = `${Math.floor(sec / 60)}:${String(sec % 60).padStart(2, "0")}`;
-    const i = route().slide;
-    el.classList.toggle("late", sec / 60 > plannedAt(i) + deck().slides[Math.min(i, deck().slides.length - 1)].minutes);
-  }
 
   function bindDeck(i) {
     const n = deck().slides.length;
@@ -876,44 +823,19 @@
     const q = (id) => document.getElementById(id);
     q("prevBtn").onclick = () => go(i - 1);
     q("nextBtn").onclick = () => go(i + 1);
-    q("notesBtn").onclick = () => { showNotes = !showNotes; render(); };
     q("presentBtn").onclick = () => { document.body.classList.add("audience"); try { document.documentElement.requestFullscreen && document.documentElement.requestFullscreen().catch(() => {}); } catch (e) { /* optional */ } };
     q("exitBtn").onclick = exitAudience;
     document.querySelectorAll(".progress [data-go]").forEach((b) => (b.onclick = () => go(+b.dataset.go)));
-    document.querySelectorAll("[data-decision]").forEach((b) => (b.onclick = () => {
-      const id = b.dataset.decision, o = +b.dataset.opt;
-      if (notes.picks[id] === o) delete notes.picks[id]; else notes.picks[id] = o;
-      saveNotes(); render();
-    }));
-    document.querySelectorAll("textarea[data-slide]").forEach((t) => (t.oninput = () => { notes.slides[t.dataset.slide] = t.value; saveNotes(); }));
-    document.querySelectorAll("input[data-role]").forEach((t) => (t.oninput = () => { notes.names[t.dataset.role] = t.value; saveNotes(); }));
-    q("timerBtn").onclick = () => {
-      if (timerStart) { timerStart = null; clearInterval(timerHandle); } else { timerStart = Date.now(); timerHandle = setInterval(tickTimer, 1000); }
-      render();
-    };
-    tickTimer();
-    q("copyBtn").onclick = () => copyText(notesMarkdown());
-    if (q("dlBtn")) q("dlBtn").onclick = () => {
-      const blob = new Blob([notesMarkdown()], { type: "text/markdown" });
-      const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = `${curMeeting.id}-notes-${deck().date}.md`; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 1000);
-    };
-    q("clearBtn").onclick = () => {
-      if (!clearArmed) { clearArmed = true; q("clearBtn").textContent = "Click again to clear all notes"; setTimeout(() => { clearArmed = false; const b = q("clearBtn"); if (b) b.textContent = "Clear notes"; }, 4000); return; }
-      clearArmed = false; notes = emptyNotes(); saveNotes(); render(); flash("Notes cleared.");
-    };
   }
   function exitAudience() { document.body.classList.remove("audience"); try { if (document.fullscreenElement) document.exitFullscreen(); } catch (e) { /* optional */ } }
 
   document.addEventListener("keydown", (e) => {
     if (route().view !== "deck") return;
-    const tag = (e.target && e.target.tagName) || "";
-    if (tag === "TEXTAREA" || tag === "INPUT") return;
     const i = route().slide, n = deck().slides.length;
     if (["ArrowRight", "PageDown", " "].includes(e.key)) { e.preventDefault(); if (i < n - 1) location.hash = slideHash(i + 1); }
     else if (["ArrowLeft", "PageUp"].includes(e.key)) { e.preventDefault(); if (i > 0) location.hash = slideHash(i - 1); }
     else if (e.key === "Escape") exitAudience();
     else if (e.key === "f" || e.key === "F") document.body.classList.contains("audience") ? exitAudience() : document.getElementById("presentBtn").click();
-    else if (e.key === "n" || e.key === "N") { showNotes = !showNotes; render(); }
   });
   let touch = null;
   document.addEventListener("touchstart", (e) => { if (route().view === "deck" && e.target.closest && e.target.closest(".slide")) touch = { x: e.touches[0].clientX, y: e.touches[0].clientY }; }, { passive: true });

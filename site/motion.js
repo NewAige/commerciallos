@@ -264,9 +264,6 @@
     play(slide.querySelector(".s-num"), [{ transform: `translate(${dir * 60}px, 30px)`, opacity: 0 }, { transform: "none", opacity: 1 }], { delay: 200, duration: 1400, easing: "cubic-bezier(.16,1,.3,1)" });
     const cur = document.querySelector(".progress .cur");
     if (cur) play(cur, [{ transform: "scaleX(.2)", opacity: 0.4 }, { transform: "scaleX(1)", opacity: 1 }], { duration: 600, easing: BACK });
-    const presenter = document.querySelector(".presenter");
-    if (presenter && info.viewChanged) stagger($$(".presenter > *"), RISE, { delay: 300 }, 80);
-    else if (presenter) $$(".presenter .notes-text, .presenter .prompts").forEach((el) => play(el, FADE, { duration: 400 }));
   }
 
   /* ---------- pages ---------- */
