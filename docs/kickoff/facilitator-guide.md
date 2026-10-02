@@ -17,8 +17,8 @@
 | 5 | Why now | The deadline | The 29-month clock and the buffer |
 | 12 | Where we are | Our bank | Confirm the profile; the complex 10% / 30% split |
 | 18 | Where we are | Systems | COCC, LaserPro, Identifi, Abrigo, GlobalWave |
-| 24 | What we know | Starting material | What the AI assessment is and isn't |
-| 30 | What we know | First check | Claims that don't hold up |
+| 24 | What we know | What we think | Where we stand and how sure we are |
+| 30 | What we know | What we need to learn | Open questions and owners |
 | 38 | Decide | Scope (D01) | LOS only, LOS + small business, or all three |
 | 48 | Decide | GlobalWave (D03) | Is staying a real option? |
 | 54 | Plan | Roadmap | Phases, gates, target go-live Aug 2028 |
@@ -35,7 +35,7 @@ Head of Commercial Lending, a lending executive who could sponsor, credit admini
 
 - [ ] Open the site on the presenting laptop and click through all 13 slides once.
 - [ ] Try to find the GlobalWave contract and check for a non-renewal notice period. If found, add it to `site/data/project.json` → `keyDates` and update risk R01.
-- [ ] Share the Overview page link with attendees a day ahead and ask them to skim the Evidence register.
+- [ ] Share the Overview page link with attendees a day ahead and ask them to skim What we think and What we need to learn.
 - [ ] Decide who will type notes in the presenter panel (ideally not the presenter).
 - [ ] Clear any test notes: presenter panel → **Clear notes**.
 

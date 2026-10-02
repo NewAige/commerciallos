@@ -19,7 +19,7 @@
         { "type": "lead", "text": "Today starts the planning for a new commercial LOS. Our contract with GlobalWave ends on March 1, 2029, and the replacement must be running well before then." },
         { "type": "goals" }
       ],
-      "notes": "Welcome everyone. Explain that this meeting is a working session, not a vendor decision. We will walk through the deadline, what we know about the bank, what an AI-assisted assessment told us and where it falls short, then make a few early decisions. Everything we decide today gets recorded in this workspace.",
+      "notes": "Welcome everyone. Explain that this meeting is a working session, not a vendor decision. We will walk through the deadline, what we know about the bank, what we think so far and what we still need to learn, then make a few early decisions. Everything we decide today gets recorded in this workspace.",
       "discuss": [],
       "capture": "Who is in the room?"
     },
@@ -74,34 +74,34 @@
       "capture": "Integration pain points today"
     },
     {
-      "id": "assessment",
+      "id": "think",
       "section": "What we know",
       "minutes": 6,
-      "kicker": "Starting material",
-      "title": "We have an AI-assisted assessment. It is a starting point, not evidence.",
+      "kicker": "What we think",
+      "title": "Where we stand, and how sure we are",
       "blocks": [
-        { "type": "lead", "text": "The Gemini assessment compared Abrigo, GlobalWave and nCino and recommended Abrigo. The bank facts in it are accurate. The vendor, pricing and regulatory content came from a language model and has to be verified." },
-        { "type": "claimSummary" }
+        { "type": "lead", "text": "Bank facts are confirmed. Most of what we think about vendors, cost and regulation is still a lead, not a fact. It gets confirmed through demos, reference calls, real pricing and our own experts." },
+        { "type": "thinking" }
       ],
-      "notes": "Be fair to the document: it is a useful frame and it raised the right topics (integration, admin burden, adoption, cost). But it reached a vendor recommendation before we have requirements, demos or references. We built an evidence register that tracks each claim, its status and who will check it. A preliminary web check was done on October 2.",
+      "notes": "We started from a draft assessment from September (prepared with an AI tool, Gemini) that compared Abrigo, GlobalWave and nCino. It raised the right topics: integration, admin burden, adoption and cost. But it picked a vendor before we had requirements, demos or references, so we are not walking through it line by line. Instead we turned it into what we think and how sure we are. A first check against public sources was done on October 2. Two things are settled: Section 1071 does not apply to the bank, and no product called 'Abrigo APX' turned up.",
       "discuss": [],
       "capture": ""
     },
     {
-      "id": "findings",
+      "id": "learn",
       "section": "What we know",
       "minutes": 8,
-      "kicker": "What the first check found",
-      "title": "Several claims don't hold up",
+      "kicker": "What we need to learn",
+      "title": "Questions we have to answer before we choose",
       "blocks": [
-        { "type": "findings", "ids": ["C08", "C03", "C05", "C04", "C10", "C16", "C15"] }
+        { "type": "questions", "ids": ["C09", "C11", "C05", "C06", "C10", "C19", "C15"] }
       ],
-      "notes": "Walk through each card briefly. The point is not that the document is bad; it is that our decision has to rest on demos, references and real pricing. The most important correction: 'Abrigo APX' does not appear to be a real product name. The 1071 rule changed in May 2026, and the bank has confirmed it does not apply to us, so we can drop it from requirements. The nCino timeline in the document looks overstated based on nCino's own filings.",
+      "notes": "Walk through each card briefly and confirm who owns it. These are the questions that most affect the choice. The full list, with how we'll answer each one, is on the What we need to learn page.",
       "discuss": [
-        "Is there anything in the assessment we have already relied on?",
-        "Who should own checking the remaining claims?"
+        "Is anything we think wrong, or missing?",
+        "Who should own each open question?"
       ],
-      "capture": "Owners for open claims"
+      "capture": "Owners for open questions"
     },
     {
       "id": "scope",
@@ -211,7 +211,7 @@
       "blocks": [
         { "type": "actions" }
       ],
-      "notes": "Read through each action and confirm an owner and date. Agree on the next meeting. Remind everyone that this workspace is the single place for decisions, evidence, risks and the plan, and that it will be kept current.",
+      "notes": "Read through each action and confirm an owner and date. Agree on the next meeting. Remind everyone that this workspace is the single place for decisions, what we think, open questions, risks and the plan, and that it will be kept current.",
       "discuss": [
         "Are the owners and dates right?",
         "When is the first core team meeting?"

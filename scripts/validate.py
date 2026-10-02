@@ -12,15 +12,21 @@ for f in sorted(DATA.glob("*.json")):
         errors.append(f"{f.name}: {e}")
 if not errors:
     claims = {c["id"] for c in d["claims"]["claims"]}
-    statuses = set(d["claims"]["statuses"])
+    levels = set(d["claims"]["confidence"])
     decisions = {x["id"] for x in d["decisions"]["decisions"]}
+    open_q = {c["id"] for c in d["claims"]["claims"] if c.get("learn")}
     for c in d["claims"]["claims"]:
-        if c["status"] not in statuses:
-            errors.append(f"claims {c['id']}: unknown status {c['status']}")
+        if c["confidence"] not in levels:
+            errors.append(f"claims {c['id']}: unknown confidence {c['confidence']}")
+        if c["confidence"] == "confirmed" and not c.get("sources"):
+            errors.append(f"claims {c['id']}: confirmed but no sources")
+        if c.get("learn") and not (c.get("how") and c.get("owner")):
+            errors.append(f"claims {c['id']}: open question needs 'how' and 'owner'")
     for s in d["kickoff"]["slides"]:
         for b in s["blocks"]:
             for i in b.get("ids", []):
                 if i not in claims: errors.append(f"kickoff {s['id']}: unknown claim {i}")
+                elif b["type"] == "questions" and i not in open_q: errors.append(f"kickoff {s['id']}: {i} has no open question")
             if b["type"] == "decision" and b["id"] not in decisions:
                 errors.append(f"kickoff {s['id']}: unknown decision {b['id']}")
     ids = {k["id"] for k in d["project"]["keyDates"]}
