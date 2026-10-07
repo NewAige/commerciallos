@@ -56,6 +56,8 @@
   function route() {
     let h = decodeURIComponent((location.hash || "#overview").slice(1));
     if (h === "evidence") h = "think"; // old links
+    const pr = h.match(/^([a-z0-9-]+)\/print$/);
+    if (pr && meeting(pr[1]) && deckData(meeting(pr[1]))) return { view: "print", deck: pr[1], key: pr[1], page: h, slide: 0 };
     const m = h.match(/^([a-z0-9-]+?)(?:-(\d+))?$/);
     if (m && meeting(m[1]) && deckData(meeting(m[1]))) {
       const n = deckData(meeting(m[1])).slides.length;
@@ -135,6 +137,7 @@
       <nav class="nav" aria-label="Sections"><span class="nav-ind" aria-hidden="true"></span>${navLinks}</nav>
       <div class="rail-foot">
         <span class="small muted">Data updated ${fmtDate(D.project.updated)}</span>
+        ${OFFLINE && window.LOS_SAVED ? `<span class="small muted">Offline copy saved ${fmtDate(window.LOS_SAVED)}</span>` : ""}
         <button class="theme-toggle" type="button" id="themeBtn">Theme: ${esc(theme)}</button>
       </div>`;
     const nav = document.querySelector(".rail .nav"), navCur = nav && nav.querySelector('a[aria-current="page"]');
@@ -447,7 +450,9 @@
           <div class="row-head"><h3><a href="#${m.id}-1">${esc(m.label)}</a></h3>${pill(dd >= 0 ? "st-open" : "st-done", when)}</div>
           <p class="small">${esc(k.title)}</p>
           <div class="meta"><span class="mono">${fmtDate(k.date)}</span><span>${cnt(k.lengthMinutes)} min</span><span>${cnt(k.slides.length)} slides</span><span>${esc(sections.join(" · "))}</span></div>
-          <div><a class="btn small" href="#${m.id}-1">Open the slides <span aria-hidden="true">→</span></a></div>
+          <div class="btn-row"><a class="btn small" href="#${m.id}-1">Open the slides <span aria-hidden="true">→</span></a>
+            <a class="btn small" href="#${m.id}/print">Print or save as PDF</a>
+            ${OFFLINE ? "" : `<button class="btn small" type="button" data-offline="${m.id}">Download offline copy</button>`}</div>
         </div>`;
       }).join("")}</div></section>
       <p class="small muted">Slides for later meetings will be listed here as they are prepared.</p>
@@ -796,26 +801,124 @@
           <span class="mono small">${i + 1} / ${n}</span>
           <button class="btn small primary" type="button" id="nextBtn" ${i === n - 1 ? "disabled" : ""}>Next</button>
           <button class="btn small" type="button" id="presentBtn">Present</button>
+          <a class="btn small" href="#${curMeeting.id}/print">PDF</a>
+          ${OFFLINE ? "" : `<button class="btn small" type="button" data-offline="${curMeeting.id}">Download</button>`}
         </div>
       </div>
       <div class="progress" role="group" aria-label="Slides">${k.slides.map((x, j) => `<button type="button" data-go="${j}" class="${j < i ? "done" : j === i ? "cur" : ""}" aria-label="Slide ${j + 1}: ${esc(x.title)}" title="${esc(x.title)}"></button>`).join("")}</div>
       <div class="progress-labels small muted">${sections.map((sec) => `<span>${esc(sec.name)}</span>`).join("")}</div>
-      <article class="slide" aria-live="polite">
-        <div class="kicker"><span>${esc(s.kicker)}</span><span>${esc(s.section)}</span></div>
-        <h1>${esc(s.title)}</h1>
-        <div class="blocks">${s.blocks.map((b) => (BLOCKS[b.type] ? BLOCKS[b.type](b) : "")).join("")}</div>
-        <span class="s-num" aria-hidden="true">${String(i + 1).padStart(2, "0")}</span>
-        <div class="slide-foot"><span>${esc(D.project.name)}</span><span>${i + 1} / ${n} · ~${s.minutes} min</span></div>
-      </article>
+      <article class="slide" aria-live="polite">${slideBody(s, i, n)}</article>
       <button class="exit-audience" type="button" id="exitBtn">Exit presentation (Esc)</button>
     </div>`;
   }
+
+  function slideBody(s, i, n) {
+    return `<div class="kicker"><span>${esc(s.kicker)}</span><span>${esc(s.section)}</span></div>
+        <h1>${esc(s.title)}</h1>
+        <div class="blocks">${s.blocks.map((b) => (BLOCKS[b.type] ? BLOCKS[b.type](b) : "")).join("")}</div>
+        <span class="s-num" aria-hidden="true">${String(i + 1).padStart(2, "0")}</span>
+        <div class="slide-foot"><span>${esc(D.project.name)}</span><span>${i + 1} / ${n} · ~${s.minutes} min</span></div>`;
+  }
+
+  // Every slide on one page, one slide per printed sheet. The browser's print dialog saves it as a PDF.
+  function viewPrint() {
+    const k = deck(), n = k.slides.length;
+    return `<div class="print-deck">
+      <div class="print-bar">
+        <span class="eyebrow"><a href="#meetings">Meetings</a> · <a href="#${curMeeting.id}-1">${esc(curMeeting.label)}</a> · ${fmtDate(k.date)} · ${n} slides</span>
+        <div class="btn-row">
+          <button class="btn small primary" type="button" id="printBtn">Print or save as PDF</button>
+          <a class="btn small" href="#${curMeeting.id}-1">Back to the slides</a>
+        </div>
+        <p class="small muted">In the print dialog choose <b>Save as PDF</b> as the printer. Turn on <b>Background graphics</b> if the slides print white.</p>
+      </div>
+      ${k.slides.map((s, i) => `<div class="print-page"><article class="slide">${slideBody(s, i, n)}</article></div>`).join("")}
+    </div>`;
+  }
+  function bindPrint() {
+    document.getElementById("printBtn").onclick = () => window.print();
+    // shrink the content of any slide that runs past the bottom of its page
+    // (measured by where the footer lands; the big slide number hangs off the edge on purpose)
+    document.querySelectorAll(".print-deck .slide").forEach((sl) => {
+      const b = sl.querySelector(".blocks"), foot = sl.querySelector(".slide-foot");
+      const over = () => foot.getBoundingClientRect().bottom - (sl.getBoundingClientRect().bottom - parseFloat(getComputedStyle(sl).paddingBottom));
+      if (over() <= 1) return;
+      // largest value of `set(x)` that fits (smaller text wraps less, so height doesn't scale evenly)
+      const fit = (set, min) => { let lo = min, hi = 1; for (let t = 0; t < 8; t++) { const x = (lo + hi) / 2; set(x); if (over() > 1) hi = x; else lo = x; } set(lo); };
+      // diagrams stretch to the full width, so narrow them first and leave the text at full size
+      const wraps = [...sl.querySelectorAll(".sys-wrap, .gantt-wrap")], full = wraps.map((w) => w.getBoundingClientRect().width);
+      if (wraps.length) fit((x) => wraps.forEach((w, k) => (w.style.maxWidth = `${Math.round(full[k] * x)}px`)), 0.55);
+      if (over() > 1) fit((x) => (b.style.zoom = x.toFixed(3)), 0.4);
+    });
+    fitPrintPages();
+  }
+  function fitPrintPages() {
+    const d = document.querySelector(".print-deck");
+    if (!d) return;
+    const z = Math.min(1, d.clientWidth / 1280);
+    d.querySelectorAll(".print-page").forEach((p) => (p.style.zoom = z < 1 ? z.toFixed(3) : ""));
+  }
+  window.addEventListener("resize", fitPrintPages);
+
+  /* ---------- Offline copy ---------- */
+  // A single HTML file with the styles, scripts and a snapshot of all data inside it, so it opens
+  // straight from disk with no server. It is the whole workspace, opened at the chosen meeting's slides.
+  const OFFLINE = window.LOS_DATA || null;
+  function downloadOffline(id) {
+    const m = meeting(id), k = deckData(m);
+    const get = (f) => fetch(f, { cache: "no-cache" }).then((res) => { if (!res.ok) throw new Error(`${f}: ${res.status}`); return res.text(); });
+    // keep "</script>" or "<!--" inside the inlined text from ending the script tag early
+    const safe = (t) => t.replace(/<\/(script)/gi, "<\\/$1").replace(/<!--/g, "<\\!--");
+    const fonts = document.querySelector('link[href*="fonts.googleapis.com/css"]');
+    flash("Preparing the download…");
+    Promise.all(["styles.css", "motion.js", "app.js"].map(get)).then(([css, motion, js]) => {
+      const html = `<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>${esc(m.label)} · ${esc(k.date)} · ${esc(D.project.name)}</title>
+${fonts ? `<link rel="stylesheet" href="${esc(fonts.href)}">` : ""}
+<style>${css.replace(/<\/(style)/gi, "<\\/$1")}</style>
+</head>
+<body>
+  <div class="shell">
+    <aside class="rail" id="rail"></aside>
+    <div style="min-width:0">
+      <header class="topbar" id="topbar"></header>
+      <main class="main" id="main"><p class="loading">Loading project data…</p></main>
+    </div>
+  </div>
+  <script>window.LOS_DATA = ${safe(JSON.stringify(D))};
+window.LOS_START = ${JSON.stringify(`${m.id}-1`)};
+window.LOS_SAVED = ${JSON.stringify(new Date().toISOString().slice(0, 10))};</script>
+  <script>${safe(motion)}</script>
+  <script>${safe(js)}</script>
+</body>
+</html>
+`;
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(new Blob([html], { type: "text/html" }));
+      a.download = `${m.id}-${k.date}-slides.html`;
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(() => URL.revokeObjectURL(a.href), 10000);
+      flash("Downloaded. Open the file in any browser; it works without a connection.");
+    }).catch((err) => flash(`Download failed: ${err.message}`));
+  }
+  document.addEventListener("click", (e) => {
+    const b = e.target.closest && e.target.closest("[data-offline]");
+    if (b) downloadOffline(b.dataset.offline);
+  });
 
   function copyText(text) {
     const fallback = () => { const ta = document.createElement("textarea"); ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0"; document.body.appendChild(ta); ta.select(); let ok = false; try { ok = document.execCommand("copy"); } catch (e) { /* ignore */ } ta.remove(); flash(ok ? "Copied." : "Copy failed. Select the text and copy by hand."); };
     if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(() => flash("Copied."), fallback); else fallback();
   }
-  function flash(msg) { const t = document.getElementById("toast"); if (t) { t.textContent = msg; setTimeout(() => { if (t) t.textContent = ""; }, 3500); } }
+  function flash(msg) {
+    let t = document.getElementById("toast");
+    if (!t) { t = document.createElement("span"); t.id = "toast"; t.className = "toast float"; t.setAttribute("role", "status"); document.body.appendChild(t); }
+    t.textContent = msg; clearTimeout(flash.timer); flash.timer = setTimeout(() => { t.textContent = ""; }, 4500);
+  }
 
   function bindDeck(i) {
     const n = deck().slides.length;
@@ -852,11 +955,12 @@
   let lastPage = null, lastSlide = -1;
   function render() {
     const r = route();
-    if (r.view === "deck") useMeeting(r.deck);
+    if (r.view === "deck" || r.view === "print") useMeeting(r.deck);
     renderShell();
     const main = document.getElementById("main");
     const views = { overview: viewOverview, meetings: viewMeetings, plan: viewPlan, think: viewThink, learn: viewLearn, options: viewOptions, decisions: viewDecisions, risks: viewRisks, surveys: viewSurveys, team: viewTeam };
     if (r.view === "deck") { main.innerHTML = viewDeck(r.slide); bindDeck(r.slide); }
+    else if (r.view === "print") { main.innerHTML = viewPrint(); bindPrint(); document.body.classList.remove("audience"); }
     else {
       main.innerHTML = r.view === "survey" ? viewSurvey(r.role, r.tab) : views[r.view]();
       if (r.view === "survey") bindSurvey(r.role);
@@ -870,7 +974,8 @@
   }
 
   window.addEventListener("hashchange", render);
-  const load = (f, optional) => fetch(`data/${f}.json`, { cache: "no-cache" })
+  if (OFFLINE && !location.hash && window.LOS_START) history.replaceState(null, "", `#${window.LOS_START}`);
+  const load = (f, optional) => OFFLINE ? (OFFLINE[f] ? Promise.resolve(D[f] = OFFLINE[f]) : optional ? Promise.resolve() : Promise.reject(new Error(`${f}.json is missing from this copy`))) : fetch(`data/${f}.json`, { cache: "no-cache" })
     .then((res) => { if (!res.ok) throw new Error(`${f}.json: ${res.status}`); return res.json(); })
     .then((j) => (D[f] = j))
     .catch((err) => { if (!optional) throw err; console.warn(`optional data file skipped: ${err.message}`); });

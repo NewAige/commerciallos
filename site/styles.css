@@ -561,3 +561,44 @@ body.audience .exit-audience {
 /* larger type for projection */
 body.audience .slide > :not(.fx):not(.s-num) { zoom: 1.1; }
 @media (min-width: 1700px) { body.audience .slide > :not(.fx):not(.s-num) { zoom: 1.3; } }
+
+/* ---------- Printable deck and offline copy ---------- */
+.btn-row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.toast.float { position: fixed; left: 50%; bottom: calc(20px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); z-index: 20; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 8px 14px; box-shadow: 0 6px 24px rgba(0, 0, 0, 0.18); }
+.toast.float:empty { display: none; }
+.print-deck { display: grid; gap: 24px; max-width: 1280px; }
+.print-bar { display: grid; gap: 10px; }
+.print-bar .eyebrow a { color: inherit; }
+/* Each slide is laid out at the printed page size (13.333 x 7.5 in = 1280 x 720 px) with fixed type,
+   so what fits on screen fits on paper. app.js shrinks a slide's content when it runs long, and
+   scales the whole page down to fit a narrow window. */
+.print-page { width: 1280px; }
+.print-deck .slide {
+  width: 1280px; height: 720px; min-height: 0; padding: 52px 68px 42px; gap: 24px; border-radius: 10px;
+}
+.print-deck .slide h1 { font-size: 2.35rem; }
+.print-deck .slide .lead { font-size: 1.2rem; }
+.print-deck .slide .blocks { gap: 22px; }
+.print-deck .s-fig .v { font-size: 1.9rem; }
+.print-deck .s-goals li { font-size: 1.05rem; }
+.print-deck .s-figs { grid-template-columns: repeat(var(--n, 4), minmax(0, 1fr)); }
+.print-deck .track .tick.first { display: block; }
+.print-deck .slide .s-num { font-size: 15rem; }
+
+/* One slide per landscape 16:9 page. Slides keep their dark stage; translucent and blurred
+   panels are made solid because print engines drop backdrop filters. */
+@page { size: 13.333in 7.5in; margin: 0; }
+@media print {
+  html, body { background: var(--stage) !important; }
+  * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .rail, .topbar, .print-bar, .kick-bar, .progress, .progress-labels, .exit-audience, .toast.float { display: none !important; }
+  .shell { display: block !important; }
+  .main { padding: 0 !important; max-width: none !important; animation: none !important; }
+  .print-deck, .kick { display: block; max-width: none; }
+  .print-page { zoom: 1 !important; break-after: page; page-break-after: always; break-inside: avoid; }
+  .print-page:last-child { break-after: auto; page-break-after: auto; }
+  .slide { border: 0; border-radius: 0 !important; margin: 0; overflow: hidden; }
+  .slide *, .slide::after { backdrop-filter: none !important; -webkit-backdrop-filter: none !important; text-shadow: none !important; }
+  .s-fig, .s-card, .slide .table-wrap, .slide .gantt-wrap, .slide .sys-wrap { background: #0c171b !important; }
+  .slide .fx { display: none; }
+}
