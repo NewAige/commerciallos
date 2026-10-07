@@ -41,6 +41,13 @@ Open **Kickoff walkthrough** in the site. It is a 13-slide, 60-minute guided ses
 - `→` / `←` or Space move between slides (swipe on phones and tablets).
 - Talking points and questions for the room are in the facilitator guide. Notes come from the meeting's notetaker, not the site.
 
+### Taking the slides with you
+
+Both options are on the **Meetings** page and in the bar above the slides.
+
+- **PDF** (or "Print or save as PDF") opens every slide on one page, sized for 16:9 landscape. Click **Print or save as PDF** and pick **Save as PDF** as the printer. If the slides come out white, turn on **Background graphics** in the print dialog. Slides with a lot on them are shrunk to fit one page.
+- **Download** (or "Download offline copy") saves a single `.html` file, such as `kickoff-2026-10-07-slides.html`. Double-click it to open it in any browser: it opens on the slides and still has Present, arrow keys and the rest of the workspace, with no server or connection needed. It is a snapshot of the data on the day it was saved (the side panel says when), so download a fresh copy after the data changes. Without a connection it falls back to standard fonts.
+
 See `docs/kickoff/facilitator-guide.md` for prep steps and talking points.
 
 ## A note on the source assessment
