@@ -80,7 +80,7 @@
     },
     {
       "id": "A12",
-      "title": "Pull the Numerated contract and confirm its end date, renewal, notice, termination fees and data return (small business is in scope; contract is said to run concurrently with GlobalWave)",
+      "title": "Pull the Numerated contract and confirm its end date, renewal, notice, termination fees and data return (small business is in scope; contract is expected to end around the same time as GlobalWave (not official yet))",
       "owner": "Vendor management",
       "due": "2026-10-30",
       "status": "open"
@@ -137,7 +137,7 @@
     {
       "id": "A20",
       "title": "Set up reference calls, including BankProv and Needham Bank for Abrigo feedback",
-      "owner": "Sean (with the team)",
+      "owner": "S. Cartwright (with the team)",
       "due": "2026-12-11",
       "status": "open"
     },

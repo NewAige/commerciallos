@@ -211,7 +211,7 @@
     {
       "id": "C17",
       "topic": "Scope",
-      "think": "Small business lending is in scope (D01). Its contract runs concurrently with GlobalWave, so replacing both together makes sense, though it widens the project and its risk.",
+      "think": "Small business lending is in scope (D01). Numerated's contract is expected to end around the same time as GlobalWave (not official yet), so replacing both together makes sense, though it widens the project and its risk.",
       "confidence": "confirmed",
       "learn": "When exactly does the Numerated contract end, and what are its notice and exit terms?",
       "how": "Pull the Numerated contract (A12).",
@@ -219,7 +219,7 @@
       "origin": "Draft assessment §3: Small business automation ($250K-$500K) is part of the same strategy.",
       "sources": [
         "Kickoff meeting, 2026-10-07 (docs/kickoff/2026-10-07-notes.md)",
-        "C. Alves, project lead, 2026-10-08: small business is in scope; the contract is concurrent"
+        "C. Alves, project lead, 2026-10-08: small business is in scope; the Numerated contract ends around the same time as GlobalWave, not official yet"
       ],
       "checked": "2026-10-08"
     },
