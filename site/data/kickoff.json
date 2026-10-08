@@ -8,6 +8,20 @@
     "We make the first scope decision and name the people who will own this.",
     "We leave with owners and dates for the next 30 days."
   ],
+  "summary": {
+    "source": "docs/kickoff/2026-10-07-notes.md",
+    "lead": "The group agreed to start now. GlobalWave is not a real option, small business lending is in scope, and we are aiming to go live in August 2028, about seven months before the contract ends on March 11, 2029.",
+    "decided": ["D01", "D03", "D04"],
+    "heard": [
+      "The biggest risks are data migration, integrations, and our own staff time, not just picking software.",
+      "We likely need a broader set of tools than a standalone LOS: fraud and KYC checks, digital workflow, and automation.",
+      "Abrigo and nCino are the main options. Abrigo looks promising and fits our current relationship; nCino is powerful but costly, rigid, and hard to fully adopt.",
+      "We are willing to change our processes to fit a good platform, apart from a few true non-negotiables.",
+      "LaserPro is likely staying for now.",
+      "B. Valazques takes on loan operations, doc prep, and loan systems administration."
+    ],
+    "next": ["A14", "A15", "A16", "A17", "A18", "A19", "A20", "A21"]
+  },
   "slides": [
     {
       "id": "welcome",
@@ -16,7 +30,7 @@
       "kicker": "Planning kickoff · October 7, 2026",
       "title": "Replacing our commercial loan origination system",
       "blocks": [
-        { "type": "lead", "text": "Today starts the planning for a new commercial LOS. Our contract with GlobalWave ends on March 1, 2029, and the replacement must be running well before then." },
+        { "type": "lead", "text": "Today starts the planning for a new commercial LOS. Our contract with GlobalWave ends on March 11, 2029, and the replacement must be running well before then." },
         { "type": "goals" }
       ],
       "notes": "Welcome everyone. Explain that this meeting is a working session, not a vendor decision. We will walk through the deadline, what we know about the bank, what we think so far and what we still need to learn, then make a few early decisions. Everything we decide today gets recorded in this workspace.",
@@ -31,7 +45,7 @@
       "title": "We have about 29 months. Most of it is already spoken for.",
       "blocks": [
         { "type": "countdown" },
-        { "type": "lead", "text": "Working backward from March 1, 2029: we need a signed contract by late summer 2027 to implement, test and train before a go-live in August 2028. That leaves about seven months of buffer for surprises." }
+        { "type": "lead", "text": "Working backward from March 11, 2029: we need a signed contract by late summer 2027 to implement, test and train before a go-live in August 2028. That leaves about seven months of buffer for surprises." }
       ],
       "notes": "Make the point that 29 months sounds like a lot but selection alone typically takes 9-11 months, and implementation, testing and training another 11. The buffer is our insurance and we should protect it. Ask whether anyone knows of a non-renewal notice requirement in the GlobalWave contract; it may force a decision earlier than we expect.",
       "discuss": [
@@ -218,6 +232,19 @@
         "When is the first core team meeting?"
       ],
       "capture": "Confirmed owners, dates and next meeting"
+    },
+    {
+      "id": "after",
+      "section": "After",
+      "minutes": 0,
+      "kicker": "After the meeting · October 7, 2026",
+      "title": "What we agreed",
+      "blocks": [
+        { "type": "summary" }
+      ],
+      "notes": "Post-meeting summary, added after the kickoff from the meeting notes and follow-up from C. Alves (docs/kickoff/2026-10-07-notes.md). Not presented in the meeting.",
+      "discuss": [],
+      "capture": ""
     }
   ]
 }

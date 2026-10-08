@@ -3,7 +3,7 @@
   "actions": [
     {
       "id": "A01",
-      "title": "Pull the GlobalWave contract and summarize notice, renewal, data return and exit terms",
+      "title": "Pull the GlobalWave contract and summarize notice, renewal, data return and exit terms (end date 2029-03-11 already known)",
       "owner": "Vendor management",
       "due": "2026-10-30",
       "status": "open"
@@ -73,14 +73,14 @@
     },
     {
       "id": "A11",
-      "title": "Build the eight staff questionnaires in Microsoft Forms from docs/surveys and send them out (the survey in A04)",
+      "title": "Build the eight staff questionnaires in Microsoft Forms from docs/surveys and send them out after the A16 review (the survey in A04)",
       "owner": "Project lead",
       "due": "2026-11-13",
       "status": "open"
     },
     {
       "id": "A12",
-      "title": "Pull the Numerated contract and summarize end date, renewal, notice, termination fees and data return (needed if small business lending moves)",
+      "title": "Pull the Numerated contract and confirm its end date, renewal, notice, termination fees and data return (small business is in scope; contract is expected to end around the same time as GlobalWave (not official yet))",
       "owner": "Vendor management",
       "due": "2026-10-30",
       "status": "open"
@@ -90,6 +90,62 @@
       "title": "Ask Abrigo whether one platform can cover commercial LOS and small business lending, with a module map and reference banks",
       "owner": "Evaluation team",
       "due": "2026-12-11",
+      "status": "open"
+    },
+    {
+      "id": "A14",
+      "title": "Send the kickoff slides and timeline to attendees and keep refining the project plan",
+      "owner": "C. Alves",
+      "due": "2026-10-16",
+      "status": "open"
+    },
+    {
+      "id": "A15",
+      "title": "Draft a vendor evaluation rubric and scoring system for demos (feeds D05)",
+      "owner": "C. Alves",
+      "due": "2026-11-13",
+      "status": "open"
+    },
+    {
+      "id": "A16",
+      "title": "Review and refine the staff survey questions before they go out",
+      "owner": "C. Alves, L. Sternfelt, H. Ali",
+      "due": "2026-10-30",
+      "status": "open"
+    },
+    {
+      "id": "A17",
+      "title": "Hold a smaller leadership session to define project goals and the few true non-negotiables",
+      "owner": "Project lead with leadership",
+      "due": "2026-11-13",
+      "status": "open"
+    },
+    {
+      "id": "A18",
+      "title": "Plan and schedule vendor demos, starting with Abrigo, while also evaluating nCino and others",
+      "owner": "C. Alves",
+      "due": "2026-11-30",
+      "status": "open"
+    },
+    {
+      "id": "A19",
+      "title": "Identify demo participants across lending, portfolio management, management and end users",
+      "owner": "Project lead",
+      "due": "2026-11-13",
+      "status": "open"
+    },
+    {
+      "id": "A20",
+      "title": "Set up reference calls, including BankProv and Needham Bank for Abrigo feedback",
+      "owner": "S. Cartwright (with the team)",
+      "due": "2026-12-11",
+      "status": "open"
+    },
+    {
+      "id": "A21",
+      "title": "Engage EPMO for project management support and start IT and resource planning",
+      "owner": "C. Alves",
+      "due": "2026-11-13",
       "status": "open"
     }
   ]

@@ -31,6 +31,12 @@ if not errors:
                 elif b["type"] == "questions" and i not in open_q: errors.append(f"kickoff {s['id']}: {i} has no open question")
             if b["type"] == "decision" and b["id"] not in decisions:
                 errors.append(f"kickoff {s['id']}: unknown decision {b['id']}")
+    actions = {x["id"] for x in d["actions"]["actions"]}
+    summ = d["kickoff"].get("summary") or {}
+    for i in summ.get("decided", []):
+        if i not in decisions: errors.append(f"kickoff summary: unknown decision {i}")
+    for i in summ.get("next", []):
+        if i not in actions: errors.append(f"kickoff summary: unknown action {i}")
     ids = {k["id"] for k in d["project"]["keyDates"]}
     for need in ("kickoff", "contract-signed", "go-live", "globalwave-end"):
         if need not in ids: errors.append(f"project.keyDates missing {need}")

@@ -37,7 +37,7 @@
       "end": "2027-06-30",
       "goal": "Build a verified vendor field and run a fair, scripted evaluation.",
       "deliverables": [
-        "Long list and RFI (including the incumbent)",
+        "Long list and RFI (Abrigo and nCino first; GlobalWave ruled out)",
         "Weighted scoring model agreed before demos",
         "RFP issued to 3-5 vendors",
         "Scripted demos using the bank's own sample deals",
@@ -54,7 +54,7 @@
         "Selection recommendation to steering group and board",
         "Third-party risk management due diligence (SOC reports, financials, BCP)",
         "Negotiated contract with implementation SOW and exit terms",
-        "Short-term GlobalWave extension option secured as insurance"
+        "Short-term GlobalWave extension option sought as insurance (the long-term product is not an option)"
       ]
     },
     {
@@ -87,13 +87,13 @@
       "id": "p6",
       "name": "Stabilize and decommission GlobalWave",
       "start": "2028-08-01",
-      "end": "2029-02-28",
+      "end": "2029-03-10",
       "goal": "Support users after go-live and retire the old system cleanly.",
       "deliverables": [
         "Hypercare support (60-90 days)",
         "Final data extract and archive from GlobalWave",
         "Records-retention and exam-readiness check",
-        "GlobalWave access ended before 2029-03-01"
+        "GlobalWave access ended before 2029-03-11"
       ]
     }
   ],
@@ -134,14 +134,14 @@
       "kind": "golive"
     },
     {
-      "date": "2029-03-01",
+      "date": "2029-03-11",
       "label": "GlobalWave contract ends",
       "kind": "hard"
     }
   ],
   "buffer": {
     "start": "2028-08-01",
-    "end": "2029-03-01",
+    "end": "2029-03-11",
     "label": "Buffer: about 7 months between target go-live and contract end"
   },
   "criticalPathNotes": [

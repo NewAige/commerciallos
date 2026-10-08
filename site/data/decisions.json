@@ -2,14 +2,14 @@
   "note": "Decisions the project needs. Status: open, proposed, decided, deferred. Record the outcome, date and who decided.",
   "decisions": [
     {
-      "id": "D01", "title": "What is in scope?", "needed": "2026-10-07", "status": "open",
+      "id": "D01", "title": "What is in scope?", "needed": "2026-10-07", "status": "decided",
       "question": "Is this project the commercial LOS only, or does it also cover small business lending (today on Numerated)?",
       "options": [
         "A. Commercial LOS only. Numerated stays for small business lending.",
         "B. Commercial LOS plus small business lending ($250K-$500K), evaluated in the same RFP. Numerated stays only if it wins or is the better fit."
       ],
       "recommendation": "B, if Numerated's contract terms allow it. Small business lending shares borrowers, credit policy and possibly the vendor (for example an all-in-one Abrigo platform).",
-      "outcome": "", "decidedBy": "", "decidedOn": ""
+      "outcome": "B. Small business lending ($250K-$500K) is in scope and will be evaluated alongside the commercial LOS. Numerated's contract is expected to end around the same time as GlobalWave (not official yet), so it makes sense to replace both together.", "decidedBy": "Kickoff group; confirmed by C. Alves", "decidedOn": "2026-10-07"
     },
     {
       "id": "D02", "title": "Who sponsors and who leads?", "needed": "2026-10-07", "status": "proposed",
@@ -19,24 +19,24 @@
       "outcome": "Proposed: T. Chaves as executive sponsor and C. Alves as project lead. The project lead's time commitment is still to be agreed at kickoff.", "decidedBy": "", "decidedOn": ""
     },
     {
-      "id": "D03", "title": "Is renewing or renegotiating with GlobalWave a real option?", "needed": "2026-10-07", "status": "open",
+      "id": "D03", "title": "Is renewing or renegotiating with GlobalWave a real option?", "needed": "2026-10-07", "status": "decided",
       "question": "Should the evaluation treat staying with GlobalWave (possibly on new terms) as a valid outcome?",
       "options": ["Yes: include GlobalWave in the RFI and RFP as a baseline.", "No: the bank has already decided to leave."],
       "recommendation": "Yes, unless leadership has already ruled it out. It gives a cost baseline, negotiating leverage, and a fallback.",
-      "outcome": "", "decidedBy": "", "decidedOn": ""
+      "outcome": "No. GlobalWave as it is today is not a real option. GlobalWave says a new solution is coming in 12-18 months, but that does not realistically meet our timeline and would be too risky. GlobalWave is not part of the evaluation.", "decidedBy": "Kickoff group; confirmed by C. Alves", "decidedOn": "2026-10-07"
     },
     {
-      "id": "D04", "title": "Target go-live date", "needed": "2026-12-18", "status": "proposed",
+      "id": "D04", "title": "Target go-live date", "needed": "2026-12-18", "status": "decided",
       "question": "Confirm the working target of 2028-08-01 for go-live.",
       "options": [],
       "recommendation": "Keep 2028-08-01. It leaves about 7 months of buffer and avoids quarter-end and year-end.",
-      "outcome": "", "decidedBy": "", "decidedOn": ""
+      "outcome": "Go-live in August 2028 (working date 2028-08-01). The group discussed Aug/Sep 2028; August was confirmed afterward.", "decidedBy": "Kickoff group; confirmed by C. Alves", "decidedOn": "2026-10-07"
     },
     {
       "id": "D05", "title": "Evaluation criteria and weights", "needed": "2027-03-31", "status": "open",
       "question": "Which criteria and weights will score vendors? Set them before any demo.",
       "options": [],
-      "recommendation": "Start from the draft list on the Options page. Weight admin burden and integrations heavily given a part-time admin model.",
+      "recommendation": "Start from the draft list on the Options page and the demo rubric C. Alves is drafting (A15). Weight admin burden and integrations heavily given a part-time admin model.",
       "outcome": "", "decidedBy": "", "decidedOn": ""
     },
     {

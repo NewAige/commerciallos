@@ -3,8 +3,8 @@
   "paths": [
     {
       "id": "stay",
-      "name": "Renew or renegotiate GlobalWave",
-      "summary": "Keep the incumbent on new terms, possibly with upgrades.",
+      "name": "Renew or renegotiate GlobalWave (ruled out)",
+      "summary": "Ruled out at kickoff (D03). GlobalWave's promised new product is 12-18 months away, which is too late and too risky for our timeline.",
       "for": [
         "No conversion or retraining",
         "Lowest delivery risk against the deadline",
@@ -14,12 +14,12 @@
         "Does not fix current pain points unless the product changes",
         "No native link to the bank's new Abrigo risk rating (unverified)"
       ],
-      "toLearn": "What users think of it today, its roadmap, and renewal pricing."
+      "toLearn": "Only whether a short extension of the current contract is possible as insurance."
     },
     {
       "id": "replace",
       "name": "Replace with a new commercial LOS",
-      "summary": "Run a competitive selection and implement a new platform by August 2028.",
+      "summary": "Run a competitive selection and implement a new platform for commercial and small business lending by August 2028.",
       "for": [
         "Chance to fix workflow and adoption issues",
         "Possible consolidation with Abrigo",
@@ -37,20 +37,20 @@
     {
       "name": "Global Wave Group, Credit Track (incumbent)",
       "source": "Current vendor",
-      "status": "Incumbent",
-      "notes": "Product confirmed as real. Include as a renewal baseline unless leadership rules it out (D03)."
+      "status": "Ruled out",
+      "notes": "Not a real option (D03). GlobalWave says a new solution is coming in 12-18 months, which does not meet our timeline."
     },
     {
       "name": "Abrigo Lending & Credit Risk",
       "source": "Source assessment (as \"Abrigo APX\")",
-      "status": "Long list",
-      "notes": "Bank already uses Abrigo for risk rating. The 'APX' name was not found; integrations to COCC and LaserPro need live references."
+      "status": "Main option, demo first",
+      "notes": "Seen at kickoff as promising and aligned with current relationships. Bank already uses Abrigo for risk rating. Needham Bank (~$7B, on COCC) is onboarding it now and is a reference lead. Integrations to COCC and LaserPro still need live references."
     },
     {
       "name": "nCino Commercial Banking",
       "source": "Source assessment",
-      "status": "Long list",
-      "notes": "Salesforce-based. Vendor reports community bank implementations under 6 months on average. Admin burden is the open question."
+      "status": "Main option",
+      "notes": "Seen at kickoff as powerful but costly, rigid, and historically hard for banks to fully adopt. Salesforce-based; admin burden is the open question."
     },
     {
       "name": "Moody's Lending Suite (CreditLens)",
@@ -80,13 +80,13 @@
   "smallBusiness": [
     {
       "name": "Abrigo small business lending",
-      "status": "Long list (if in scope)",
+      "status": "Long list",
       "notes": "Possible all-in-one option with the Abrigo LOS. Bank found Abrigo's lending platform (Sageworks) okay. Features unverified."
     },
     {
       "name": "Numerated",
       "status": "Incumbent",
-      "notes": "In use today (now owned by Moody's). Staying or leaving is TBD; contract terms needed if leaving (A12)."
+      "notes": "In use today (now owned by Moody's). Small business is in scope (D01); contract expected to end around the same time as GlobalWave (not official yet). Contract terms needed (A12)."
     }
   ],
   "criteria": [
