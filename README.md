@@ -50,6 +50,10 @@ Both options are on the **Meetings** page and in the bar above the slides.
 
 See `docs/kickoff/facilitator-guide.md` for prep steps and talking points.
 
+## Sharing the survey questions for review
+
+On the **Survey plan** page, click **Print or save as PDF** (address `#surveys/print`). It shows the survey summary followed by every role's question list, each role starting on a new page, laid out like the site. Click **Print or save as PDF** again and pick **Save as PDF** as the printer; turn on **Background graphics** so the shading prints. It prints on Letter paper in the light theme, and the role names on the summary page link to that role's pages in the PDF. For one role only, use the same button on that role's page (`#survey-<role>/print`).
+
 ## A note on the source assessment
 
 `docs/sources/2026-09_gemini-los-assessment_UNVERIFIED.txt` was produced with Gemini. The bank figures in it come from the Head of Commercial Lending and are treated as accurate. Vendor, pricing and regulatory content is unverified. Each point is restated in `claims.json` as what we think, how sure we are, and what we still need to learn (the original wording is kept in each item's `origin`). A first web check on October 2, 2026 found several problems (for example, no product called "Abrigo APX" could be found, and the nCino TCO total omits its own Salesforce line).

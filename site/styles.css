@@ -585,6 +585,11 @@ body.audience .slide > :not(.fx):not(.s-num) { zoom: 1.1; }
 .print-deck .track .tick.first { display: block; }
 .print-deck .slide .s-num { font-size: 15rem; }
 
+/* Printable survey copy: the summary, then each role's questions. On screen the parts are
+   separated by a rule; on paper each starts a new page. app.js swaps in a Letter portrait page. */
+.sv-book { display: grid; gap: 28px; max-width: 1120px; }
+.sv-part + .sv-part { border-top: 2px dashed var(--line); padding-top: 28px; }
+
 /* One slide per landscape 16:9 page. Slides keep their dark stage; translucent and blurred
    panels are made solid because print engines drop backdrop filters. */
 @page { size: 13.333in 7.5in; margin: 0; }
@@ -601,4 +606,20 @@ body.audience .slide > :not(.fx):not(.s-num) { zoom: 1.1; }
   .slide *, .slide::after { backdrop-filter: none !important; -webkit-backdrop-filter: none !important; text-shadow: none !important; }
   .s-fig, .s-card, .slide .table-wrap, .slide .gantt-wrap, .slide .sys-wrap { background: #0c171b !important; }
   .slide .fx { display: none; }
+
+  /* survey copy: light theme on white paper, laid out 900px wide and scaled to the 7.5in Letter text width */
+  html.sv-print, html.sv-print body { background: #fff !important; color-scheme: light !important; }
+  html.sv-print .sv-book {
+    --bg: #eef2f1; --surface: #ffffff; --surface-2: #f6f8f7; --ink: #13222a; --muted: #56676d; --line: #d3dcda;
+    --accent: #0d5a61; --accent-soft: #dcebea; --brass: #9a6b14; --brass-soft: #f4e9d2;
+    --ok: #2c7a4b; --ok-soft: #dff0e5; --warn: #9a5c00; --warn-soft: #fbecd3; --bad: #b03636; --bad-soft: #f8e0df; --info: #3b5b86; --info-soft: #e1e8f3;
+    color-scheme: light; color: var(--ink); display: block; width: 900px; max-width: none; zoom: 0.8;
+  }
+  .sv-part + .sv-part { break-before: page; page-break-before: always; border-top: 0; padding-top: 0; }
+  .sv-book .panel, .sv-book .figure { box-shadow: none !important; }
+  .sv-book .sv-q, .sv-book .page-head, .sv-book .figures, .sv-part:first-child .panel, .sv-book tr { break-inside: avoid; page-break-inside: avoid; }
+  .sv-book h2, .sv-book .panel-head { break-after: avoid; page-break-after: avoid; }
+  .sv-book .table-wrap { overflow: visible; }
+  .sv-book .sv-grid tbody th { min-width: 180px; }
+  .sv-book a { color: inherit; text-decoration: none; }
 }
