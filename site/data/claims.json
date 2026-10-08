@@ -85,12 +85,16 @@
     {
       "id": "C07",
       "topic": "Evaluation",
-      "think": "Three vendors (Abrigo, GlobalWave, nCino) is too narrow a field to choose from, and it's too early to favor one. Staying with GlobalWave on renewed or renegotiated terms is a useful baseline.",
+      "think": "Abrigo and nCino are the two main options coming out of kickoff, but two is still a narrow field and it's too early to pick one. GlobalWave is ruled out (D03), so there is no incumbent baseline.",
       "confidence": "likely",
       "learn": "Which other commercial LOS vendors fit a bank our size?",
       "how": "Build a long list in Phase 2 and send an RFI.",
       "owner": "Evaluation team",
-      "origin": "Draft assessment §2: The evaluation compares three platforms: Abrigo, GlobalWave CreditTrack and nCino."
+      "origin": "Draft assessment §2: The evaluation compares three platforms: Abrigo, GlobalWave CreditTrack and nCino.",
+      "sources": [
+        "Kickoff meeting, 2026-10-07 (docs/kickoff/2026-10-07-notes.md)"
+      ],
+      "checked": "2026-10-08"
     },
     {
       "id": "C08",
@@ -207,40 +211,47 @@
     {
       "id": "C17",
       "topic": "Scope",
-      "think": "Only the commercial LOS is tied to the March 2029 deadline. Adding small business lending would widen the project and its risk.",
-      "confidence": "likely",
-      "learn": "Is small business lending in or out of scope, and does Numerated stay?",
-      "how": "Steering group decides at kickoff (D01).",
-      "owner": "Steering group",
-      "origin": "Draft assessment §3: Small business automation ($250K-$500K) is part of the same strategy."
+      "think": "Small business lending is in scope (D01). Its contract runs concurrently with GlobalWave, so replacing both together makes sense, though it widens the project and its risk.",
+      "confidence": "confirmed",
+      "learn": "When exactly does the Numerated contract end, and what are its notice and exit terms?",
+      "how": "Pull the Numerated contract (A12).",
+      "owner": "Vendor management",
+      "origin": "Draft assessment §3: Small business automation ($250K-$500K) is part of the same strategy.",
+      "sources": [
+        "Kickoff meeting, 2026-10-07 (docs/kickoff/2026-10-07-notes.md)",
+        "C. Alves, project lead, 2026-10-08: small business is in scope; the contract is concurrent"
+      ],
+      "checked": "2026-10-08"
     },
     {
       "id": "C18",
       "topic": "Current system",
-      "think": "The current system is Credit Track from Global Wave Group, a web-based commercial LOS. Staff call it either Credit Track or GlobalWave. We don't know the vendor's current size, ownership or roadmap.",
+      "think": "The current system is Credit Track from Global Wave Group, a web-based commercial LOS. Staff call it either Credit Track or GlobalWave. Staying on it is not a real option: GlobalWave says a new solution is 12-18 months away, which is too late and too risky for our timeline (D03). The contract ends 2029-03-11.",
       "confidence": "confirmed",
-      "learn": "Which Credit Track version and modules do we license?",
-      "how": "Check the bank's GlobalWave contract.",
+      "learn": "Could the current contract be extended for a few months as insurance, and on what terms?",
+      "how": "Ask GlobalWave as part of the contract review (A01).",
       "owner": "Vendor management",
       "sources": [
         "Bank project team, 2026-10-02: the bank uses Credit Track (also called GlobalWave)",
-        "https://finastra.com/applications/globalwave-credit-track-integration"
+        "https://finastra.com/applications/globalwave-credit-track-integration",
+        "C. Alves, project lead, 2026-10-08: contract ends March 11, 2029; GlobalWave's new solution is 12-18 months out"
       ],
-      "checked": "2026-10-02",
+      "checked": "2026-10-08",
       "origin": "Draft assessment §2: The incumbent is \"Global Wave CreditTrack\"."
     },
     {
       "id": "C19",
       "topic": "Vendors",
-      "think": "LaserPro's future is uncertain. Finastra sold its US mid-market banking business to CORA Group in June 2026, and a September 2026 report says its owner is exploring a sale of the rest of Finastra.",
+      "think": "LaserPro is likely staying for now: we have a current contract, it dominates the market, and our own use of it has improved with training. Its long-term future is less certain: Finastra sold its US mid-market banking business to CORA Group in June 2026, and a September 2026 report says its owner is exploring a sale of the rest of Finastra.",
       "confidence": "likely",
-      "learn": "Is LaserPro still the right document provider for us, and are we on its latest version? Should switching or upgrading doc prep be in scope for this project?",
+      "learn": "Are we on LaserPro's latest version, and does every LOS finalist have a working LaserPro integration?",
       "how": "Loan operations confirms which LaserPro version the bank runs and what the current release is, and lists what works and what doesn't today. Compare with other doc prep options the LOS finalists support. Bring a recommendation on scope (keep, upgrade, or switch) to the steering group.",
       "owner": "Loan operations",
       "sources": [
+        "Kickoff meeting, 2026-10-07 (docs/kickoff/2026-10-07-notes.md)",
         "https://www.fintechfutures.com/m-a/finastra-divests-us-banking-unit-to-cora-group"
       ],
-      "checked": "2026-10-02",
+      "checked": "2026-10-08",
       "origin": "Draft assessment §1: Finastra LaserPro is a stable part of the bank's stack."
     },
     {
@@ -260,15 +271,16 @@
     {
       "id": "C21",
       "topic": "Current system",
-      "think": "The bank uses Numerated (now part of Moody's) for small business lending today. Whether it stays or is replaced is not decided.",
+      "think": "The bank uses Numerated (now part of Moody's) for small business lending today. Small business is in scope for this project (D01), so Numerated will be replaced or re-chosen through the same evaluation.",
       "confidence": "confirmed",
       "learn": "If Numerated is replaced, what does our contract say about end date, renewal, notice period, termination fees and data return?",
       "how": "Pull the Numerated contract and summarize those terms (A12).",
       "owner": "Vendor management",
       "sources": [
-        "Bank project team, 2026-10-02: the bank uses Numerated for small business lending; staying or leaving is TBD"
+        "Bank project team, 2026-10-02: the bank uses Numerated for small business lending; staying or leaving is TBD",
+        "Kickoff meeting, 2026-10-07 (docs/kickoff/2026-10-07-notes.md)"
       ],
-      "checked": "2026-10-02",
+      "checked": "2026-10-08",
       "origin": "Draft assessment §3: Numerated is a candidate small business platform."
     },
     {
@@ -284,6 +296,62 @@
       ],
       "checked": "2026-10-02",
       "origin": "Draft assessment §3: Abrigo's small business product shares a platform with its commercial LOS."
+    },
+    {
+      "id": "C23",
+      "topic": "Vendors",
+      "think": "Abrigo looks promising and fits our existing relationship (we already use it for risk rating). nCino is powerful but seen as costly, rigid, and historically hard for banks to fully adopt. These are first impressions, not results of demos or reference calls.",
+      "confidence": "unsure",
+      "learn": "Do demos and reference calls back up these impressions of Abrigo and nCino?",
+      "how": "Scripted demos, starting with Abrigo (A18), and reference calls (A20).",
+      "owner": "Evaluation team",
+      "sources": [
+        "Kickoff meeting, 2026-10-07 (docs/kickoff/2026-10-07-notes.md)"
+      ],
+      "checked": "2026-10-08",
+      "origin": "Kickoff notes: Abrigo appears promising and aligned with current relationships. nCino is powerful but costly, rigid, and historically difficult for banks to fully adopt."
+    },
+    {
+      "id": "C24",
+      "topic": "Scope",
+      "think": "The answer is probably a broader set of tools, not just a standalone LOS, especially for fraud and KYC checks, digital workflow, and automation.",
+      "confidence": "likely",
+      "learn": "Which of these (fraud/KYC, digital workflow, automation) must the LOS do itself, and which can come from other tools?",
+      "how": "Leadership session on goals and non-negotiables (A17), then requirements in Phase 1.",
+      "owner": "Project lead",
+      "sources": [
+        "Kickoff meeting, 2026-10-07 (docs/kickoff/2026-10-07-notes.md)"
+      ],
+      "checked": "2026-10-08",
+      "origin": "Kickoff notes: the future solution likely needs to be a broader tech stack, not just a standalone LOS, especially for fraud/KYC, digital workflow, and automation."
+    },
+    {
+      "id": "C25",
+      "topic": "Evaluation",
+      "think": "We are willing to change our processes to fit a platform's best practices, except for a small number of true non-negotiables.",
+      "confidence": "confirmed",
+      "learn": "What are the non-negotiables?",
+      "how": "Smaller leadership session (A17).",
+      "owner": "Project lead",
+      "sources": [
+        "Kickoff meeting, 2026-10-07 (docs/kickoff/2026-10-07-notes.md)"
+      ],
+      "checked": "2026-10-08",
+      "origin": "Kickoff notes: team is open to adapting processes to fit best-practice platforms, while identifying a few true non-negotiables."
+    },
+    {
+      "id": "C26",
+      "topic": "Vendors",
+      "think": "Needham Bank (about $7B, on COCC) is onboarding Abrigo now, which makes it a strong reference for an Abrigo and COCC setup like ours. BankProv is another possible Abrigo reference.",
+      "confidence": "likely",
+      "learn": "What does Needham Bank say about Abrigo's COCC and LaserPro integrations and its implementation so far?",
+      "how": "Reference calls (A20).",
+      "owner": "Evaluation team",
+      "sources": [
+        "Kickoff meeting, 2026-10-07 (docs/kickoff/2026-10-07-notes.md): confirmed after the meeting"
+      ],
+      "checked": "2026-10-08",
+      "origin": "Kickoff notes: post meeting confirmed Needham Bank (~7B) is currently onboarding Abrigo and is on COCC (great reference)."
     }
   ]
 }

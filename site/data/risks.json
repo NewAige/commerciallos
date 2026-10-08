@@ -18,7 +18,7 @@
       "impact": "high",
       "status": "open",
       "detail": "Every month lost before contract signature comes out of implementation time or the buffer.",
-      "mitigation": "Hold the August 2027 signature gate. Secure a short GlobalWave extension option as insurance.",
+      "mitigation": "Hold the August 2027 signature gate. Seek a short GlobalWave extension option as insurance (see R10).",
       "owner": "Project lead"
     },
     {
@@ -27,8 +27,8 @@
       "likelihood": "high",
       "impact": "high",
       "status": "open",
-      "detail": "Implementation needs far more admin and SME time than steady state. The current model has one part-time administrator.",
-      "mitigation": "Backfill or add temporary capacity during implementation. Weight admin burden heavily in scoring.",
+      "detail": "Implementation needs far more admin and SME time than steady state. The current model has one part-time administrator. Internal resourcing was named at kickoff as one of the three biggest implementation risks.",
+      "mitigation": "Engage EPMO support and plan IT and staff resourcing early (A21). Backfill or add temporary capacity during implementation. Weight admin burden heavily in scoring.",
       "owner": "Executive sponsor"
     },
     {
@@ -44,10 +44,10 @@
     {
       "id": "R05",
       "title": "Integration effort underestimated",
-      "likelihood": "medium",
+      "likelihood": "high",
       "impact": "high",
       "status": "open",
-      "detail": "COCC boarding, LaserPro, Identifi and Abrigo risk rating each need working integrations at go-live.",
+      "detail": "COCC boarding, LaserPro, Identifi and Abrigo risk rating each need working integrations at go-live. Named at kickoff as one of the three biggest implementation risks.",
       "mitigation": "Require live production references for each integration. Prove them in a proof of concept if possible.",
       "owner": "IT / Integration"
     },
@@ -65,9 +65,9 @@
       "id": "R07",
       "title": "Data conversion from GlobalWave",
       "likelihood": "medium",
-      "impact": "medium",
+      "impact": "high",
       "status": "open",
-      "detail": "Pipeline, covenants, tickler items and historical credit files must move or be archived.",
+      "detail": "Pipeline, covenants, tickler items and historical credit files must move or be archived. Named at kickoff as one of the three biggest implementation risks.",
       "mitigation": "Decide what converts versus archives in Phase 1. Run at least two mock conversions.",
       "owner": "Data team"
     },
@@ -77,8 +77,8 @@
       "likelihood": "medium",
       "impact": "medium",
       "status": "open",
-      "detail": "Bringing small business lending (and a possible Numerated replacement) into the project could pull time from the deadline-driven LOS work.",
-      "mitigation": "Decide scope at kickoff (D01). Changes go through the steering group.",
+      "detail": "Small business lending (and replacing Numerated) is now in scope (D01). It could pull time from the deadline-driven LOS work, and the broader stack (fraud/KYC, digital workflow, automation) could widen it further.",
+      "mitigation": "Leadership sets goals and non-negotiables (A17). Scope changes go through the steering group.",
       "owner": "Steering group"
     },
     {
@@ -90,6 +90,16 @@
       "detail": "Finastra sold its US mid-market unit in June 2026 and may be sold in full. LaserPro's roadmap and integrations could change before go-live.",
       "mitigation": "Confirm LaserPro ownership and roadmap. Require new LOS vendors to show current LaserPro integrations and an alternative doc prep path.",
       "owner": "Loan operations"
+    },
+    {
+      "id": "R10",
+      "title": "No fallback if the new system is late",
+      "likelihood": "medium",
+      "impact": "high",
+      "status": "open",
+      "detail": "Staying on GlobalWave is not a real option (D03), and its promised new product is 12-18 months away. If implementation slips past March 2029, there is no planned fallback.",
+      "mitigation": "Protect the August 2028 go-live and the buffer. Ask GlobalWave early, as part of A01, what a short extension of the current contract would cost.",
+      "owner": "Vendor management"
     }
   ]
 }

@@ -264,7 +264,7 @@
             <h1 class="hero-title">Commercial LOS replacement</h1>
             <p class="hero-sub">The plan, open questions and decisions, in one place.</p>
             <div class="hero-actions">
-              <a class="btn glow" href="#kickoff-1">Start the kickoff walkthrough <span aria-hidden="true">→</span></a>
+              ${kd < 0 && D.kickoff.summary ? `<a class="btn glow" href="#kickoff-${D.kickoff.slides.length}">What we agreed at kickoff <span aria-hidden="true">→</span></a>` : `<a class="btn glow" href="#kickoff-1">Start the kickoff walkthrough <span aria-hidden="true">→</span></a>`}
               <a class="btn ghost" href="#learn">What we need to learn</a>
             </div>
           </div>
@@ -384,7 +384,7 @@
       <section class="panel"><h2>Commercial LOS long list</h2><div class="table-wrap"><table><thead><tr><th>Vendor</th><th>Status</th><th>Where it came from</th><th>Notes</th></tr></thead><tbody>
         ${o.vendors.map((v) => `<tr><td><b>${esc(v.name)}</b></td><td>${esc(v.status)}</td><td class="muted">${esc(v.source)}</td><td>${esc(v.notes)}</td></tr>`).join("")}
       </tbody></table></div>${o.vendorNote ? `<p class="small muted">${esc(o.vendorNote)}</p>` : ""}</section>
-      <section class="panel"><h2>Small business lending (if in scope)</h2><div class="table-wrap"><table><thead><tr><th>Platform</th><th>Status</th><th>Notes</th></tr></thead><tbody>
+      <section class="panel"><h2>Small business lending</h2><div class="table-wrap"><table><thead><tr><th>Platform</th><th>Status</th><th>Notes</th></tr></thead><tbody>
         ${o.smallBusiness.map((v) => `<tr><td><b>${esc(v.name)}</b></td><td>${esc(v.status)}</td><td>${esc(v.notes)}</td></tr>`).join("")}
       </tbody></table></div></section>
       <section class="panel"><div class="panel-head"><h2>Draft evaluation criteria</h2><span class="small muted">Weights to be agreed by ${fmtDate(D.decisions.decisions.find((d) => d.id === "D05").needed)}</span></div>
@@ -428,7 +428,7 @@
     return `<div class="page">
       <div class="page-head"><span class="eyebrow">Team and actions</span><h1>Who does what, and what's next</h1><p>${esc(t.note)}</p></div>
       <section class="panel"><h2>Roles</h2><div class="table-wrap"><table><thead><tr><th>Role</th><th>Name</th><th>Time</th><th>Responsibility</th></tr></thead><tbody>
-        ${t.roles.map((r) => `<tr><td><b>${esc(r.role)}</b></td><td class="${/TBD/.test(r.name) ? "muted" : ""}">${esc(r.name)}</td><td class="mono">${esc(r.time)}</td><td>${esc(r.responsibility)}</td></tr>`).join("")}
+        ${t.roles.map((r) => `<tr><td><b>${esc(r.role)}</b></td><td class="${/TBD/.test(r.name) ? "muted" : ""}">${esc(r.name)}</td><td class="mono">${esc(r.time)}</td><td>${esc(r.responsibility)}${r.note ? `<div class="small muted">${esc(r.note)}</div>` : ""}</td></tr>`).join("")}
       </tbody></table></div></section>
       <div class="grid-2">
         <section class="panel"><h2>Next actions</h2><div class="list">${D.actions.actions.map((a) => `<div class="row"><div class="row-head"><span><span class="mono muted">${a.id}</span> ${esc(a.title)}</span>${pill("st-" + a.status, a.status)}</div><div class="meta"><span>${esc(a.owner)}</span><span class="mono">Due ${fmtDate(a.due)}</span></div></div>`).join("")}</div></section>
@@ -450,6 +450,7 @@
           <div class="row-head"><h3><a href="#${m.id}-1">${esc(m.label)}</a></h3>${pill(dd >= 0 ? "st-open" : "st-done", when)}</div>
           <p class="small">${esc(k.title)}</p>
           <div class="meta"><span class="mono">${fmtDate(k.date)}</span><span>${cnt(k.lengthMinutes)} min</span><span>${cnt(k.slides.length)} slides</span><span>${esc(sections.join(" · "))}</span></div>
+          ${k.summary ? `<p class="small"><b>After the meeting:</b> ${esc(k.summary.lead)} <a href="#${m.id}-${k.slides.findIndex((x) => x.blocks.some((b) => b.type === "summary")) + 1}">Read the summary</a></p>` : ""}
           <div class="btn-row"><a class="btn small" href="#${m.id}-1">Open the slides <span aria-hidden="true">→</span></a>
             <a class="btn small" href="#${m.id}/print">Print or save as PDF</a>
             ${OFFLINE ? "" : `<button class="btn small" type="button" data-offline="${m.id}">Download offline copy</button>`}</div>
@@ -740,7 +741,7 @@
         ${box(600, 40, 260, 96, "DOCUMENT PREP", "Finastra LaserPro", "Loan documents at closing")}
         ${box(0, 330, 260, 96, "CORE BANKING", "COCC", "Boarding, customer records")}
         ${box(600, 330, 260, 96, "CONTENT MANAGEMENT", "Identifi", "Credit files, imaging")}
-        ${box(305, 0, 250, 96, "INCUMBENT · ENDS 3/1/2029", "GlobalWave", "Credit Track", "old")}
+        ${box(305, 0, 250, 96, `INCUMBENT · ENDS ${(([y, m, d]) => `${+m}/${+d}/${y}`)(keyDate("globalwave-end").split("-"))}`, "GlobalWave", "Credit Track", "old")}
         ${edge(262, 120, 300, 170, "ratings", 276, 162, "", "end", "both")}
         ${edge(560, 170, 598, 120, "deal data", 584, 162, "", "start")}
         ${edge(300, 270, 262, 328, "boarding", 276, 290, "", "end")}
@@ -777,6 +778,18 @@
     actions: () => `<div class="table-wrap"><table class="s-table"><thead><tr><th>Action</th><th>Owner</th><th>Due</th></tr></thead><tbody>
         ${D.actions.actions.filter((a) => a.status !== "done").sort((a, b) => a.due.localeCompare(b.due)).map((a) => `<tr><td>${esc(a.title)}</td><td class="s-muted">${esc(a.owner)}</td><td class="mono">${fmtDate(a.due)}</td></tr>`).join("")}
       </tbody></table></div>`,
+    // post-meeting summary, from the deck's "summary" object
+    summary: () => {
+      const m = deck().summary; if (!m) return "";
+      const dec = (m.decided || []).map((id) => D.decisions.decisions.find((x) => x.id === id)).filter(Boolean);
+      const acts = (m.next || []).map((id) => D.actions.actions.find((x) => x.id === id)).filter(Boolean);
+      return `<p class="lead">${esc(m.lead)}</p>
+        ${dec.length ? `<div class="s-cards">${dec.map((d) => `<div class="s-card"><div class="row-head"><span class="s-muted small">${d.id} · decided ${fmtDate(d.decidedOn)}</span>${pill("st-" + d.status, d.status)}</div><div class="ct">${esc(d.title)}</div><div class="cb">${esc(firstSentences(d.outcome, 2))}</div></div>`).join("")}</div>` : ""}
+        ${(m.heard || []).length ? `<ul class="s-list">${m.heard.map((h) => `<li>${esc(h)}</li>`).join("")}</ul>` : ""}
+        ${acts.length ? `<div class="table-wrap"><table class="s-table"><thead><tr><th>Next step</th><th>Owner</th><th>Due</th></tr></thead><tbody>
+          ${acts.map((a) => `<tr><td>${esc(a.title)}</td><td class="s-muted">${esc(a.owner)}</td><td class="mono">${fmtDate(a.due)}</td></tr>`).join("")}
+        </tbody></table></div>` : ""}`;
+    },
   };
   function firstSentences(t, n) { return t.split(/(?<=\.)\s+(?=[A-Z(])/).slice(0, n).join(" "); }
 
@@ -817,7 +830,7 @@
         <h1>${esc(s.title)}</h1>
         <div class="blocks">${s.blocks.map((b) => (BLOCKS[b.type] ? BLOCKS[b.type](b) : "")).join("")}</div>
         <span class="s-num" aria-hidden="true">${String(i + 1).padStart(2, "0")}</span>
-        <div class="slide-foot"><span>${esc(D.project.name)}</span><span>${i + 1} / ${n} · ~${s.minutes} min</span></div>`;
+        <div class="slide-foot"><span>${esc(D.project.name)}</span><span>${i + 1} / ${n}${s.minutes ? ` · ~${s.minutes} min` : ""}</span></div>`;
   }
 
   // Every slide on one page, one slide per printed sheet. The browser's print dialog saves it as a PDF.

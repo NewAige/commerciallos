@@ -1,12 +1,12 @@
 {
   "name": "Commercial LOS Replacement",
   "codename": "Commercial LOS",
-  "updated": "2026-10-02",
+  "updated": "2026-10-08",
   "keyDates": [
     { "id": "kickoff", "date": "2026-10-07", "label": "Planning kickoff meeting", "kind": "meeting", "confirmed": true },
     { "id": "contract-signed", "date": "2027-08-31", "label": "Target: new vendor contract signed", "kind": "target", "confirmed": false },
-    { "id": "go-live", "date": "2028-08-01", "label": "Target: new LOS live for all commercial lending", "kind": "target", "confirmed": false },
-    { "id": "globalwave-end", "date": "2029-03-01", "label": "GlobalWave contract ends", "kind": "hard", "confirmed": true }
+    { "id": "go-live", "date": "2028-08-01", "label": "Target: new LOS live for commercial and small business lending", "kind": "target", "confirmed": true },
+    { "id": "globalwave-end", "date": "2029-03-11", "label": "GlobalWave contract ends", "kind": "hard", "confirmed": true }
   ],
   "bank": {
     "status": "Confirmed by Head of Commercial Lending",
@@ -21,16 +21,17 @@
     "systems": [
       { "role": "Core banking", "name": "COCC", "touchesLOS": "Boarding of approved loans, customer and relationship data" },
       { "role": "Content management (ECM)", "name": "Identifi", "touchesLOS": "Credit file documents, imaging, retention" },
-      { "role": "Document preparation", "name": "Finastra LaserPro", "touchesLOS": "Loan documents generated from approved deal data" },
+      { "role": "Document preparation", "name": "Finastra LaserPro", "touchesLOS": "Loan documents generated from approved deal data. Likely staying for now." },
       { "role": "Risk rating and credit analysis", "name": "Abrigo (recently onboarded)", "touchesLOS": "Risk ratings, spreads, credit analysis" },
-      { "role": "Small business lending", "name": "Numerated (Moody's)", "touchesLOS": "Small business requests ($250K-$500K). Staying or leaving is TBD." },
-      { "role": "Commercial LOS (incumbent)", "name": "GlobalWave", "touchesLOS": "Being replaced or renegotiated. Contract ends 2029-03-01." }
+      { "role": "Small business lending", "name": "Numerated (Moody's)", "touchesLOS": "Small business requests ($250K-$500K). In scope for this project; its contract runs concurrently with GlobalWave." },
+      { "role": "Commercial LOS (incumbent)", "name": "GlobalWave", "touchesLOS": "Being replaced. Staying is not a real option (D03). Contract ends 2029-03-11." }
     ]
   },
   "assumptions": [
-    "The GlobalWave contract ends on 2029-03-01 with no automatic renewal. The contract still needs to be checked for a non-renewal notice deadline, auto-renew terms, data-return and exit-assistance terms.",
-    "A replacement must be live, staff trained, and GlobalWave data archived or converted before 2029-03-01.",
-    "The working target is go-live by 2028-08-01, which leaves about 7 months of buffer.",
+    "The GlobalWave contract ends on 2029-03-11 (confirmed by C. Alves, 2026-10-08). The contract still needs to be checked for a non-renewal notice deadline, auto-renew terms, data-return and exit-assistance terms.",
+    "A replacement must be live, staff trained, and GlobalWave data archived or converted before 2029-03-11.",
+    "Go-live is targeted for August 2028 (agreed at kickoff), which leaves about 7 months of buffer.",
+    "Small business lending is in scope (D01); its contract runs concurrently with GlobalWave.",
     "Bank profile figures come from the Head of Commercial Lending and are treated as accurate. Vendor, pricing and regulatory points are working views until confirmed (see What we think)."
   ]
 }

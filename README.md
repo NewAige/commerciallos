@@ -1,6 +1,6 @@
 # Commercial LOS Replacement
 
-Project workspace for replacing the bank's commercial loan origination system (LOS) before the GlobalWave contract ends on **March 1, 2029**.
+Project workspace for replacing the bank's commercial loan origination system (LOS) before the GlobalWave contract ends on **March 11, 2029**.
 
 The repo has two jobs:
 

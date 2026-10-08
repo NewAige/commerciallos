@@ -1,6 +1,6 @@
 # Agent guide for this repo
 
-This repo is the working record for a commercial loan origination system (LOS) replacement at a ~$3B community bank. The hard deadline is **2029-03-01**, when the GlobalWave contract ends. The front end in `site/` reads everything from `site/data/*.json`.
+This repo is the working record for a commercial loan origination system (LOS) replacement at a ~$3B community bank. The hard deadline is **2029-03-11**, when the GlobalWave contract ends. The front end in `site/` reads everything from `site/data/*.json`.
 
 ## Rules for updating information
 
