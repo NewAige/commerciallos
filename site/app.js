@@ -63,6 +63,9 @@
       const n = deckData(meeting(m[1])).slides.length;
       return { view: "deck", deck: m[1], key: m[1], page: m[1], slide: Math.min(n - 1, Math.max(0, parseInt(m[2] || "1", 10) - 1)) };
     }
+    if (h === "surveys/print" && D.surveys) return { view: "survey-print", role: null, key: "surveys", page: h, slide: 0 };
+    const sp = h.match(/^survey-(.+)\/print$/);
+    if (sp && D.surveys && D.surveys.roles.some((r) => r.id === sp[1])) return { view: "survey-print", role: sp[1], key: `survey-${sp[1]}`, page: h, slide: 0 };
     const sv = h.match(/^survey-(.+?)(\/results)?$/);
     if (sv && D.surveys && D.surveys.roles.some((r) => r.id === sv[1])) {
       return { view: "survey", role: sv[1], tab: sv[2] ? "results" : "questions", key: `survey-${sv[1]}`, page: h, slide: 0 };
@@ -611,7 +614,7 @@
     }
   }
 
-  function viewSurveys() {
+  function viewSurveys(inBook) {
     const S = D.surveys, all = svResponses(), qs = S.questions, roles = S.roles;
     const byRole = new Map(roles.map((r) => [r.id, svQuestions(r.id)]));
     const core = qs.filter((q) => roles.every((r) => (q.roles || []).includes(r.id))).length;
@@ -624,7 +627,8 @@
     const shared = qs.filter((q) => (q.type === "rating" || q.type === "nps") && (q.roles || []).length > 1 && withAnswers.filter((r) => q.roles.includes(r.id)).length > 1);
     return `<div class="page">
       <div class="page-head"><span class="eyebrow">Surveys · Plan workstream</span><h1>Asking staff what they need from the new LOS</h1>
-        <p>A short questionnaire for each group of people who use the commercial LOS today, so the requirements and the vendor demos reflect how the work is really done. The surveys go out through Microsoft Forms; this page is the plan and the question list, not the survey itself.</p></div>
+        <p>A short questionnaire for each group of people who use the commercial LOS today, so the requirements and the vendor demos reflect how the work is really done. The surveys go out through Microsoft Forms; this page is the plan and the question list, not the survey itself.</p>
+        ${inBook ? `<p class="small muted">Printed ${fmtDate(new Date().toISOString().slice(0, 10))} for review. The pages after this one list every question each role will be asked.</p>` : `<div class="btn-row"><a class="btn small" href="#surveys/print">Print or save as PDF</a><span class="small muted">This summary and every role's questions, ready to share for review.</span></div>`}</div>
       <div class="figures">
         <div class="figure"><span class="eyebrow">Status</span><span class="val">${esc(S.status ? S.status[0].toUpperCase() + S.status.slice(1) : "Draft")}</span><span class="lbl">Owner: ${esc(S.owner || "to be named")}</span></div>
         <div class="figure"><span class="eyebrow">Roles surveyed</span><span class="val">${cnt(roles.length)}</span><span class="lbl">in ${(S.groups || []).length} groups</span></div>
@@ -664,15 +668,13 @@
   }
 
   function viewSurvey(roleId, tab) {
-    const S = D.surveys, role = svRole(roleId), qs = svQuestions(roleId), rs = svResponses(roleId), mm = svMinutes(role, qs);
+    const S = D.surveys, role = svRole(roleId), qs = svQuestions(roleId), rs = svResponses(roleId);
     const secs = S.sections.filter((sec) => qs.some((q) => q.section === sec.id));
     const loose = qs.filter((q) => !S.sections.some((sec) => sec.id === q.section));
     const tabs = `<div class="tabs" role="navigation" aria-label="Survey views">
       <a href="#survey-${esc(roleId)}"${tab === "questions" ? ' aria-current="page"' : ""}>Questions <span class="count">${qs.length}</span></a>
       <a href="#survey-${esc(roleId)}/results"${tab === "results" ? ' aria-current="page"' : ""}>Results <span class="count">${rs.length}</span></a></div>`;
-    const head = `<div class="page-head"><span class="eyebrow"><a href="#surveys">Surveys</a> · ${esc(svGroupLabel(role.group))}</span><h1>${esc(role.label)}</h1>
-      <p>${esc(role.intro || S.intro || "The questions this role will be asked in Microsoft Forms.")}</p>
-      <div class="meta"><span>${qs.length} questions</span><span>${mm.est ? "about " : ""}${mm.m} min to answer</span><span>${pill("st-open", S.status || "draft")}</span></div></div>`;
+    const head = svRoleHead(role, qs);
     if (tab === "results") {
       return `<div class="page">${head}${tabs}
         ${rs.length ? `<div class="figures"><div class="figure"><span class="eyebrow">Responses</span><span class="val">${cnt(rs.length)}</span><span class="lbl">${D["survey-responses"].imported ? `imported ${fmtDate(D["survey-responses"].imported)}` : "imported from Microsoft Forms"}</span></div></div>
@@ -683,11 +685,51 @@
     }
     return `<div class="page">${head}${tabs}
       <section class="panel sv-tools"><div class="row-head"><p class="small">To build this survey in Microsoft Forms, copy the questions as plain text and paste them across. Keep the Q numbers: they are how answers are matched when they come back.</p>
-        <button class="btn small" type="button" id="svCopy">Copy as text</button></div><span class="toast" id="toast"></span></section>
-      ${[...secs.map((sec) => ({ title: sec.title, qs: qs.filter((q) => q.section === sec.id) })), ...(loose.length ? [{ title: "Other", qs: loose }] : [])].map((g) => `<section class="panel"><div class="panel-head"><h2>${esc(g.title)}</h2><span class="small muted">${g.qs.length} question${g.qs.length === 1 ? "" : "s"}</span></div>
-        <div class="sv-qs">${g.qs.map(svCard).join("")}</div></section>`).join("")}
-      ${S.closing ? `<p class="small muted">${esc(S.closing)}</p>` : ""}
+        <div class="btn-row"><button class="btn small" type="button" id="svCopy">Copy as text</button><a class="btn small" href="#survey-${esc(roleId)}/print">Print or save as PDF</a></div></div><span class="toast" id="toast"></span></section>
+      ${svQuestionPanels(qs)}
     </div>`;
+  }
+  function svRoleHead(role, qs) {
+    const S = D.surveys, mm = svMinutes(role, qs);
+    return `<div class="page-head"><span class="eyebrow"><a href="#surveys">Surveys</a> · ${esc(svGroupLabel(role.group))}</span><h1>${esc(role.label)}</h1>
+      <p>${esc(role.intro || S.intro || "The questions this role will be asked in Microsoft Forms.")}</p>
+      <div class="meta"><span>${qs.length} questions</span><span>${mm.est ? "about " : ""}${mm.m} min to answer</span><span>${pill("st-open", S.status || "draft")}</span></div></div>`;
+  }
+  function svQuestionPanels(qs) {
+    const S = D.surveys;
+    const secs = S.sections.filter((sec) => qs.some((q) => q.section === sec.id));
+    const loose = qs.filter((q) => !S.sections.some((sec) => sec.id === q.section));
+    return `${[...secs.map((sec) => ({ title: sec.title, qs: qs.filter((q) => q.section === sec.id) })), ...(loose.length ? [{ title: "Other", qs: loose }] : [])].map((g) => `<section class="panel"><div class="panel-head"><h2>${esc(g.title)}</h2><span class="small muted">${g.qs.length} question${g.qs.length === 1 ? "" : "s"}</span></div>
+        <div class="sv-qs">${g.qs.map(svCard).join("")}</div></section>`).join("")}
+      ${S.closing ? `<p class="small muted">${esc(S.closing)}</p>` : ""}`;
+  }
+
+  // Printable copy for reviewers: the survey summary, then each role's questions starting on a new page
+  // (or one role on its own). Printed on Letter paper in the light theme; the print dialog saves it as a PDF.
+  function viewSurveyBook(roleId) {
+    const S = D.surveys, roles = roleId ? [svRole(roleId)] : S.roles;
+    const back = roleId ? `#survey-${esc(roleId)}` : "#surveys";
+    return `<div class="sv-book">
+      <div class="print-bar">
+        <span class="eyebrow"><a href="#surveys">Surveys</a>${roleId ? ` · <a href="${back}">${esc(roles[0].label)}</a>` : ""} · printable copy · ${roleId ? `${svQuestions(roleId).length} questions` : `summary and ${roles.length} question lists`}</span>
+        <div class="btn-row">
+          <button class="btn small primary" type="button" id="printBtn">Print or save as PDF</button>
+          <a class="btn small" href="${back}">Back</a>
+          ${roleId ? `<a class="btn small" href="#surveys/print">All roles instead</a>` : ""}
+        </div>
+        <p class="small muted">In the print dialog choose <b>Save as PDF</b> as the printer. Turn on <b>Background graphics</b> so the shading prints. Each role starts on a new page.</p>
+      </div>
+      ${roleId ? "" : `<div class="sv-part">${viewSurveys(true)}</div>`}
+      ${roles.map((r) => { const qs = svQuestions(r.id); return `<div class="sv-part" id="survey-${esc(r.id)}"><div class="page">${svRoleHead(r, qs)}${svQuestionPanels(qs)}</div></div>`; }).join("")}
+    </div>`;
+  }
+  function bindSurveyBook() {
+    document.getElementById("printBtn").onclick = () => window.print();
+    // role links jump to that role's pages here (and become in-document links in the saved PDF)
+    document.querySelectorAll('.sv-book a[href^="#survey-"]').forEach((a) => {
+      const t = document.getElementById(a.getAttribute("href").slice(1));
+      if (t) a.onclick = (e) => { e.preventDefault(); t.scrollIntoView({ behavior: "smooth" }); };
+    });
   }
   function bindSurvey(roleId) {
     const b = document.getElementById("svCopy");
@@ -964,16 +1006,26 @@ window.LOS_SAVED = ${JSON.stringify(new Date().toISOString().slice(0, 10))};</sc
   }, { passive: true });
   document.addEventListener("fullscreenchange", () => { if (!document.fullscreenElement) document.body.classList.remove("audience"); });
 
+  // The survey copy prints portrait on Letter paper; everything else keeps the landscape slide page in styles.css.
+  function printSetup(book) {
+    document.documentElement.classList.toggle("sv-print", book);
+    let st = document.getElementById("svPage");
+    if (book && !st) { st = document.createElement("style"); st.id = "svPage"; st.textContent = "@page { size: letter portrait; margin: 0.5in; }"; document.head.appendChild(st); }
+    else if (!book && st) st.remove();
+  }
+
   /* ---------- render ---------- */
   let lastPage = null, lastSlide = -1;
   function render() {
     const r = route();
     if (r.view === "deck" || r.view === "print") useMeeting(r.deck);
+    printSetup(r.view === "survey-print");
     renderShell();
     const main = document.getElementById("main");
     const views = { overview: viewOverview, meetings: viewMeetings, plan: viewPlan, think: viewThink, learn: viewLearn, options: viewOptions, decisions: viewDecisions, risks: viewRisks, surveys: viewSurveys, team: viewTeam };
     if (r.view === "deck") { main.innerHTML = viewDeck(r.slide); bindDeck(r.slide); }
     else if (r.view === "print") { main.innerHTML = viewPrint(); bindPrint(); document.body.classList.remove("audience"); }
+    else if (r.view === "survey-print") { main.innerHTML = viewSurveyBook(r.role); bindSurveyBook(); document.body.classList.remove("audience"); }
     else {
       main.innerHTML = r.view === "survey" ? viewSurvey(r.role, r.tab) : views[r.view]();
       if (r.view === "survey") bindSurvey(r.role);

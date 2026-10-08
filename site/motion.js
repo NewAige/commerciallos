@@ -357,7 +357,7 @@
   window.LOSMotion = {
     afterRender(main, info) {
       navIndicator();
-      if (info.view === "print") return; // printable deck: static, no canvas or entrance effects
+      if (info.view === "print" || info.view === "survey-print") return; // printable copies: static, no canvas or entrance effects
       const slide = main.querySelector(".slide");
       if (slide) enterSlide(slide, info); else enterPage(main, info);
     },
