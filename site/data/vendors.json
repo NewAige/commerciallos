@@ -1,0 +1,27 @@
+{
+  "note": "One entry per vendor we deal with: who our contacts are and what has happened so far. What we think about a vendor's product or price belongs in 'What we think'; the long list and scoring are on Options.",
+  "vendors": [
+    {
+      "id": "abrigo",
+      "name": "Abrigo",
+      "relationship": "Current vendor (risk rating) and main replacement option",
+      "status": "Demo first",
+      "notes": "The bank already uses Abrigo for risk rating. The commercial LOS demo has not been scheduled yet.",
+      "contacts": [
+        {
+          "name": "Brandy Beverung",
+          "title": "Senior Account Executive",
+          "email": "brandy.beverung@abrigo.com",
+          "phone": "919-369-7001",
+          "phoneKind": "mobile",
+          "role": "Sales contact for the demo and any quote",
+          "source": "Email signature, reply to C. Alves, 2026-10-09",
+          "added": "2026-10-09"
+        }
+      ],
+      "log": [
+        { "date": "2026-10-09", "entry": "Followed up with Brandy after the demo discussion. She replied that she is our best contact whenever we are ready and will catch up when the time is right. She also offers an online link to book time with her. No demo date is set.", "by": "C. Alves" }
+      ]
+    }
+  ]
+}

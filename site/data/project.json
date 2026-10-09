@@ -1,7 +1,7 @@
 {
   "name": "Commercial LOS Replacement",
   "codename": "Commercial LOS",
-  "updated": "2026-10-08",
+  "updated": "2026-10-09",
   "keyDates": [
     { "id": "kickoff", "date": "2026-10-07", "label": "Planning kickoff meeting", "kind": "meeting", "confirmed": true },
     { "id": "contract-signed", "date": "2027-08-31", "label": "Target: new vendor contract signed", "kind": "target", "confirmed": false },
