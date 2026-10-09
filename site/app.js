@@ -3,7 +3,7 @@
 (function () {
   "use strict";
 
-  const FILES = ["project", "timeline", "claims", "decisions", "risks", "team", "options", "actions"]; // meeting decks are added from MEETINGS below
+  const FILES = ["project", "timeline", "claims", "decisions", "risks", "team", "options", "actions", "vendors"]; // meeting decks are added from MEETINGS below
   // loaded if present; the site still works without them
   const OPTIONAL = ["surveys", "survey-responses"];
   const THEME_KEY = "los-theme";
@@ -52,7 +52,7 @@
   ];
   const meeting = (id) => MEETINGS.find((m) => m.id === id);
   const deckData = (m) => D[m.file];
-  const PAGES = ["overview", "meetings", "plan", "think", "learn", "options", "decisions", "risks", "surveys", "team"];
+  const PAGES = ["overview", "meetings", "plan", "think", "learn", "options", "decisions", "risks", "vendors", "surveys", "team"];
   function route() {
     let h = decodeURIComponent((location.hash || "#overview").slice(1));
     if (h === "evidence") h = "think"; // old links
@@ -89,7 +89,7 @@
     const tree = [
       link("overview", "Overview"),
       { group: "meetings", label: "Meetings", items: [link("meetings", "All meetings"), ...MEETINGS.filter((m) => deckData(m)).map((m) => link(m.id, `${m.label} (${shortDate(deckData(m).date)})`, null, `#${m.id}-1`))] },
-      { group: "plan", label: "Plan", items: [link("plan", "Roadmap"), link("options", "Options"), link("decisions", "Decisions", c.decisions), link("risks", "Risks", c.risks)] },
+      { group: "plan", label: "Plan", items: [link("plan", "Roadmap"), link("options", "Options"), link("decisions", "Decisions", c.decisions), link("risks", "Risks", c.risks), link("vendors", "Vendors")] },
       { group: "knowledge", label: "Knowledge", items: [link("think", "What we think"), link("learn", "What we need to learn", c.learn)] },
     ];
     if (D.surveys) {
@@ -398,6 +398,23 @@
     const max = Math.max(...criteria.map((c) => c.suggestedWeight));
     return criteria.map((c) => `<div class="weight"><span>${esc(c.name)}</span><span class="w">${cnt(c.suggestedWeight, { suf: "%" })}</span>
       <div class="bar"><span style="width:${(c.suggestedWeight / max) * 100}%"></span></div>${detail ? `<span class="small muted wd" style="grid-column:1/-1">${esc(c.detail)}</span>` : ""}</div>`).join("");
+  }
+
+  /* ---------- Vendors ---------- */
+  function viewVendors() {
+    const V = D.vendors;
+    const contact = (c) => `<div class="row"><div class="row-head"><span><b>${esc(c.name)}</b>${c.title ? ` <span class="muted">${esc(c.title)}</span>` : ""}</span></div>
+      <div class="meta">${c.email ? `<span><a href="mailto:${esc(c.email)}">${esc(c.email)}</a></span>` : ""}${c.phone ? `<span class="mono">${esc(c.phone)}${c.phoneKind ? ` (${esc(c.phoneKind)})` : ""}</span>` : ""}</div>
+      ${c.role ? `<p class="small">${esc(c.role)}</p>` : ""}
+      <p class="small muted">Source: ${esc(c.source)}</p></div>`;
+    return `<div class="page">
+      <div class="page-head"><span class="eyebrow">Vendors</span><h1>Vendors and our contacts</h1><p>${esc(V.note)}</p></div>
+      ${V.vendors.map((v) => `<section class="panel"><div class="panel-head"><h2>${esc(v.name)}</h2>${v.status ? `<span class="small muted">${esc(v.status)}</span>` : ""}</div>
+        <p class="small"><b>${esc(v.relationship)}.</b> ${esc(v.notes || "")}</p>
+        <span class="eyebrow">Contacts</span><div class="list">${v.contacts.length ? v.contacts.map(contact).join("") : '<p class="small muted">No contacts recorded yet.</p>'}</div>
+        ${v.log && v.log.length ? `<span class="eyebrow">History</span><div class="list">${v.log.map((l) => `<div class="row"><p class="small">${esc(l.entry)}</p><div class="meta"><span class="mono">${fmtDate(l.date)}</span><span>${esc(l.by)}</span></div></div>`).join("")}</div>` : ""}
+      </section>`).join("")}
+    </div>`;
   }
 
   /* ---------- Decisions ---------- */
@@ -1022,7 +1039,7 @@ window.LOS_SAVED = ${JSON.stringify(new Date().toISOString().slice(0, 10))};</sc
     printSetup(r.view === "survey-print");
     renderShell();
     const main = document.getElementById("main");
-    const views = { overview: viewOverview, meetings: viewMeetings, plan: viewPlan, think: viewThink, learn: viewLearn, options: viewOptions, decisions: viewDecisions, risks: viewRisks, surveys: viewSurveys, team: viewTeam };
+    const views = { overview: viewOverview, meetings: viewMeetings, plan: viewPlan, think: viewThink, learn: viewLearn, options: viewOptions, decisions: viewDecisions, risks: viewRisks, vendors: viewVendors, surveys: viewSurveys, team: viewTeam };
     if (r.view === "deck") { main.innerHTML = viewDeck(r.slide); bindDeck(r.slide); }
     else if (r.view === "print") { main.innerHTML = viewPrint(); bindPrint(); document.body.classList.remove("audience"); }
     else if (r.view === "survey-print") { main.innerHTML = viewSurveyBook(r.role); bindSurveyBook(); document.body.classList.remove("audience"); }
