@@ -440,13 +440,13 @@ body.audience .exit-audience {
 .sv-lines li:first-child { border-top: 0; }
 .sv-lines .sv-type { justify-self: end; white-space: nowrap; }
 @media (max-width: 560px) { .sv-lines li { grid-template-columns: 3.2em minmax(0, 1fr); } .sv-lines .sv-type { grid-column: 2; justify-self: start; } }
-.sv-own { display: grid; gap: 6px; align-content: start; min-width: 0; }
-.sv-own h3 { font-family: var(--f-body); font-stretch: normal; font-weight: 600; font-size: 1rem; }
-.sv-own h3 a { text-decoration: none; }
 .sv-who { min-width: 900px; }
 .sv-who tbody th { font-weight: 400; font-size: 0.85rem; line-height: 1.4; min-width: 340px; max-width: 46ch; }
 .sv-who td { background: none; }
 .sv-who td.on { color: var(--accent); background: var(--accent-soft); }
+.sv-who tr.sv-one td.on { color: var(--brass); background: var(--brass-soft); }
+.sv-who td.sv-n { white-space: nowrap; min-width: 3.5em; color: var(--muted); }
+.sv-who tr.sv-one td.sv-n { color: var(--brass); font-weight: 600; }
 .sv-who .sv-sec th { font-family: var(--f-mono); font-size: 0.7rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); padding-top: 14px; }
 
 .loading { padding: 40px; color: var(--muted); }

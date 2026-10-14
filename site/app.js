@@ -500,7 +500,7 @@
     return `<span class="sv-scope some">${roleId ? "Also" : "Asked of"}: ${esc(svNames(others))}</span>`;
   }
   // one line per question, for lists where the full card would be too much
-  const svLine = (q, extra) => `<li><span class="mono muted">${esc(q.id)}</span><span class="sv-lt">${esc(q.text)}</span><span class="sv-type">${esc(svTypeLabel(q))}</span>${extra || ""}</li>`;
+  const svLine = (q) => `<li><span class="mono muted">${esc(q.id)}</span><span class="sv-lt">${esc(q.text)}</span><span class="sv-type">${esc(svTypeLabel(q))}</span></li>`;
   function svQuestions(roleId) {
     const S = D.surveys, order = new Map(S.sections.map((x, i) => [x.id, i]));
     const at = (q) => (order.has(q.section) ? order.get(q.section) : 999);
@@ -702,26 +702,22 @@
   // Every role side by side: what all of them are asked, what only one role is asked, and what is shared by some
   function viewSurveyCompare() {
     const S = D.surveys, roles = S.roles, qs = svQuestions(null);
-    const all = qs.filter((q) => svScope(q) === "all"), some = qs.filter((q) => svScope(q) === "some"), one = qs.filter((q) => svScope(q) === "one");
+    const n = (k) => qs.filter((q) => svScope(q) === k).length;
     const secTitle = (id) => (S.sections.find((x) => x.id === id) || {}).title || "Other";
-    const bySec = (list) => [...new Set(list.map((q) => q.section))].map((id) => ({ title: secTitle(id), qs: list.filter((q) => q.section === id) }));
+    const secs = [...new Set(qs.map((q) => q.section))].map((id) => ({ title: secTitle(id), qs: qs.filter((q) => q.section === id) }));
+    const who = (q) => (svScope(q) === "all" ? "All" : q.roles.length);
     return `<div class="page">
       <div class="page-head"><span class="eyebrow"><a href="#surveys">Surveys</a> · reviewing the questions</span><h1>What is the same and what is different</h1>
-        <p>All ${qs.length} questions sorted by who is asked them. Questions everyone gets are listed once; the rest show which roles get them, so a reviewer can check each role's own questions without rereading the shared ones.</p></div>
+        <p>Every question, in survey order, with a dot under each role that is asked it. A full row of dots is a question everyone gets; a single dot is a question only that role gets.</p></div>
       <div class="figures">
-        <div class="figure"><span class="eyebrow">Asked of everyone</span><span class="val">${cnt(all.length)}</span><span class="lbl">all ${roles.length} roles</span></div>
-        <div class="figure"><span class="eyebrow">Only one role</span><span class="val">${cnt(one.length)}</span><span class="lbl">across ${new Set(one.map((q) => q.roles[0])).size} roles</span></div>
-        <div class="figure"><span class="eyebrow">Shared by some</span><span class="val">${cnt(some.length)}</span><span class="lbl">two to ${roles.length - 1} roles each</span></div>
+        <div class="figure"><span class="eyebrow">Asked of everyone</span><span class="val">${cnt(n("all"))}</span><span class="lbl">all ${roles.length} roles</span></div>
+        <div class="figure"><span class="eyebrow">Shared by some</span><span class="val">${cnt(n("some"))}</span><span class="lbl">two to ${roles.length - 1} roles each</span></div>
+        <div class="figure"><span class="eyebrow">Only one role</span><span class="val">${cnt(n("one"))}</span><span class="lbl">no other role is asked these</span></div>
       </div>
-      <section class="panel"><div class="panel-head"><h2>Asked of everyone</h2><span class="small muted">${all.length} questions, worded the same in every survey</span></div>
-        <ul class="sv-lines">${all.map((q) => svLine(q)).join("")}</ul></section>
-      <section class="panel"><div class="panel-head"><h2>Only one role</h2><span class="small muted">${one.length} questions no other role is asked</span></div>
-        <div class="grid-2">${roles.map((r) => { const own = one.filter((q) => q.roles[0] === r.id); return `<div class="sv-own"><h3><a href="#survey-${esc(r.id)}/compare">${esc(r.label)}</a> <span class="small muted">${own.length || "none"}</span></h3>
-          ${own.length ? `<ul class="sv-lines">${own.map((q) => svLine(q)).join("")}</ul>` : `<p class="small muted">No questions of its own; everything it is asked is shared.</p>`}</div>`; }).join("")}</div></section>
-      <section class="panel"><div class="panel-head"><h2>Shared by some roles</h2><span class="small muted">${some.length} questions · a dot means that role is asked it</span></div>
-        <div class="table-wrap"><table class="sv-grid sv-who"><thead><tr><th>Question</th>${roles.map((r) => `<th scope="col"><a href="#survey-${esc(r.id)}/compare">${esc(r.label)}</a></th>`).join("")}</tr></thead><tbody>
-          ${bySec(some).map((g) => `<tr class="sv-sec"><th scope="rowgroup" colspan="${roles.length + 1}">${esc(g.title)}</th></tr>
-            ${g.qs.map((q) => `<tr><th scope="row"><span class="mono muted">${esc(q.id)}</span> ${esc(q.text)}</th>${roles.map((r) => q.roles.includes(r.id) ? `<td class="on" title="${esc(r.label)}"><span aria-label="asked">●</span></td>` : `<td class="muted"><span aria-label="not asked">–</span></td>`).join("")}</tr>`).join("")}`).join("")}
+      <section class="panel"><div class="panel-head"><h2>Who is asked each question</h2><span class="small muted">${qs.length} questions · click a role to see its survey</span></div>
+        <div class="table-wrap"><table class="sv-grid sv-who"><thead><tr><th>Question</th>${roles.map((r) => `<th scope="col"><a href="#survey-${esc(r.id)}">${esc(r.label)}</a></th>`).join("")}<th scope="col">Roles</th></tr></thead><tbody>
+          ${secs.map((g) => `<tr class="sv-sec"><th scope="rowgroup" colspan="${roles.length + 2}">${esc(g.title)}</th></tr>
+            ${g.qs.map((q) => `<tr class="sv-${svScope(q)}"><th scope="row"><span class="mono muted">${esc(q.id)}</span> ${esc(q.text)}</th>${roles.map((r) => q.roles.includes(r.id) ? `<td class="on" title="${esc(r.label)}"><span aria-label="asked">●</span></td>` : `<td class="muted"><span aria-label="not asked">–</span></td>`).join("")}<td class="sv-n mono">${who(q)}</td></tr>`).join("")}`).join("")}
         </tbody></table></div></section>
     </div>`;
   }
