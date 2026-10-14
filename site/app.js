@@ -64,11 +64,12 @@
       return { view: "deck", deck: m[1], key: m[1], page: m[1], slide: Math.min(n - 1, Math.max(0, parseInt(m[2] || "1", 10) - 1)) };
     }
     if (h === "surveys/print" && D.surveys) return { view: "survey-print", role: null, key: "surveys", page: h, slide: 0 };
+    if (h === "surveys/compare" && D.surveys) return { view: "survey-compare", key: "surveys/compare", page: h, slide: 0 };
     const sp = h.match(/^survey-(.+)\/print$/);
     if (sp && D.surveys && D.surveys.roles.some((r) => r.id === sp[1])) return { view: "survey-print", role: sp[1], key: `survey-${sp[1]}`, page: h, slide: 0 };
-    const sv = h.match(/^survey-(.+?)(\/results)?$/);
+    const sv = h.match(/^survey-(.+?)(?:\/(results|compare))?$/);
     if (sv && D.surveys && D.surveys.roles.some((r) => r.id === sv[1])) {
-      return { view: "survey", role: sv[1], tab: sv[2] ? "results" : "questions", key: `survey-${sv[1]}`, page: h, slide: 0 };
+      return { view: "survey", role: sv[1], tab: sv[2] || "questions", key: `survey-${sv[1]}`, page: h, slide: 0 };
     }
     const v = PAGES.includes(h) && (h !== "surveys" || D.surveys) ? h : "overview";
     return { view: v, key: v, page: v, slide: 0 };
@@ -93,7 +94,7 @@
       { group: "knowledge", label: "Knowledge", items: [link("think", "What we think"), link("learn", "What we need to learn", c.learn)] },
     ];
     if (D.surveys) {
-      const S = D.surveys, items = [link("surveys", "Survey plan")];
+      const S = D.surveys, items = [link("surveys", "Survey plan"), link("surveys/compare", "Same and different")];
       const roleLink = (r) => { const n = svResponses(r.id).length; return link(`survey-${r.id}`, r.label, n || null); };
       (S.groups || []).forEach((g) => {
         const rs = S.roles.filter((r) => r.group === g.id);
@@ -486,6 +487,20 @@
   const svResponses = (roleId) => (((D["survey-responses"] || {}).responses) || []).filter((r) => !roleId || r.role === roleId);
   const svRole = (id) => D.surveys.roles.find((r) => r.id === id);
   const svGroupLabel = (id) => ((D.surveys.groups || []).find((g) => g.id === id) || {}).label || "";
+  // who else gets a question: everyone, only one role, or some roles
+  const svScope = (q) => { const n = (q.roles || []).length; return n >= D.surveys.roles.length && D.surveys.roles.every((r) => q.roles.includes(r.id)) ? "all" : n === 1 ? "one" : "some"; };
+  const svNames = (ids) => ids.map((id) => (svRole(id) || { label: id }).label).join(", ");
+  function svScopeTag(q, roleId) {
+    const sc = svScope(q), all = D.surveys.roles.map((r) => r.id);
+    if (sc === "all") return `<span class="sv-scope all">Everyone</span>`;
+    if (sc === "one") return `<span class="sv-scope one">${roleId ? "Only this role" : `Only ${esc(svNames(q.roles))}`}</span>`;
+    const missing = all.filter((id) => !q.roles.includes(id));
+    if (missing.length <= 2) return `<span class="sv-scope some">Everyone except ${esc(svNames(missing))}</span>`;
+    const others = roleId ? q.roles.filter((id) => id !== roleId) : q.roles;
+    return `<span class="sv-scope some">${roleId ? "Also" : "Asked of"}: ${esc(svNames(others))}</span>`;
+  }
+  // one line per question, for lists where the full card would be too much
+  const svLine = (q, extra) => `<li><span class="mono muted">${esc(q.id)}</span><span class="sv-lt">${esc(q.text)}</span><span class="sv-type">${esc(svTypeLabel(q))}</span>${extra || ""}</li>`;
   function svQuestions(roleId) {
     const S = D.surveys, order = new Map(S.sections.map((x, i) => [x.id, i]));
     const at = (q) => (order.has(q.section) ? order.get(q.section) : 999);
@@ -523,7 +538,7 @@
       ${!pl && sc.labels && sc.labels.length ? `<p class="small muted">${sc.labels.map(esc).join(" · ")}</p>` : ""}`;
   }
   // a reference card for one question: what is asked and what kind of answer it takes (not a form)
-  function svCard(q) {
+  function svCard(q, roleId) {
     const sc = svScale(q);
     let body = "";
     if (q.type === "rating" || q.type === "nps") body = scaleChips(sc);
@@ -536,7 +551,7 @@
         <p class="small muted">Each rated ${sc.min}-${sc.max}${pl ? `: ${pl.map((l, i) => `${sc.min + i} ${esc(l)}`).join(", ")}` : ""}.</p>`;
     } else if (q.type === "text") body = "";
     return `<article class="sv-q">
-      <div class="sv-qhead"><span class="mono muted">${esc(q.id)}</span><span class="sv-type">${esc(svTypeLabel(q))}</span>${q.required ? `<span class="small muted">Required</span>` : `<span class="small muted">Optional</span>`}</div>
+      <div class="sv-qhead"><span class="mono muted">${esc(q.id)}</span><span class="sv-type">${esc(svTypeLabel(q))}</span>${q.required ? `<span class="small muted">Required</span>` : `<span class="small muted">Optional</span>`}${roleId !== undefined ? svScopeTag(q, roleId) : ""}</div>
       <h3>${esc(q.text)}</h3>
       ${q.help ? `<p class="small muted">${esc(q.help)}</p>` : ""}
       ${body}
@@ -645,7 +660,7 @@
     return `<div class="page">
       <div class="page-head"><span class="eyebrow">Surveys · Plan workstream</span><h1>Asking staff what they need from the new LOS</h1>
         <p>A short questionnaire for each group of people who use the commercial LOS today, so the requirements and the vendor demos reflect how the work is really done. The surveys go out through Microsoft Forms; this page is the plan and the question list, not the survey itself.</p>
-        ${inBook ? `<p class="small muted">Printed ${fmtDate(new Date().toISOString().slice(0, 10))} for review. The pages after this one list every question each role will be asked.</p>` : `<div class="btn-row"><a class="btn small" href="#surveys/print">Print or save as PDF</a><span class="small muted">This summary and every role's questions, ready to share for review.</span></div>`}</div>
+        ${inBook ? `<p class="small muted">Printed ${fmtDate(new Date().toISOString().slice(0, 10))} for review. The pages after this one list every question each role will be asked.</p>` : `<div class="btn-row"><a class="btn small" href="#surveys/compare">Same and different</a><a class="btn small" href="#surveys/print">Print or save as PDF</a><span class="small muted">See what every role shares and what is particular to each, or print every role's questions for review.</span></div>`}</div>
       <div class="figures">
         <div class="figure"><span class="eyebrow">Status</span><span class="val">${esc(S.status ? S.status[0].toUpperCase() + S.status.slice(1) : "Draft")}</span><span class="lbl">Owner: ${esc(S.owner || "to be named")}</span></div>
         <div class="figure"><span class="eyebrow">Roles surveyed</span><span class="val">${cnt(roles.length)}</span><span class="lbl">in ${(S.groups || []).length} groups</span></div>
@@ -684,14 +699,59 @@
     </div>`;
   }
 
+  // Every role side by side: what all of them are asked, what only one role is asked, and what is shared by some
+  function viewSurveyCompare() {
+    const S = D.surveys, roles = S.roles, qs = svQuestions(null);
+    const all = qs.filter((q) => svScope(q) === "all"), some = qs.filter((q) => svScope(q) === "some"), one = qs.filter((q) => svScope(q) === "one");
+    const secTitle = (id) => (S.sections.find((x) => x.id === id) || {}).title || "Other";
+    const bySec = (list) => [...new Set(list.map((q) => q.section))].map((id) => ({ title: secTitle(id), qs: list.filter((q) => q.section === id) }));
+    return `<div class="page">
+      <div class="page-head"><span class="eyebrow"><a href="#surveys">Surveys</a> · reviewing the questions</span><h1>What is the same and what is different</h1>
+        <p>All ${qs.length} questions sorted by who is asked them. Questions everyone gets are listed once; the rest show which roles get them, so a reviewer can check each role's own questions without rereading the shared ones.</p></div>
+      <div class="figures">
+        <div class="figure"><span class="eyebrow">Asked of everyone</span><span class="val">${cnt(all.length)}</span><span class="lbl">all ${roles.length} roles</span></div>
+        <div class="figure"><span class="eyebrow">Only one role</span><span class="val">${cnt(one.length)}</span><span class="lbl">across ${new Set(one.map((q) => q.roles[0])).size} roles</span></div>
+        <div class="figure"><span class="eyebrow">Shared by some</span><span class="val">${cnt(some.length)}</span><span class="lbl">two to ${roles.length - 1} roles each</span></div>
+      </div>
+      <section class="panel"><div class="panel-head"><h2>Asked of everyone</h2><span class="small muted">${all.length} questions, worded the same in every survey</span></div>
+        <ul class="sv-lines">${all.map((q) => svLine(q)).join("")}</ul></section>
+      <section class="panel"><div class="panel-head"><h2>Only one role</h2><span class="small muted">${one.length} questions no other role is asked</span></div>
+        <div class="grid-2">${roles.map((r) => { const own = one.filter((q) => q.roles[0] === r.id); return `<div class="sv-own"><h3><a href="#survey-${esc(r.id)}/compare">${esc(r.label)}</a> <span class="small muted">${own.length || "none"}</span></h3>
+          ${own.length ? `<ul class="sv-lines">${own.map((q) => svLine(q)).join("")}</ul>` : `<p class="small muted">No questions of its own; everything it is asked is shared.</p>`}</div>`; }).join("")}</div></section>
+      <section class="panel"><div class="panel-head"><h2>Shared by some roles</h2><span class="small muted">${some.length} questions · a dot means that role is asked it</span></div>
+        <div class="table-wrap"><table class="sv-grid sv-who"><thead><tr><th>Question</th>${roles.map((r) => `<th scope="col"><a href="#survey-${esc(r.id)}/compare">${esc(r.label)}</a></th>`).join("")}</tr></thead><tbody>
+          ${bySec(some).map((g) => `<tr class="sv-sec"><th scope="rowgroup" colspan="${roles.length + 1}">${esc(g.title)}</th></tr>
+            ${g.qs.map((q) => `<tr><th scope="row"><span class="mono muted">${esc(q.id)}</span> ${esc(q.text)}</th>${roles.map((r) => q.roles.includes(r.id) ? `<td class="on" title="${esc(r.label)}"><span aria-label="asked">●</span></td>` : `<td class="muted"><span aria-label="not asked">–</span></td>`).join("")}</tr>`).join("")}`).join("")}
+        </tbody></table></div></section>
+    </div>`;
+  }
+
   function viewSurvey(roleId, tab) {
     const S = D.surveys, role = svRole(roleId), qs = svQuestions(roleId), rs = svResponses(roleId);
     const secs = S.sections.filter((sec) => qs.some((q) => q.section === sec.id));
     const loose = qs.filter((q) => !S.sections.some((sec) => sec.id === q.section));
     const tabs = `<div class="tabs" role="navigation" aria-label="Survey views">
       <a href="#survey-${esc(roleId)}"${tab === "questions" ? ' aria-current="page"' : ""}>Questions <span class="count">${qs.length}</span></a>
+      <a href="#survey-${esc(roleId)}/compare"${tab === "compare" ? ' aria-current="page"' : ""}>Same and different <span class="count">${qs.filter((q) => svScope(q) === "one").length} only here</span></a>
       <a href="#survey-${esc(roleId)}/results"${tab === "results" ? ' aria-current="page"' : ""}>Results <span class="count">${rs.length}</span></a></div>`;
     const head = svRoleHead(role, qs);
+    if (tab === "compare") {
+      const only = qs.filter((q) => svScope(q) === "one"), some = qs.filter((q) => svScope(q) === "some"), all = qs.filter((q) => svScope(q) === "all");
+      return `<div class="page">${head}${tabs}
+        <section class="panel sv-tools"><p class="small">The same questions grouped by who else is asked them, so you can review what is particular to ${esc(role.label)} separately from what everyone answers. <a href="#surveys/compare">Compare all roles side by side</a>.</p></section>
+        <div class="figures">
+          <div class="figure"><span class="eyebrow">Only this role</span><span class="val">${cnt(only.length)}</span><span class="lbl">no one else is asked these</span></div>
+          <div class="figure"><span class="eyebrow">Shared with some</span><span class="val">${cnt(some.length)}</span><span class="lbl">also asked of other roles</span></div>
+          <div class="figure"><span class="eyebrow">Asked of everyone</span><span class="val">${cnt(all.length)}</span><span class="lbl">the same in every survey</span></div>
+        </div>
+        <section class="panel"><div class="panel-head"><h2>Only for ${esc(role.label)}</h2><span class="small muted">${only.length} question${only.length === 1 ? "" : "s"}</span></div>
+          ${only.length ? `<div class="sv-qs">${only.map((q) => svCard(q, roleId)).join("")}</div>` : `<p class="small muted">Every question this role gets is also asked of at least one other role.</p>`}</section>
+        ${some.length ? `<section class="panel"><div class="panel-head"><h2>Shared with some other roles</h2><span class="small muted">${some.length} question${some.length === 1 ? "" : "s"} · the tag shows who else gets each one</span></div>
+          <div class="sv-qs">${some.map((q) => svCard(q, roleId)).join("")}</div></section>` : ""}
+        ${all.length ? `<section class="panel"><div class="panel-head"><h2>Asked of everyone</h2><span class="small muted">${all.length} question${all.length === 1 ? "" : "s"}, worded the same for every role</span></div>
+          <ul class="sv-lines">${all.map((q) => svLine(q)).join("")}</ul></section>` : ""}
+      </div>`;
+    }
     if (tab === "results") {
       return `<div class="page">${head}${tabs}
         ${rs.length ? `<div class="figures"><div class="figure"><span class="eyebrow">Responses</span><span class="val">${cnt(rs.length)}</span><span class="lbl">${D["survey-responses"].imported ? `imported ${fmtDate(D["survey-responses"].imported)}` : "imported from Microsoft Forms"}</span></div></div>
@@ -703,7 +763,7 @@
     return `<div class="page">${head}${tabs}
       <section class="panel sv-tools"><div class="row-head"><p class="small">To build this survey in Microsoft Forms, copy the questions as plain text and paste them across. Keep the Q numbers: they are how answers are matched when they come back.</p>
         <div class="btn-row"><button class="btn small" type="button" id="svCopy">Copy as text</button><a class="btn small" href="#survey-${esc(roleId)}/print">Print or save as PDF</a></div></div><span class="toast" id="toast"></span></section>
-      ${svQuestionPanels(qs)}
+      ${svQuestionPanels(qs, roleId)}
     </div>`;
   }
   function svRoleHead(role, qs) {
@@ -712,12 +772,12 @@
       <p>${esc(role.intro || S.intro || "The questions this role will be asked in Microsoft Forms.")}</p>
       <div class="meta"><span>${qs.length} questions</span><span>${mm.est ? "about " : ""}${mm.m} min to answer</span><span>${pill("st-open", S.status || "draft")}</span></div></div>`;
   }
-  function svQuestionPanels(qs) {
+  function svQuestionPanels(qs, roleId) {
     const S = D.surveys;
     const secs = S.sections.filter((sec) => qs.some((q) => q.section === sec.id));
     const loose = qs.filter((q) => !S.sections.some((sec) => sec.id === q.section));
     return `${[...secs.map((sec) => ({ title: sec.title, qs: qs.filter((q) => q.section === sec.id) })), ...(loose.length ? [{ title: "Other", qs: loose }] : [])].map((g) => `<section class="panel"><div class="panel-head"><h2>${esc(g.title)}</h2><span class="small muted">${g.qs.length} question${g.qs.length === 1 ? "" : "s"}</span></div>
-        <div class="sv-qs">${g.qs.map(svCard).join("")}</div></section>`).join("")}
+        <div class="sv-qs">${g.qs.map((q) => svCard(q, roleId)).join("")}</div></section>`).join("")}
       ${S.closing ? `<p class="small muted">${esc(S.closing)}</p>` : ""}`;
   }
 
@@ -737,7 +797,7 @@
         <p class="small muted">In the print dialog choose <b>Save as PDF</b> as the printer. Turn on <b>Background graphics</b> so the shading prints. Each role starts on a new page.</p>
       </div>
       ${roleId ? "" : `<div class="sv-part">${viewSurveys(true)}</div>`}
-      ${roles.map((r) => { const qs = svQuestions(r.id); return `<div class="sv-part" id="survey-${esc(r.id)}"><div class="page">${svRoleHead(r, qs)}${svQuestionPanels(qs)}</div></div>`; }).join("")}
+      ${roles.map((r) => { const qs = svQuestions(r.id); return `<div class="sv-part" id="survey-${esc(r.id)}"><div class="page">${svRoleHead(r, qs)}${svQuestionPanels(qs, r.id)}</div></div>`; }).join("")}
     </div>`;
   }
   function bindSurveyBook() {
@@ -1039,7 +1099,7 @@ window.LOS_SAVED = ${JSON.stringify(new Date().toISOString().slice(0, 10))};</sc
     printSetup(r.view === "survey-print");
     renderShell();
     const main = document.getElementById("main");
-    const views = { overview: viewOverview, meetings: viewMeetings, plan: viewPlan, think: viewThink, learn: viewLearn, options: viewOptions, decisions: viewDecisions, risks: viewRisks, vendors: viewVendors, surveys: viewSurveys, team: viewTeam };
+    const views = { overview: viewOverview, meetings: viewMeetings, plan: viewPlan, think: viewThink, learn: viewLearn, options: viewOptions, decisions: viewDecisions, risks: viewRisks, vendors: viewVendors, surveys: viewSurveys, "survey-compare": viewSurveyCompare, team: viewTeam };
     if (r.view === "deck") { main.innerHTML = viewDeck(r.slide); bindDeck(r.slide); }
     else if (r.view === "print") { main.innerHTML = viewPrint(); bindPrint(); document.body.classList.remove("audience"); }
     else if (r.view === "survey-print") { main.innerHTML = viewSurveyBook(r.role); bindSurveyBook(); document.body.classList.remove("audience"); }
